@@ -1,8 +1,11 @@
 import javafx.scene.paint.Color;
+
+import javafx.scene.shape.Line;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import Modele.Courier;
+import model.Courier;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
@@ -32,7 +35,10 @@ public class App extends Application {
 		Courier c1 = new Courier("Dimitri",12.7);
 		Courier c2 = new Courier("Dominique",12.7);		
 		ListView<Courier> listView = new ListView<Courier>();
-		listView.setOnClickListener(null);
+
+		//TODO : ajouter un background color
+		//TODO : rendre la listeView non cliquable au début
+
 		listView.getItems().add(c1);
 		listView.getItems().add(c2);
 		
@@ -49,7 +55,32 @@ public class App extends Application {
         createNewRequest.getChildren().add(new Label("Date:"));
         createNewRequest.getChildren().add(date);
         createNewRequest.getChildren().add(new Label("Localisation:"));
-                       
+        
+        ArrayList<Line> lines = new ArrayList<Line>();
+        Line line1 = new Line(20, 37, 40, 56);
+        Line line2 = new Line(78, 55, 34, 90);
+        Line line3 = new Line(90, 72, 49, 93);
+        Line line4 = new Line(12, 80, 12, 16);  
+
+        lines.add(line1);
+        lines.add(line2);
+        lines.add(line3);
+        lines.add(line4);
+        
+        HBox hbox2 = new HBox();
+        hbox2.setMinWidth(500);
+        hbox2.setMinHeight(500);
+        hbox2.setStyle("-fx-padding: 10;" + "-fx-border-style: solid inside;"
+                + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
+                + "-fx-border-radius: 5;" + "-fx-border-color: blue;");
+
+        
+        for (int counter = 0; counter < lines.size(); counter++) { 		      
+        	hbox2.getChildren().add(lines.get(counter));
+        }        
+        
+        createNewRequest.getChildren().add(hbox2);
+                                    
         createNewRequest.getChildren().add(new Label("Time-window"));
         
         ComboBox<String> timeWindow = new ComboBox();
@@ -65,8 +96,7 @@ public class App extends Application {
         hbox.getChildren().add(createNewRequest);                    
                
         Scene scene = new Scene(hbox, 300, 120);
-        stage.setScene(scene);  
-        
+        stage.setScene(scene);        
         stage.show();
         
         //mapView map = new mapView();

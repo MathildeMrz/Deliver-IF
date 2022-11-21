@@ -14,8 +14,7 @@ public class mapView extends Application{
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		//Draw map
-		
+		//Draw map		
 		ArrayList<Line> lines = new ArrayList<Line>();
         Line line1 = new Line(200, 370, 400, 560);
         Line line2 = new Line(780, 550, 340, 900);
