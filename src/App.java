@@ -92,7 +92,7 @@ public class App extends Application {
         	    };
 
         	    //build line
-        	    WKTReader2 reader = new WKTReader2();
+        	    /*WKTReader2 reader = new WKTReader2();
         	    GeometryFactory gf = new GeometryFactory();
         	    Coordinate[] points = new Coordinate[wkt.length];
         	    int i=0;
@@ -110,7 +110,7 @@ public class App extends Application {
         	    LineString line = gf.createLineString(points);
         	    SimpleFeatureBuilder builder = new SimpleFeatureBuilder(schema);
         	    builder.set("locations", line);
-        	    SimpleFeature feature = builder.buildFeature("1");
+        	    SimpleFeature feature = builder.buildFeature("1");*/
 
         	    
         
