@@ -1,0 +1,3 @@
+Dimitri;12.7
+Dominique;12.7
+Jean-Michel;5.5

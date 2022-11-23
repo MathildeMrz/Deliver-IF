@@ -27,10 +27,18 @@ public class mapView extends Application{
         lines.add(line4);
         
         HBox hbox = new HBox();
+        hbox.setMinWidth(700);
+        hbox.setMinHeight(900);
+        hbox.setStyle("-fx-padding: 10;" + "-fx-border-style: solid inside;"
+                + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
+                + "-fx-border-radius: 5;" + "-fx-border-color: blue;");
         
         for (int counter = 0; counter < lines.size(); counter++) { 		      
         	hbox.getChildren().add(lines.get(counter));
         }  
+        
+        hbox.setMinWidth(700);
+        hbox.setMinHeight(900);
                 
         Scene scene = new Scene(hbox, 300, 120);   
         stage.setScene(scene);

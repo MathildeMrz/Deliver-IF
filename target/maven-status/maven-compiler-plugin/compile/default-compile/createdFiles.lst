@@ -1,3 +1,10 @@
+model\Intersection.class
+model\Courier.class
+model\Segment.class
 App.class
-map.class
-Modele\Courier.class
+xml\XMLfileOpener.class
+xml\XMLdeserializer.class
+model\Plan.class
+mapView.class
+test\TestLoadMap.class
+xml\ExceptionXML.class
