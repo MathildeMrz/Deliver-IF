@@ -104,7 +104,7 @@ public class App extends Application {
         stage.setScene(scene);        
         stage.show();
         
-        ArrayList<Integer> hours = new ArrayList<Integer>();
+        /*ArrayList<Integer> hours = new ArrayList<Integer>();
         hours.add(9);
         hours.add(10);
         hours.add(11);
@@ -149,7 +149,7 @@ public class App extends Application {
         //couriers.getChildren().add(hTimeLineBox);
         
         //mapView map = new mapView();
-        //map.start(stage);
+        //map.start(stage);*/
 		
 	}
 	
