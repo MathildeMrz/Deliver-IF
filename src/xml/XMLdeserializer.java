@@ -47,7 +47,7 @@ public class XMLdeserializer {
        	}
        	NodeList warehouse = noeudDOMRacine.getElementsByTagName("warehouse");
        	for (int i = 0; i < warehouse.getLength(); i++) {
-        	plan.addWarehouse(Float.parseFloat(( (Element)warehouse.item(i) ).getAttribute("address")));
+        	plan.addWarehouse(Long.parseLong(( (Element)warehouse.item(i) ).getAttribute("address")));
        	}
        	NodeList segmentList = noeudDOMRacine.getElementsByTagName("segment");
        	for (int i = 0; i < segmentList.getLength(); i++) {

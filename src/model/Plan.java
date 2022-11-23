@@ -21,7 +21,7 @@ public class Plan extends Observable {
 		longitudeMax = 0;
 	}
 	
-	public void addWarehouse(float intersectionID) {
+	public void addWarehouse(Long intersectionID) {
 		for(Intersection node : this.nodes) {
 			if(node.getId() == intersectionID) {
 				this.warehouse = node;

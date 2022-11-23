@@ -3,6 +3,8 @@ package test;
 import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.xml.sax.SAXException;
 
@@ -10,9 +12,10 @@ import model.Plan;
 import model.Segment;
 import xml.ExceptionXML;
 import xml.XMLdeserializer;
+import xml.XMLserializer;
 
 public class TestLoadMap {
-	public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException, ExceptionXML {
+	public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException, ExceptionXML, TransformerFactoryConfigurationError, TransformerException {
 		Plan plan = new Plan();
 		XMLdeserializer.load(plan);
 		System.out.println(plan);
@@ -20,9 +23,6 @@ public class TestLoadMap {
 			System.out.println(s);
 		}
 		System.out.println("Number of intersections : " + plan.getNodes().size());
-		System.out.println("latitude min" + plan.getLatitudeMin());
-		System.out.println("latitude max" + plan.getLatitudeMax());
-		System.out.println("longitude min" + plan.getLongitudeMin());
-		System.out.println("longitude max" + plan.getLongitudeMax());
+		XMLserializer.getInstance().save(plan);
 	}
 }
