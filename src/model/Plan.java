@@ -11,7 +11,7 @@ public class Plan {
 		this.warehouse = null;
 	}
 	
-	public void addWarehouse(float intersectionID) {
+	public void addWarehouse(Long intersectionID) {
 		for(Intersection node : this.nodes) {
 			if(node.getId() == intersectionID) {
 				this.warehouse = node;
