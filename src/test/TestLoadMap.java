@@ -20,5 +20,9 @@ public class TestLoadMap {
 			System.out.println(s);
 		}
 		System.out.println("Number of intersections : " + plan.getNodes().size());
+		System.out.println("latitude min" + plan.getLatitudeMin());
+		System.out.println("latitude max" + plan.getLatitudeMax());
+		System.out.println("longitude min" + plan.getLongitudeMin());
+		System.out.println("longitude max" + plan.getLongitudeMax());
 	}
 }

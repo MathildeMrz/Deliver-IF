@@ -1,3 +1,4 @@
+package view;
 import java.util.ArrayList;
 
 import javafx.application.Application;
@@ -5,8 +6,10 @@ import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
+import observer.Observable;
+import observer.Observer;
 
-public class mapView extends Application{
+public class mapView extends Application implements Observer{
 
 	public static void main(String[] args) {
 		Application.launch(args);
@@ -41,9 +44,14 @@ public class mapView extends Application{
         hbox.setMinHeight(900);
                 
         Scene scene = new Scene(hbox, 300, 120);   
-        stage.setScene(scene);
-        
+        stage.setScene(scene);        
         stage.show();
+		
+	}
+
+	@Override
+	public void update(Observable observed, Object arg) {
+		// TODO Auto-generated method stub
 		
 	}
 

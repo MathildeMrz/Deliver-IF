@@ -1,19 +1,13 @@
-import javafx.scene.paint.Color;
-
-import javafx.scene.shape.Line;
+package view;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.geom.Rectangle2D;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-
-import model.Courier;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
@@ -21,18 +15,29 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.stage.Stage;
+import model.Courier;
+import model.Intersection;
+import model.Plan;
+import model.Segment;
+import observer.Observable;
+import observer.Observer;
+import xml.XMLdeserializer;
 
-public class App extends Application {
-	
+public class newRequestView extends Application implements Observer  {	
     
 	public static void main(String[] args) {
 		Application.launch(args);
 	}
-
+		
 	@Override
 	public void start(Stage stage) throws Exception {
+		Plan plan = new Plan();
+		XMLdeserializer.load(plan);
 		
 		ListView<Courier> listView = new ListView<Courier>();
 		listView = initCouriers();
@@ -58,29 +63,9 @@ public class App extends Application {
         createNewRequest.getChildren().add(date);
         createNewRequest.getChildren().add(new Label("Localisation:"));
         
-        ArrayList<Line> lines = new ArrayList<Line>();
-        Line line1 = new Line(20, 37, 40, 56);
-        Line line2 = new Line(78, 55, 34, 90);
-        Line line3 = new Line(90, 72, 49, 93);
-        Line line4 = new Line(12, 80, 12, 16);  
-
-        lines.add(line1);
-        lines.add(line2);
-        lines.add(line3);
-        lines.add(line4);
+        createNewRequest.getChildren().add(displayMap(width, height, plan, stage));
                 
-        HBox mapBox = new HBox();
-        mapBox.setMinWidth(width/4);
-        mapBox.setMinHeight(height/3);
-        mapBox.setStyle("-fx-padding: 10;" + "-fx-border-style: solid inside;"
-                + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
-                + "-fx-border-radius: 5;" + "-fx-border-color: blue;");
-        
-        for (int counter = 0; counter < lines.size(); counter++) { 		      
-        	mapBox.getChildren().add(lines.get(counter));
-        }        
-        
-        createNewRequest.getChildren().add(mapBox);                                    
+        //createNewRequest.getChildren().add(map);                                    
         createNewRequest.getChildren().add(new Label("Time-window"));
         
         ComboBox<String> timeWindow = new ComboBox();
@@ -93,8 +78,7 @@ public class App extends Application {
                 
         HBox hbox = new HBox();  
         hbox.setMinWidth(width/2);
-        hbox.setMinHeight(height/2);
-  
+        hbox.setMinHeight(height/2);  
         
         //hbox contains two elements
         hbox.getChildren().add(couriers);
@@ -153,6 +137,49 @@ public class App extends Application {
 		
 	}
 	
+	public Pane displayMap(int width, int height, Plan plan, Stage stage)
+	{
+		Pane map = new Pane();
+        map.setMinWidth(width/4);
+        map.setMinHeight(height/4);     
+   
+        map.setStyle("-fx-border-style: solid inside;"
+                + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
+                + "-fx-border-radius: 5;" + "-fx-border-color: blue;");
+    
+        float widthSegment = plan.getLongitudeMax() - plan.getLongitudeMin();
+        float heightSegment = plan.getLatitudeMax() - plan.getLatitudeMin();
+        
+        //Add warehouse
+        float latWareHouse = plan.getWarehouse().getLatitude();
+        float longWareHouse = plan.getWarehouse().getLongitude();
+        float circleCenterX = ((longWareHouse - plan.getLongitudeMin()) / widthSegment) * width/4;
+        float circleCenterY = ((latWareHouse - plan.getLatitudeMin()) / heightSegment) * height/4;       
+        Circle wareHouse = new Circle();
+        wareHouse.setCenterX(circleCenterX);
+        wareHouse.setCenterY(circleCenterY);
+        wareHouse.setRadius(10.0f);
+        map.getChildren().add(wareHouse);
+        
+        for (int counterIntersection = 0; counterIntersection < plan.getNodes().size(); counterIntersection++) { 
+        	Intersection i = plan.getNodes().get(counterIntersection);
+        	for (int counterSegment = 0; counterSegment < i.getOutSections().size(); counterSegment++) { 
+        		Segment s = i.getOutSections().get(counterSegment);
+        		
+        		float x1 = ((i.getLongitude() - plan.getLongitudeMin()) / widthSegment) * width/4;
+        		float y1 = ((i.getLatitude() - plan.getLatitudeMin()) / heightSegment) * height/4;
+        		float x2 = ((s.getDestination().getLongitude() - plan.getLongitudeMin()) / widthSegment) * width/4;
+        		float y2 = ((s.getDestination().getLatitude() - plan.getLatitudeMin()) / heightSegment) * height/4;
+        		
+        		Line newLine = new Line(x1 +20 , y1 +20 , x2 + 20, y2+20); 
+        		map.getChildren().add(newLine);
+        		
+            }
+        }  
+        return map;
+	}
+
+	
 	public ListView<Courier> initCouriers()
 	{
 		 // File path is passed as parameter
@@ -194,6 +221,11 @@ public class App extends Application {
         }
         return listView;
 	}
+
+	@Override
+	public void update(Observable observed, Object arg) {
+		// TODO Auto-generated method stub
 		
+	}
 
 }

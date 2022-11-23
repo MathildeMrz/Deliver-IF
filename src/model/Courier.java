@@ -2,7 +2,9 @@ package model;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Courier {
+import observer.Observable;
+
+public class Courier extends Observable {
 	private static final AtomicInteger ID_FACTORY = new AtomicInteger();
 	private int id;
 	private String name;

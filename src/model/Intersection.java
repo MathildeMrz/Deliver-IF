@@ -2,7 +2,9 @@ package model;
 
 import java.util.ArrayList;
 
-public class Intersection {
+import observer.Observable;
+
+public class Intersection extends Observable {
 	private long id;
 	private float latitude;
 	private float longitude;

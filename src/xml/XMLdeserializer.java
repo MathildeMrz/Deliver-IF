@@ -43,7 +43,7 @@ public class XMLdeserializer {
     private static void buildFromDOMXML(Element noeudDOMRacine, Plan plan) throws ExceptionXML, NumberFormatException{
        	NodeList intersectionList = noeudDOMRacine.getElementsByTagName("intersection");
        	for (int i = 0; i < intersectionList.getLength(); i++) {
-        	plan.addNode(createIntersection((Element) intersectionList.item(i)));
+        	plan.addNode(createIntersection((Element) intersectionList.item(i), plan));
        	}
        	NodeList warehouse = noeudDOMRacine.getElementsByTagName("warehouse");
        	for (int i = 0; i < warehouse.getLength(); i++) {
@@ -55,10 +55,26 @@ public class XMLdeserializer {
        	}
     }
     
-    private static Intersection createIntersection(Element elt) throws ExceptionXML{
+    private static Intersection createIntersection(Element elt, Plan plan) throws ExceptionXML{
     	long id = Long.parseLong(elt.getAttribute("id"));
    		float latitude = Float.parseFloat(elt.getAttribute("latitude"));
    		float longitude = Float.parseFloat(elt.getAttribute("longitude"));
+   		if (plan.getLatitudeMin() > latitude)
+   		{
+   			plan.setLatitudeMin(latitude);
+   		}
+   		if (plan.getLatitudeMax() < latitude)
+   		{
+   			plan.setLatitudeMax(latitude);
+   		}
+   		if (plan.getLongitudeMin() > longitude)
+   		{
+   			plan.setLongitudeMin(longitude);
+   		}
+   		if (plan.getLongitudeMax() < longitude)
+   		{
+   			plan.setLongitudeMax(longitude);
+   		}
    		Intersection i = new Intersection(id, latitude, longitude);
    		return i;
     }

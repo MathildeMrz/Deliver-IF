@@ -1,8 +1,8 @@
 package model;
 
-import model.Intersection;
+import observer.Observable;
 
-public class Segment {
+public class Segment extends Observable {
 	private Intersection destination;
 	private float length;
 	private String name;
