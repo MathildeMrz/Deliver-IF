@@ -3,6 +3,7 @@ package model;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import observer.Observable;
 
@@ -26,19 +27,15 @@ public class Plan extends Observable {
 	}
 	
 	public void addWarehouse(Long intersectionID) {
-		for(Intersection node : this.nodes) {
-			if(node.getId() == intersectionID) {
-				this.warehouse = node;
-				break;
-			}
-		}
+		this.warehouse = this.nodes.get(intersectionID);
 	}
 	
 	public void addNode(Intersection node) {
-		this.nodes.add(node);
+		//this.nodes.add(node);
+		nodes.put(node.getId(), node);
 	}
 
-	public ArrayList<Intersection> getNodes() {
+	public HashMap<Long, Intersection> getNodes() {
 		return nodes;
 	}
 	

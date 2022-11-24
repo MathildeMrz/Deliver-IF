@@ -160,8 +160,7 @@ public class newRequestView extends Application implements Observer {
         		float y2 = ((s.getDestination().getLatitude() - plan.getLatitudeMin()) / heightSegment) * height/4;
         		
         		Line newLine = new Line(x1 +20 , y1 +20 , x2 + 20, y2+20); 
-        		map.getChildren().add(newLine);
-        		
+        		map.getChildren().add(newLine);	
             }
         } 
         

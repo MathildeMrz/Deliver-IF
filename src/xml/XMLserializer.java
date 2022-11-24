@@ -56,7 +56,7 @@ public class XMLserializer{// Singleton
 		eltRoot = document.createElement("warehouse");
 		createAttribute(eltRoot,"address",Long.toString(plan.getWarehouse().getId()));
 		racine.appendChild(eltRoot);
-		for(Intersection i : plan.getNodes()) {
+		for(Intersection i : plan.getNodes().values()) {
 			eltRoot = document.createElement("intersection");
 			createAttribute(eltRoot, "id", Long.toString(i.getId()));
 			createAttribute(eltRoot, "latitude", Float.toString(i.getLatitude()));

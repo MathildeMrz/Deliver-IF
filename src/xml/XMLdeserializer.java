@@ -84,20 +84,8 @@ public class XMLdeserializer {
    		long dest = Long.parseLong(elt.getAttribute("destination"));
    		float length = Float.parseFloat(elt.getAttribute("length"));
    		String name = elt.getAttribute("name");
-   		Intersection originInter = null;
-   		Intersection destInter = null;
-		for(Intersection node : plan.getNodes()) {
-			if(node.getId() == origin) {
-				originInter = node;
-//				System.out.println("Origin found");
-			}
-			if(node.getId() == dest) {
-				destInter = node;
-			}
-			if(originInter != null && destInter != null) {
-				break;
-			}
-		}
+   		Intersection originInter = plan.getNodes().get(origin);
+   		Intersection destInter = plan.getNodes().get(dest);
 		if(originInter == null) {
 			throw new ExceptionXML("Error : could not find the origin of the segment");
 		}
@@ -105,7 +93,6 @@ public class XMLdeserializer {
 			throw new ExceptionXML("Error : could not find the destination of the segment [destination=" + dest +" length="+length+" name="+name+" origin="+origin+"]");
 		}
    		Segment s = new Segment(destInter, length, name);
-//   		System.out.println(s);
    		originInter.addOutSection(s);
     }
  

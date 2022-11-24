@@ -19,10 +19,7 @@ public class TestLoadMap {
 		Plan plan = new Plan();
 		XMLdeserializer.load(plan);
 		System.out.println(plan);
-		for(Segment s : plan.getNodes().get(10).getOutSections()) {
-			System.out.println(s);
-		}
+		System.out.println("Warehouse = " + plan.getWarehouse());
 		System.out.println("Number of intersections : " + plan.getNodes().size());
-		XMLserializer.getInstance().save(plan);
 	}
 }
