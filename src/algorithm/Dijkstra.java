@@ -45,7 +45,7 @@ public class Dijkstra {
 		intersectionsGrisesInversees = new HashMap<Double, List<Long>>();
 		
         //récupérer toutes les intersections du plan pour en faire 'un graphe'
-		Collection<Intersection> c = lePlan.getListeIntersection() .values();
+		Collection<Intersection> c = lePlan.getNodes() .values();
 		// On ajoute les intersections dans les differentes Hashmap
         // On initialise le cout à max comme on veut minimiser le cout
 		for (Intersection intersection : c) {
@@ -75,7 +75,7 @@ public class Dijkstra {
             /*on prend le noeud de cout minimal */
 			Long idMin = intersectionsGrisesInversees.get(min).get(0); //on prend son id
 			
-			Intersection lIntersection = lePlan.getListeIntersection().get(idMin);
+			Intersection lIntersection = lePlan.getNodes().get(idMin);
 
 			// On visite tous les successeurs du point courant
 			for (Segment t : lIntersection.getOutSections()) {
@@ -181,9 +181,9 @@ public class Dijkstra {
 
 	public List<Segment> getItinerary(Long idDestination) {
 
-		if (lePlan.getListeIntersection().containsKey(idDestination)) {
-			Intersection intersectionDestination = lePlan.getListeIntersection().get(idDestination);
-			Intersection intersectionCurrent = lePlan.getListeIntersection().get(idDestination);
+		if (lePlan.getNodes().containsKey(idDestination)) {
+			Intersection intersectionDestination = lePlan.getNodes().get(idDestination);
+			Intersection intersectionCurrent = lePlan.getNodes().get(idDestination);
 			List<Segment> cheminInverse = new ArrayList<Segment>();
 
 			while (pi.get(intersectionCurrent.getId()) != null) {
