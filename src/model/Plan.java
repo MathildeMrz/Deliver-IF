@@ -1,11 +1,14 @@
 package model;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 
 import observer.Observable;
 
 public class Plan extends Observable {
 	private ArrayList<Intersection> nodes;
+	private ArrayList<Intersection> destinations;
 	private Intersection warehouse;
 	private float latitudeMin;
 	private float latitudeMax;
@@ -14,6 +17,7 @@ public class Plan extends Observable {
 	
 	public Plan() {
 		this.nodes  = new ArrayList<Intersection>();
+		this.destinations  = new ArrayList<Intersection>();
 		this.warehouse = null;
 		latitudeMin = Float.MAX_VALUE;
 		latitudeMax = 0;
@@ -36,6 +40,10 @@ public class Plan extends Observable {
 
 	public ArrayList<Intersection> getNodes() {
 		return nodes;
+	}
+	
+	public ArrayList<Intersection> getDestinations() {
+		return destinations;
 	}
 
 	public Intersection getWarehouse() {
@@ -80,4 +88,25 @@ public class Plan extends Observable {
 	}
 	
 	
+	
+	public void addPosition(float y, float x)
+	{
+		//Translate pixel coordinates to street coordinates
+		 float widthSegment = this.getLongitudeMax() - this.getLongitudeMin();
+	     float heightSegment = this.getLatitudeMax() - this.getLatitudeMin();
+	     GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+	     float width = gd.getDisplayMode().getWidth();
+	     float height = gd.getDisplayMode().getHeight();
+			
+	     float xStreet = (x * widthSegment)/width + this.getLongitudeMin();
+	     float yStreet = (x * heightSegment)/height + this.getLatitudeMin();
+
+		//Id automatique ??
+		Intersection newPosition = new Intersection(1212, yStreet, xStreet);
+		destinations.add(newPosition);
+		System.out.println("Let's notify the observers");
+		System.out.println("IMPORTAAAANT X 	: "+xStreet);
+		System.out.println("IMPORTAAAANT Y 	: "+yStreet);
+		notifyObservers();
+	}	
 }

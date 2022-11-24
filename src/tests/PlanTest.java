@@ -1,4 +1,4 @@
-package test;
+package tests;
 
 import model.Intersection;
 import model.Segment;
