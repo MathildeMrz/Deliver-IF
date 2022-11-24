@@ -179,7 +179,7 @@ public class Dijkstra {
 		}
 	}
 
-	public List<Segment> getItinerary(Long idDestination) {
+	/*public List<Segment> getItinerary(Long idDestination) {
 
 		if (lePlan.getNodes().containsKey(idDestination)) {
 			Intersection intersectionDestination = lePlan.getNodes().get(idDestination);
@@ -217,8 +217,9 @@ public class Dijkstra {
 			}
 			
 		}
-		return chemin;
-	}
+		//return chemin;
+		return cheminInverse;
+	}*/
 
 	public HashMap<Long, Intersection> getPi() {
 		return pi;

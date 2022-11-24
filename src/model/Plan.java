@@ -8,7 +8,8 @@ import java.util.HashMap;
 import observer.Observable;
 
 public class Plan extends Observable {
-	private ArrayList<Intersection> nodes;
+	private HashMap<Long, Intersection> nodes;
+	//private ArrayList<Intersection> nodes;
 	private ArrayList<Intersection> destinations;
 	private Intersection warehouse;
 	private float latitudeMin;
@@ -17,7 +18,7 @@ public class Plan extends Observable {
 	private float longitudeMax;
 	
 	public Plan() {
-		this.nodes  = new ArrayList<Intersection>();
+		this.nodes  = new HashMap<Long,Intersection>();
 		this.destinations  = new ArrayList<Intersection>();
 		this.warehouse = null;
 		latitudeMin = Float.MAX_VALUE;

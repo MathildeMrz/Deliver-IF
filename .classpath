@@ -17,15 +17,15 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.base.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.controls.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.fxml.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.graphics.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.media.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.swing.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.web.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx-swt.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/Junit/hamcrest-core-1.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/Junit/junit-4.13.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/javafx-sdk-19/lib/javafx.base.jar"/>
+	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/javafx-sdk-19/lib/javafx.controls.jar"/>
+	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/javafx-sdk-19/lib/javafx.fxml.jar"/>
+	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/javafx-sdk-19/lib/javafx.graphics.jar"/>
+	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/javafx-sdk-19/lib/javafx.media.jar"/>
+	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/javafx-sdk-19/lib/javafx.swing.jar"/>
+	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/javafx-sdk-19/lib/javafx.web.jar"/>
+	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/javafx-sdk-19/lib/javafx-swt.jar"/>
+	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/junit-jars/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/junit-jars/junit-4.13.2.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
