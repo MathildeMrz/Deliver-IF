@@ -1,11 +1,13 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import observer.Observable;
 
 public class Plan extends Observable {
-	private ArrayList<Intersection> nodes;
+	//private ArrayList<Intersection> nodes;
+	private HashMap<Long, Intersection> nodes;
 	private Intersection warehouse;
 	private float latitudeMin;
 	private float latitudeMax;
@@ -13,7 +15,8 @@ public class Plan extends Observable {
 	private float longitudeMax;
 	
 	public Plan() {
-		this.nodes  = new ArrayList<Intersection>();
+		//this.nodes = new ArrayList<Intersection>();
+		this.nodes =  new HashMap<Long, Intersection>();
 		this.warehouse = null;
 		latitudeMin = Float.MAX_VALUE;
 		latitudeMax = 0;
@@ -22,19 +25,15 @@ public class Plan extends Observable {
 	}
 	
 	public void addWarehouse(Long intersectionID) {
-		for(Intersection node : this.nodes) {
-			if(node.getId() == intersectionID) {
-				this.warehouse = node;
-				break;
-			}
-		}
+		this.warehouse = this.nodes.get(intersectionID);
 	}
 	
 	public void addNode(Intersection node) {
-		this.nodes.add(node);
+		//this.nodes.add(node);
+		nodes.put(node.getId(), node);
 	}
 
-	public ArrayList<Intersection> getNodes() {
+	public HashMap<Long, Intersection> getNodes() {
 		return nodes;
 	}
 

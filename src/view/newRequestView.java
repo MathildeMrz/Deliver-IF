@@ -161,19 +161,15 @@ public class newRequestView extends Application implements Observer  {
         wareHouse.setRadius(10.0f);
         map.getChildren().add(wareHouse);
         
-        for (int counterIntersection = 0; counterIntersection < plan.getNodes().size(); counterIntersection++) { 
-        	Intersection i = plan.getNodes().get(counterIntersection);
-        	for (int counterSegment = 0; counterSegment < i.getOutSections().size(); counterSegment++) { 
-        		Segment s = i.getOutSections().get(counterSegment);
-        		
+        for (Intersection i : plan.getNodes().values()) { 
+        	for (Segment s : i.getOutSections()) {       		
         		float x1 = ((i.getLongitude() - plan.getLongitudeMin()) / widthSegment) * width/4;
         		float y1 = ((i.getLatitude() - plan.getLatitudeMin()) / heightSegment) * height/4;
         		float x2 = ((s.getDestination().getLongitude() - plan.getLongitudeMin()) / widthSegment) * width/4;
         		float y2 = ((s.getDestination().getLatitude() - plan.getLatitudeMin()) / heightSegment) * height/4;
         		
         		Line newLine = new Line(x1 +20 , y1 +20 , x2 + 20, y2+20); 
-        		map.getChildren().add(newLine);
-        		
+        		map.getChildren().add(newLine);	
             }
         }  
         return map;
