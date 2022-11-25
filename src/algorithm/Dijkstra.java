@@ -3,6 +3,7 @@ package algorithm;
 import model.Intersection;
 import model.Plan;
 import model.Segment;
+import model.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -179,7 +180,7 @@ public class Dijkstra {
 		}
 	}
 
-	/*public List<Segment> getItinerary(Long idDestination) {
+	/*public Path getItinerary(Long idDestination) {
 
 		if (lePlan.getNodes().containsKey(idDestination)) {
 			Intersection intersectionDestination = lePlan.getNodes().get(idDestination);
@@ -218,7 +219,9 @@ public class Dijkstra {
 			
 		}
 		//return chemin;
-		return cheminInverse;
+		//return cheminInverse;
+		Path calculatedPath= new Path (chemin, ptDepart, intersectionDestination);
+		return Path;
 	}*/
 
 	public HashMap<Long, Intersection> getPi() {
