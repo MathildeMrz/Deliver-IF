@@ -9,7 +9,6 @@ import observer.Observable;
 
 public class Plan extends Observable {
 	private HashMap<Long, Intersection> nodes;
-	//private ArrayList<Intersection> nodes;
 	private ArrayList<Intersection> destinations;
 	private Intersection warehouse;
 	private float latitudeMin;

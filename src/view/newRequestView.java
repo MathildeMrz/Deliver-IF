@@ -149,7 +149,7 @@ public class newRequestView extends Application implements Observer {
 		
         for (int counterIntersection = 0; counterIntersection < plan.getNodes().size(); counterIntersection++) 
         { 
-        	Intersection i = plan.getNodes().get(counterIntersection);
+        	Intersection i = plan.getNodes().get(plan.getNodes().keySet().toArray()[counterIntersection]);
         	for (int counterSegment = 0; counterSegment < i.getOutSections().size(); counterSegment++) 
         	{ 
         		Segment s = i.getOutSections().get(counterSegment);
