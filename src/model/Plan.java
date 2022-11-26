@@ -95,15 +95,28 @@ public class Plan extends Observable {
 	     float width = gd.getDisplayMode().getWidth();
 	     float height = gd.getDisplayMode().getHeight();
 			
-	     float xStreet = (x * widthSegment)/width + this.getLongitudeMin();
-	     float yStreet = (x * heightSegment)/height + this.getLatitudeMin();
+	     float xStreet = (4*x * widthSegment)/width + this.getLongitudeMin();
+	     float yStreet = (4*y * heightSegment)/height + this.getLatitudeMin();
+	     
+	     float closerX = xStreet;
+	     float closerY = yStreet;
+	     float minimumDistance = Float.MAX_VALUE;
+	     //select the intersection closer
+	     for(Intersection i : this.getNodes().values())
+	     {
+			 float dist = (float) Math.sqrt((i.getLatitude() - yStreet) * (i.getLatitude() - yStreet) + (i.getLongitude() - xStreet) * (i.getLongitude() - xStreet));
+	    	 
+	    	 if(dist < minimumDistance)
+	    	 {
+	    		 minimumDistance = dist;
+	    		 closerX = i.getLongitude();
+	    		 closerY = i.getLatitude();    		 
+	    	 }
+	     }
 
 		//Id automatique ??
-		Intersection newPosition = new Intersection(1212, yStreet, xStreet);
+		Intersection newPosition = new Intersection(1212, closerY, closerX);
 		destinations.add(newPosition);
-		System.out.println("Let's notify the observers");
-		System.out.println("IMPORTAAAANT X 	: "+xStreet);
-		System.out.println("IMPORTAAAANT Y 	: "+yStreet);
 		notifyObservers();
 	}	
 }

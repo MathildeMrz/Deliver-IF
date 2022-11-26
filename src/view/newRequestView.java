@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import controller.Controller;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Scene;
@@ -68,7 +69,7 @@ public class newRequestView extends Application implements Observer {
 		stage.setWidth(width / 2);
 		stage.setHeight(height / 3);
 		stage.centerOnScreen();
-		stage.setFullScreen(true);
+		//stage.setFullScreen(true);
 		createMap(plan);
 
 		this.plan.addObserver(this);
@@ -90,60 +91,32 @@ public class newRequestView extends Application implements Observer {
         float heightSegment = plan.getLatitudeMax() - plan.getLatitudeMin();
 
         //Add warehouse
-    	System.out.println("DEBUT2------------------------------------------------------------");
         float latWareHouse = plan.getWarehouse().getLatitude();
         float longWareHouse = plan.getWarehouse().getLongitude();
-        System.out.println("(plan.getLongitudeMin()) : "+(plan.getLongitudeMin()));
-    	System.out.println("(plan.getLatitudeMin()) : "+(plan.getLatitudeMin()));
-    	System.out.println("longDestination : "+longWareHouse);
-    	System.out.println("latDestination : "+latWareHouse);
-    	System.out.println("(longDestination - plan.getLongitudeMin()) : "+(longWareHouse - plan.getLongitudeMin()));
-    	System.out.println("(latDestination - plan.getLatitudeMin()) : "+(latWareHouse - plan.getLatitudeMin()));
-    	System.out.println("(longDestination - plan.getLongitudeMin()) / widthSegment) : "+((longWareHouse - plan.getLongitudeMin()) / widthSegment));
-    	System.out.println("(latDestination - plan.latDestination()) / heightSegment) : "+((latWareHouse - plan.getLatitudeMin()) / heightSegment));
-    	System.out.println("(longDestination - plan.getLongitudeMin())/ widthSegment)* width/4 : "+((longWareHouse - plan.getLongitudeMin()) / widthSegment)* width/4);
-    	System.out.println("(latDestination - plan.latDestination()) / heightSegment)* height/4 : "+((latWareHouse - plan.getLatitudeMin()) / heightSegment)* height/4);
-        
-        
+   
         float circleCenterX = ((longWareHouse - plan.getLongitudeMin()) / widthSegment) * width/4;
         float circleCenterY = ((latWareHouse - plan.getLatitudeMin()) / heightSegment) * height/4;       
-        System.out.println("latWareHouse Y: "+latWareHouse);
-    	System.out.println("longWareHouse X: "+longWareHouse);
-    	System.out.println("circleCenterX Y: "+circleCenterX);
-    	System.out.println("circleCenterY X: "+circleCenterY);
+ 
         Circle wareHouse = new Circle();
         wareHouse.setCenterX(circleCenterX);
         wareHouse.setCenterY(circleCenterY);
         wareHouse.setRadius(10.0f);
         map.getChildren().add(wareHouse);
         
-        //display the new destinations
-        for (int counterDestinations = 0; counterDestinations < plan.getDestinations().size(); counterDestinations++) 
-		{
-        	System.out.println("DEBUT------------------------------------------------------------");
-        	float latDestination = plan.getDestinations().get(counterDestinations).getLatitude();
-        	float longDestination = plan.getDestinations().get(counterDestinations).getLongitude();
-        	System.out.println("(plan.getLongitudeMin()) : "+(plan.getLongitudeMin()));
-        	System.out.println("(plan.getLatitudeMin()) : "+(plan.getLatitudeMin()));
-        	System.out.println("longDestination : "+longDestination);
-        	System.out.println("latDestination : "+latDestination);
-        	System.out.println("(longDestination - plan.getLongitudeMin()) : "+(longDestination - plan.getLongitudeMin()));
-        	System.out.println("(latDestination - plan.getLatitudeMin()) : "+(latDestination - plan.getLatitudeMin()));
-        	System.out.println("(longDestination - plan.getLongitudeMin()) / widthSegment) : "+((longDestination - plan.getLongitudeMin()) / widthSegment));
-        	System.out.println("(latDestination - plan.latDestination()) / heightSegment) : "+((latDestination - plan.getLatitudeMin()) / heightSegment));
-        	System.out.println("(longDestination - plan.getLongitudeMin()) / widthSegment)* width/4 : "+((longDestination - plan.getLongitudeMin()) / widthSegment)* width/4);
-        	System.out.println("(latDestination - plan.latDestination()) / heightSegment)* height/4 : "+((latDestination - plan.getLatitudeMin()) / heightSegment)* height/4);
+        //display the deliveries destinations
+        for(Intersection d : plan.getDestinations())
+	    {     
+        	float latDestination = d.getLatitude();
+        	float longDestination = d.getLongitude();
         	
         	float circleCenterDestinationX = ((longDestination - plan.getLongitudeMin()) / widthSegment) * width/4;
         	float circleCenterDestinationY = ((latDestination - plan.getLatitudeMin()) / heightSegment) * height/4;
 	        
-        	System.out.println("circleCenterX : "+circleCenterDestinationX);
-        	System.out.println("circleCenterY : "+circleCenterDestinationY);
 	        Circle destination = new Circle();
 	        destination.setFill(Color.YELLOW);
 	        destination.setCenterX(circleCenterDestinationX);
 	        destination.setCenterY(circleCenterDestinationY);
-	        destination.setRadius(10.0f);
+	        destination.setRadius(5.0f);
 	        map.getChildren().add(destination);
 		}
 		
@@ -159,7 +132,7 @@ public class newRequestView extends Application implements Observer {
         		float x2 = ((s.getDestination().getLongitude() - plan.getLongitudeMin()) / widthSegment) * width/4;
         		float y2 = ((s.getDestination().getLatitude() - plan.getLatitudeMin()) / heightSegment) * height/4;
         		
-        		Line newLine = new Line(x1 +20 , y1 +20 , x2 + 20, y2+20); 
+        		Line newLine = new Line(x1 , y1 , x2 , y2); 
         		map.getChildren().add(newLine);	
             }
         } 
@@ -168,12 +141,8 @@ public class newRequestView extends Application implements Observer {
 	}
 
 	public void display(Pane map) {
-		ListView<Courier> listView = new ListView<Courier>();
-		for (int counter = 0; counter < couriers.getItems().size(); counter++) {
-			listView.getItems().add(couriers.getItems().get(counter));
-		}
-
-		VBox vobxCouriers = new VBox(listView);
+		
+		VBox vobxCouriers = new VBox(couriers);
 		vobxCouriers.setMinWidth(width / 8);
 		DatePicker date = new DatePicker();
 		date.setValue(LocalDate.now());
@@ -185,7 +154,6 @@ public class newRequestView extends Application implements Observer {
 
 		vBoxcreateNewRequest.getChildren().add(map);
 
-		// createNewRequest.getChildren().add(map);
 		vBoxcreateNewRequest.getChildren().add(new Label("Time-window"));
 
 		ComboBox<String> timeWindow = new ComboBox();
@@ -198,7 +166,7 @@ public class newRequestView extends Application implements Observer {
 
 		HBox hbox = new HBox();
 		hbox.setMinWidth(width / 2);
-		hbox.setMinHeight(height / 2);
+		hbox.setMinHeight(height / 3);
 
 		// hbox contains two elements
 		hbox.getChildren().add(vobxCouriers);
@@ -206,13 +174,12 @@ public class newRequestView extends Application implements Observer {
 		Scene scene = new Scene(hbox, 200, 500);
 		stage.setScene(scene);
 		stage.show();
-
+		
+	
 		map.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("onclick X : " + event.getSceneX());
-				System.out.println("onClick Y : " + event.getSceneY());
-				controller.newPositionToAdd((float)event.getSceneY(), (float)event.getSceneX());
+				controller.newPositionToAdd((float)event.getY(), (float)event.getX());
 			}
 		});
 	}
