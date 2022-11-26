@@ -10,6 +10,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+
+import algorithm.RunTSP;
 import controller.Controller;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -17,6 +20,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -155,7 +159,9 @@ public class newRequestView extends Application implements Observer {
 		vBoxcreateNewRequest.getChildren().add(map);
 
 		vBoxcreateNewRequest.getChildren().add(new Label("Time-window"));
-
+		Button button = new Button("Click Me");
+		vBoxcreateNewRequest.getChildren().add(button);
+		
 		ComboBox<String> timeWindow = new ComboBox();
 		timeWindow.getItems().add("9h-10h");
 		timeWindow.getItems().add("10h-11h");
@@ -180,6 +186,31 @@ public class newRequestView extends Application implements Observer {
 			@Override
 			public void handle(MouseEvent event) {
 				controller.newPositionToAdd((float)event.getY(), (float)event.getX());
+			}
+		});
+		
+		button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				System.out.println("Bouton cliqué");
+				Intersection ptDepart = plan.getWarehouse();
+				List<Intersection> sommets = new ArrayList<Intersection>();
+				Long id1 = Long.parseLong("2292223595");
+				Intersection intersection1 = plan.getNodes().get(id1);
+				sommets.add(ptDepart);
+				sommets.add(intersection1);
+				Long id2 = Long.parseLong("26317214");
+				Intersection intersection2 = plan.getNodes().get(id2);
+				sommets.add(intersection2);
+				
+				System.out.println("Debut TSP");
+				RunTSP testTSP = new RunTSP(3, sommets, plan);
+				testTSP.start();
+				System.out.println("Fin TSP");
+
+				
+						
+			
 			}
 		});
 	}
