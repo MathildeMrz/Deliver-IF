@@ -34,7 +34,7 @@ public class CompleteGraph implements Graph {
 		        	
 		        	System.out.println("Debut de djikstra");
 		        	djikstra.run();
-		        	System.out.println("Debut de djikstra");
+		        	System.out.println("Fin de djikstra");
 		        	cost[i][j] = djikstra.getCoutIntersection(Intersection.get(j).getId());
 		        }
 		    }
