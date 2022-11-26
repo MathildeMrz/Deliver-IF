@@ -196,6 +196,7 @@ public class newRequestView extends Application implements Observer {
 				Intersection ptDepart = plan.getWarehouse();
 				List<Intersection> sommets = new ArrayList<Intersection>();
 				Long id1 = Long.parseLong("2292223595");
+							
 				Intersection intersection1 = plan.getNodes().get(id1);
 				sommets.add(ptDepart);
 				sommets.add(intersection1);
@@ -208,9 +209,6 @@ public class newRequestView extends Application implements Observer {
 				testTSP.start();
 				System.out.println("Fin TSP");
 
-				
-						
-			
 			}
 		});
 	}

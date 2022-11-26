@@ -24,7 +24,6 @@ public class RunTSP {
 	public static void start() {
 		TemplateTSP tsp = new TSP1();
 		/*for (int nbVertices = 8; nbVertices <= 16; nbVertices += 2){*/
-			System.out.println("Graphs with "+nbVertices+" vertices:");
 			Graph g = new CompleteGraph(nbVertices,Intersection,lePlan);
 			long startTime = System.currentTimeMillis();
 			tsp.searchSolution(20000, g);

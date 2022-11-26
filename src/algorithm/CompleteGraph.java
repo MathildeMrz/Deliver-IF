@@ -20,6 +20,7 @@ public class CompleteGraph implements Graph {
 	public CompleteGraph(int nbVertices, List <Intersection> intersection, Plan lePlan){
 		this.nbVertices = nbVertices;
 		this.Intersection=intersection;
+
 		//int iseed = 1;
 		cost = new double[nbVertices][nbVertices];
 		for (int i=0; i<nbVertices; i++){
@@ -30,12 +31,9 @@ public class CompleteGraph implements Graph {
 		            if (it > 0)	iseed = it;
 		            else iseed = 2147483647 + it;
 		            cost[i][j] = MIN_COST + iseed % (MAX_COST-MIN_COST+1);*/
-		        	Dijkstra djikstra= new Dijkstra(lePlan,Intersection.get(i)) ;
-		        	
-		        	System.out.println("Debut de djikstra");
+		        	Dijkstra djikstra= new Dijkstra(lePlan,this.Intersection.get(i)) ;
 		        	djikstra.run();
-		        	System.out.println("Fin de djikstra");
-		        	cost[i][j] = djikstra.getCoutIntersection(Intersection.get(j).getId());
+		        	cost[i][j] = djikstra.getCoutIntersection(this.Intersection.get(j).getId());
 		        }
 		    }
 		}
