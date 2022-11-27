@@ -15,6 +15,7 @@ import java.util.List;
 import algorithm.RunTSP;
 import controller.Controller;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -26,6 +27,9 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -39,7 +43,6 @@ import model.Plan;
 import model.Segment;
 import observer.Observable;
 import observer.Observer;
-import xml.XMLdeserializer;
 
 public class newRequestView extends Application implements Observer {
 
@@ -49,35 +52,18 @@ public class newRequestView extends Application implements Observer {
 	private int height;
 	private ListView<Courier> couriers;
 	private Stage stage;
-
-	public static void main(String[] args) {
-		Application.launch(args);
+	
+	public newRequestView()
+	{
+		
 	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.stage = stage;
-
-		// init
-		this.plan = new Plan();
-		XMLdeserializer.load(this.plan);
-		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		this.width = gd.getDisplayMode().getWidth();
-		this.height = gd.getDisplayMode().getHeight();
-		this.couriers = initCouriers();
-
-		this.controller = new Controller(stage, plan, couriers);
-
-		// Resize the window
-		stage.setResizable(true);
-		stage.setWidth(width / 2);
-		stage.setHeight(height / 3);
-		stage.centerOnScreen();
-		//stage.setFullScreen(true);
-		createMap(plan);
-
 		this.plan.addObserver(this);
-
+		createMap(this.plan);
+		this.stage.show();
 	}
 
 	public void createMap(Plan plan)
@@ -117,7 +103,7 @@ public class newRequestView extends Application implements Observer {
         	float circleCenterDestinationY = ((latDestination - plan.getLatitudeMin()) / heightSegment) * height/4;
 	        
 	        Circle destination = new Circle();
-	        destination.setFill(Color.YELLOW);
+	        destination.setFill(Color.BLUE);
 	        destination.setCenterX(circleCenterDestinationX);
 	        destination.setCenterY(circleCenterDestinationY);
 	        destination.setRadius(5.0f);
@@ -146,42 +132,91 @@ public class newRequestView extends Application implements Observer {
 
 	public void display(Pane map) {
 		
-		VBox vobxCouriers = new VBox(couriers);
-		vobxCouriers.setMinWidth(width / 8);
-		DatePicker date = new DatePicker();
-		date.setValue(LocalDate.now());
-
+		HBox hbox = new HBox();
+		hbox.setMinWidth(width / 2);
+		hbox.setMinHeight(height / 3);
+		hbox.setStyle("-fx-border-color: rgb(49, 89, 47);\r\n"
+				+ "    -fx-border-radius: 5;\r\n");
+		
+		
+		
+		/*hboxNavbar*/
+		HBox hboxNavbar = new HBox();
+		Button buttonChangePage = new Button("Map view");
+		buttonChangePage.setStyle("-fx-text-fill: #000000;\r\n"
+				+ "    -fx-border-color: #e6bf4b;\r\n"
+				+ "    -fx-border-radius: 3px;\r\n"
+				+ "	   -fx-background-color: #ffffff; ");
+		
+		hboxNavbar.getChildren().add(buttonChangePage);
+		Button buttonTSP = new Button("TSP");
+		buttonTSP.setStyle("-fx-text-fill: #000000;\r\n"
+				+ "    -fx-border-color: #e6bf4b;\r\n"
+				+ "    -fx-border-radius: 3px;\r\n"
+				+ "	   -fx-background-color: #ffffff; ");
+		
+		hboxNavbar.getChildren().add(buttonTSP);
+		
+		/*vBoxCouriers*/
+		VBox vBoxCouriers= new VBox();
+		
+		vBoxCouriers.getChildren().add(new Label("Select a courier:"));
+		vBoxCouriers.getChildren().add(couriers);
+		vBoxCouriers.setDisable(true);		
+		
+		/*vBoxcreateNewRequest*/		
 		VBox vBoxcreateNewRequest = new VBox();
+		vBoxcreateNewRequest.setMaxWidth(Double.MAX_VALUE);
+		vBoxcreateNewRequest.setMaxHeight(Double.MAX_VALUE);
+		vBoxcreateNewRequest.setFillWidth(true);
+		BackgroundFill bf = new BackgroundFill(Color.LIGHTYELLOW, new CornerRadii(1), null);
+		vBoxcreateNewRequest.setBackground(new Background(bf));
+		DatePicker date = new DatePicker();
+		date.setStyle("-fx-text-fill: #000000;\r\n"
+				+ "    -fx-border-color: #e6bf4b;\r\n"
+				+ "    -fx-border-radius: 3px;\r\n"
+				+ "	   -fx-background-color: rgb(49, 89, 47);");
+		date.setValue(LocalDate.now());
 		vBoxcreateNewRequest.getChildren().add(new Label("Date:"));
 		vBoxcreateNewRequest.getChildren().add(date);
 		vBoxcreateNewRequest.getChildren().add(new Label("Localisation:"));
-
-		vBoxcreateNewRequest.getChildren().add(map);
-
-		vBoxcreateNewRequest.getChildren().add(new Label("Time-window"));
-		Button button = new Button("Click Me");
-		vBoxcreateNewRequest.getChildren().add(button);
+		Button buttonShowMap = new Button("Display map");
+		buttonShowMap.setStyle("-fx-text-fill: #000000;\r\n"
+				+ "    -fx-border-color: #e6bf4b;\r\n"
+				+ "    -fx-border-radius: 3px;\r\n"
+				+ "	   -fx-background-color: #ffffff; ");
 		
-		ComboBox<String> timeWindow = new ComboBox();
+		//buttonShowMap.setDisable(true);
+		vBoxcreateNewRequest.getChildren().add(buttonShowMap);
+		//vBoxcreateNewRequest.getChildren().add(map);
+		vBoxcreateNewRequest.getChildren().add(new Label("Time-window"));
+		ComboBox<String> timeWindow = new ComboBox<String>();
+		timeWindow.setStyle("-fx-text-fill: #000000;\r\n"
+				+ "    -fx-border-color: #e6bf4b;\r\n"
+				+ "    -fx-border-radius: 3px;\r\n"
+				+ "	   -fx-background-color: #ffffff; ");
 		timeWindow.getItems().add("9h-10h");
 		timeWindow.getItems().add("10h-11h");
 		timeWindow.getItems().add("11h-12h");
 		vBoxcreateNewRequest.getChildren().add(timeWindow);
-
-		vBoxcreateNewRequest.getChildren().add(new Label("Select a courier:"));
-
-		HBox hbox = new HBox();
-		hbox.setMinWidth(width / 2);
-		hbox.setMinHeight(height / 3);
-
+		Button buttonValidate = new Button("Valider");
+		buttonValidate.setStyle("-fx-text-fill: #000000;\r\n"
+				+ "    -fx-border-color: #e6bf4b;\r\n"
+				+ "    -fx-border-radius: 3px;\r\n"
+				+ "	   -fx-background-color: #ffffff; ");
+		vBoxcreateNewRequest.getChildren().add(buttonValidate);		
+				
 		// hbox contains two elements
-		hbox.getChildren().add(vobxCouriers);
+		hbox.getChildren().add(vBoxCouriers);
 		hbox.getChildren().add(vBoxcreateNewRequest);
-		Scene scene = new Scene(hbox, 200, 500);
-		stage.setScene(scene);
-		stage.show();
 		
-	
+		VBox vbox = new VBox();
+		vbox.getChildren().add(hboxNavbar);
+		vbox.getChildren().add(hbox);
+
+		Scene scene = new Scene(vbox, Double.MAX_VALUE, Double.MAX_VALUE);
+		stage.setScene(scene);		
+			
 		map.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -189,10 +224,10 @@ public class newRequestView extends Application implements Observer {
 			}
 		});
 		
-		button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		buttonTSP.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("Bouton cliqué");
+				System.out.println("TSP");
 				Intersection ptDepart = plan.getWarehouse();
 				List<Intersection> sommets = new ArrayList<Intersection>();
 				Long id1 = Long.parseLong("2292223595");
@@ -211,43 +246,92 @@ public class newRequestView extends Application implements Observer {
 
 			}
 		});
-	}
 
-	public static ListView<Courier> initCouriers() {
-
-		File file = new File("./saveCouriers.txt");
-		ListView<Courier> couriers = new ListView<Courier>();
-
-		if (file.exists()) {
-			// Creating an object of BufferedReader class
-			BufferedReader br;
-			try {
-				br = new BufferedReader(new FileReader(file));
-				// Declaring a string variable
-				String st;
-				// Condition holds true till
-				try {
-
-					while ((st = br.readLine()) != null) {
-						String[] arrSplit_2 = st.split(";");
-						couriers.getItems().add(new Courier(arrSplit_2[0], Double.parseDouble(arrSplit_2[1])));
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
+		
+		buttonShowMap.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				System.out.println("Display cliquable map");
 			}
-		} else {
-			System.out.println(file.getPath() + " does not exist");
-		}
-		return couriers;
+		});
+		
+		buttonChangePage.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				
+				Platform.runLater(new Runnable() {
+				       public void run() {             
+				           try {		
+				        	   mapView mv = new mapView();
+				        	   mv.setController(controller);
+				        	   mv.setCouriers(couriers);
+				        	   mv.setHeight(height);
+				        	   mv.setWidth(width);
+				        	   mv.setPlan(plan);
+				        	   mv.start(stage);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+				       }
+				    });
+			}
+		});
 	}
-
+	
 	@Override
 	public void update(Observable observed, Object arg) {
 		createMap(this.plan);
 	}
+
+	public Plan getPlan() {
+		return plan;
+	}
+
+	public void setPlan(Plan plan) {
+		this.plan = plan;
+	}
+
+	public Controller getController() {
+		return controller;
+	}
+
+	public void setController(Controller controller) {
+		this.controller = controller;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public ListView<Courier> getCouriers() {
+		return couriers;
+	}
+
+	public void setCouriers(ListView<Courier> couriers) {
+		this.couriers = couriers;
+	}
+
+	public Stage getStage() {
+		return stage;
+	}
+
+	public void setStage(Stage stage) {
+		this.stage = stage;
+	}
+	
+	
 
 }
