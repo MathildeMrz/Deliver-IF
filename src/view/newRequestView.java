@@ -241,7 +241,7 @@ public class newRequestView extends Application implements Observer {
 				if(requestedStartingTimeWindow != null && requestedX != 0.0f && requestedY != 0.0f)
 				{
 					//TODO : V�rifier que attributs non vides
-					requestedDelivery = new Delivery();
+					//requestedDelivery = new Delivery();
 					//System.out.println("New delivery created");
 					//controller.newDeliveryToAdd(requestedDelivery);
 				}			
@@ -264,11 +264,11 @@ public class newRequestView extends Application implements Observer {
 				sommets.add(intersection2);
 				
 				Long id3 = Long.parseLong("21604601");
-				Intersection intersection3 = plan.getNodes().get(id3);
+				Intersection intersection3 = map.getNodes().get(id3);
 				sommets.add(intersection3);
 				
 				System.out.println("Debut TSP");
-				RunTSP testTSP = new RunTSP(4, sommets, plan);
+				RunTSP testTSP = new RunTSP(4, sommets, map);
 				testTSP.start();
 				System.out.println("Fin TSP");
 
@@ -314,9 +314,6 @@ public class newRequestView extends Application implements Observer {
 		this.map = map;
 	}
 
-public void setPlan(Map plan) {
-	this.plan = plan;
-}
 
 public Controller getController() {
 	return controller;
@@ -349,10 +346,6 @@ public ListView<Courier> getCouriers() {
 public void setCouriers(ListView<Courier> couriers) {
 	this.couriers = couriers;
 }
-
-	public void setStage(Stage stage) {
-		this.stage = stage;
-	}
 	
 	public void setTour(Tour tour) {
 		this.tour = tour;
