@@ -8,7 +8,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.xml.sax.SAXException;
 
-import model.Plan;
+import model.Map;
 import model.Segment;
 import xml.ExceptionXML;
 import xml.XMLdeserializer;
@@ -16,7 +16,7 @@ import xml.XMLserializer;
 
 public class TestLoadMap {
 	public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException, ExceptionXML, TransformerFactoryConfigurationError, TransformerException {
-		Plan plan = new Plan();
+		Map plan = new Map();
 		XMLdeserializer.load(plan);
 		System.out.println(plan);
 		System.out.println("Warehouse = " + plan.getWarehouse());

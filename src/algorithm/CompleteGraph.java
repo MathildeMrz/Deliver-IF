@@ -1,7 +1,7 @@
 package algorithm;
 
 import model.Intersection;
-import model.Plan;
+import model.Map;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class CompleteGraph implements Graph {
 	 * Create a complete directed graph such that each edge has a weight within [MIN_COST,MAX_COST]
 	 * @param nbVertices
 	 */
-	public CompleteGraph(int nbVertices, List <Intersection> intersection, Plan lePlan){
+	public CompleteGraph(int nbVertices, List <Intersection> intersection, Map lePlan){
 		this.nbVertices = nbVertices;
 		this.Intersection=intersection;
 
