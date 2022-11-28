@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
-public class PlanTest {
+public class MapTest {
 	protected Map plan;
 	protected Intersection inter1;
 	protected Intersection inter2;
