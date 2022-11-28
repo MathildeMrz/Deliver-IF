@@ -52,6 +52,7 @@ public class newRequestView extends Application implements Observer {
 	private int height;
 	private ListView<Courier> couriers;
 	private Stage stage;
+	private boolean clicked;
 	
 	public newRequestView()
 	{
@@ -63,6 +64,7 @@ public class newRequestView extends Application implements Observer {
 		this.stage = stage;
 		this.plan.addObserver(this);
 		createMap(this.plan);
+		this.clicked = false;
 		this.stage.show();
 	}
 
@@ -210,7 +212,11 @@ public class newRequestView extends Application implements Observer {
 		map.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				controller.newPositionToAdd((float)event.getY(), (float)event.getX());
+				if(clicked == false)
+				{
+					controller.newPositionToAdd((float)event.getY(), (float)event.getX());
+				}				
+				clicked = true;
 			}
 		});
 		
