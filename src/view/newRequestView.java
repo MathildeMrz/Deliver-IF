@@ -42,6 +42,8 @@ import model.Courier;
 import model.Intersection;
 import model.Map;
 import model.Segment;
+import model.Delivery;
+import model.Tour;
 import observer.Observable;
 import observer.Observer;
 
@@ -230,7 +232,7 @@ public class newRequestView extends Application implements Observer {
 			@Override
 			public void handle(MouseEvent event) {
 				System.out.println("Validate");
-				//TODO : Vérifier que attributs non vides
+				//TODO : Vï¿½rifier que attributs non vides
 				//requestedDelivery = new Delivery();
 				controller.newPositionToAdd(requestedY, requestedX);
 				//controller.newDeliveryToAdd(requestedDelivery);
