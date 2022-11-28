@@ -13,11 +13,11 @@ import javafx.application.Application;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 import model.Courier;
-import model.Plan;
+import model.Map;
 import xml.XMLdeserializer;
 
 public class Window  extends Application  {
-	private Plan plan;
+	private Map plan;
 	private Controller controller;
 	private int width;
 	private int height;
@@ -37,7 +37,7 @@ public class Window  extends Application  {
 		this.height = gd.getDisplayMode().getHeight();
 		this.couriers = initCouriers();
 
-		this.plan = new Plan();
+		this.plan = new Map();
 		/*Deserialize XML file*/
 		XMLdeserializer.load(this.plan);
 		

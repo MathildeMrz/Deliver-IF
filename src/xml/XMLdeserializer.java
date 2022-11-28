@@ -13,7 +13,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import model.Intersection;
-import model.Plan;
+import model.Map;
 import model.Segment;
 
 
@@ -26,7 +26,7 @@ public class XMLdeserializer {
 	 * @throws IOException
 	 * @throws ExceptionXML
 	 */
-	public static void load(Plan plan) throws ParserConfigurationException, SAXException, IOException, ExceptionXML{
+	public static void load(Map plan) throws ParserConfigurationException, SAXException, IOException, ExceptionXML{
 		File xml = XMLfileOpener.getInstance().open(true);
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();	
         Document document = docBuilder.parse(xml);
@@ -40,7 +40,7 @@ public class XMLdeserializer {
         	throw new ExceptionXML("Wrong format");
 	}
 
-    private static void buildFromDOMXML(Element noeudDOMRacine, Plan plan) throws ExceptionXML, NumberFormatException{
+    private static void buildFromDOMXML(Element noeudDOMRacine, Map plan) throws ExceptionXML, NumberFormatException{
        	NodeList intersectionList = noeudDOMRacine.getElementsByTagName("intersection");
        	for (int i = 0; i < intersectionList.getLength(); i++) {
         	plan.addNode(createIntersection((Element) intersectionList.item(i), plan));
@@ -55,7 +55,7 @@ public class XMLdeserializer {
        	}
     }
     
-    private static Intersection createIntersection(Element elt, Plan plan) throws ExceptionXML{
+    private static Intersection createIntersection(Element elt, Map plan) throws ExceptionXML{
     	long id = Long.parseLong(elt.getAttribute("id"));
    		float latitude = Float.parseFloat(elt.getAttribute("latitude"));
    		float longitude = Float.parseFloat(elt.getAttribute("longitude"));
@@ -79,7 +79,7 @@ public class XMLdeserializer {
    		return i;
     }
     
-    private static void createSegment(Element elt, Plan plan) throws ExceptionXML{
+    private static void createSegment(Element elt, Map plan) throws ExceptionXML{
    		long origin = Long.parseLong(elt.getAttribute("origin"));
    		long dest = Long.parseLong(elt.getAttribute("destination"));
    		float length = Float.parseFloat(elt.getAttribute("length"));

@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 import observer.Observable;
 
-public class Plan extends Observable {
+public class Map extends Observable {
 	private HashMap<Long, Intersection> nodes;
 	private ArrayList<Intersection> destinations;
 	private Intersection warehouse;
@@ -16,7 +16,7 @@ public class Plan extends Observable {
 	private float longitudeMin;
 	private float longitudeMax;
 	
-	public Plan() {
+	public Map() {
 		this.nodes  = new HashMap<Long,Intersection>();
 		this.destinations  = new ArrayList<Intersection>();
 		this.warehouse = null;
