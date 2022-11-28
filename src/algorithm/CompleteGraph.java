@@ -32,8 +32,11 @@ public class CompleteGraph implements Graph {
 		            else iseed = 2147483647 + it;
 		            cost[i][j] = MIN_COST + iseed % (MAX_COST-MIN_COST+1);*/
 		        	Dijkstra djikstra= new Dijkstra(lePlan,this.Intersection.get(i)) ;
+		        	System.out.println("Debut Dijkstra");
 		        	djikstra.run();
+		        	System.out.println("Fin Dijkstra");
 		        	cost[i][j] = djikstra.getCoutIntersection(this.Intersection.get(j).getId());
+		        	System.out.println("cost[i][j] : "+cost[i][j]);
 		        }
 		    }
 		}

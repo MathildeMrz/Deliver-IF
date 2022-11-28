@@ -24,6 +24,7 @@ import javafx.geometry.Bounds;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -39,9 +40,11 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import model.Courier;
+import model.Delivery;
 import model.Intersection;
 import model.Map;
 import model.Segment;
+import model.Tour;
 import observer.Observable;
 import observer.Observer;
 
@@ -56,9 +59,10 @@ public class newRequestView extends Application implements Observer {
 	private boolean clicked;
 	private float requestedX;
 	private float requestedY;
-	private Date requestedDate;
-	private int requestedStartingTimeWindow;
-	private Tour requestedTour;
+	private LocalDate requestedDate;
+	private String requestedStartingTimeWindow;
+	//private Tour requestedTour;
+	private final int noOfDaysToAdd = 2;
 	private Delivery requestedDelivery;
 	
 	public newRequestView()
@@ -181,6 +185,7 @@ public class newRequestView extends Application implements Observer {
 				+ "    -fx-border-radius: 3px;\r\n"
 				+ "	   -fx-background-color: rgb(49, 89, 47);");
 		date.setValue(LocalDate.now());
+		requestedDate = date.getValue();
 		vBoxcreateNewRequest.getChildren().add(new Label("Date:"));
 		vBoxcreateNewRequest.getChildren().add(date);
 		vBoxcreateNewRequest.getChildren().add(new Label("Localisation:"));
@@ -226,14 +231,29 @@ public class newRequestView extends Application implements Observer {
 			}
 		});
 		
+		// Listener for updating the checkout date w.r.t check in date
+		date.valueProperty().addListener((ov, oldValue, newValue) -> {			
+				requestedDate = newValue.plusDays(noOfDaysToAdd);
+	            System.out.println("You clicked: " + requestedDate);
+        });
+		
+		timeWindow.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+			   System.out.println("requestedStartingTimeWindow :"+newValue);
+			   requestedStartingTimeWindow = newValue;
+			}); 
+	
+			
 		buttonValidate.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				System.out.println("Validate");
-				//TODO : Vérifier que attributs non vides
-				//requestedDelivery = new Delivery();
-				controller.newPositionToAdd(requestedY, requestedX);
-				//controller.newDeliveryToAdd(requestedDelivery);
+				if(requestedStartingTimeWindow != null && requestedX != 0.0f && requestedY != 0.0f)
+				{
+					//TODO : Vérifier que attributs non vides
+					requestedDelivery = new Delivery();
+					//System.out.println("New delivery created");
+					//controller.newDeliveryToAdd(requestedDelivery);
+				}			
 			}
 		});
 		
@@ -252,8 +272,12 @@ public class newRequestView extends Application implements Observer {
 				Intersection intersection2 = plan.getNodes().get(id2);
 				sommets.add(intersection2);
 				
+				Long id3 = Long.parseLong("21604601");
+				Intersection intersection3 = plan.getNodes().get(id3);
+				sommets.add(intersection3);
+				
 				System.out.println("Debut TSP");
-				RunTSP testTSP = new RunTSP(3, sommets, plan);
+				RunTSP testTSP = new RunTSP(4, sommets, plan);
 				testTSP.start();
 				System.out.println("Fin TSP");
 

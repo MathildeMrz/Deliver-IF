@@ -22,7 +22,7 @@ public class Controller {
 		this.couriers = couriers;
 	}
 
-	public void newPositionToAdd(float y, float x) {
-		plan.addPosition(y, x);
+	public void newDeliveryToAdd(float y, float x) {
+		//
 	}
 }
