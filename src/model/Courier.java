@@ -21,4 +21,18 @@ public class Courier extends Observable {
     public String toString() {
         return id + " " + name + " " +speed;
     }
+
+	public String getName() {
+		return name;
+	}
+
+	public double getSpeed() {
+		return speed;
+	}
+
+	public int getId() {
+		return id;
+	}
+	
+	
 }

@@ -1,13 +1,5 @@
 package view;
 
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.geom.Point2D;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +8,7 @@ import algorithm.RunTSP;
 import controller.Controller;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -27,9 +16,6 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -38,101 +24,105 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import model.Courier;
+import model.Delivery;
 import model.Intersection;
 import model.Map;
 import model.Segment;
+import model.Tour;
 import observer.Observable;
 import observer.Observer;
 
 public class newRequestView extends Application implements Observer {
 
-	private Map plan;
+	private Map map;
+	private Tour tour;
 	private Controller controller;
 	private int width;
 	private int height;
 	private ListView<Courier> couriers;
 	private Stage stage;
 	private boolean clicked;
+	private int screenWidth; 
+	private int screenHeight; 
 	
 	public newRequestView()
 	{
-		
 	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.stage = stage;
-		this.plan.addObserver(this);
-		createMap(this.plan);
+		this.tour.addObserver(this);
+		createMap(this.map);
 		this.clicked = false;
 		this.stage.show();
 	}
 
-	public void createMap(Map plan)
+	public void createMap(Map map)
 	{
+		this.screenHeight = height/4;
+		this.screenWidth = width/4;
+		Pane mapPane = new Pane();
+        mapPane.setMinWidth(screenWidth);
+        mapPane.setMinHeight(screenHeight);  
 
-		Pane map = new Pane();
-        map.setMinWidth(width/4);
-        map.setMinHeight(height/4);  
-
-        map.setStyle("-fx-border-style: solid inside;"
+        mapPane.setStyle("-fx-border-style: solid inside;"
                 + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
                 + "-fx-border-radius: 5;" + "-fx-border-color: blue;");
-    
-        float widthSegment = plan.getLongitudeMax() - plan.getLongitudeMin();
-        float heightSegment = plan.getLatitudeMax() - plan.getLatitudeMin();
 
         //Add warehouse
-        float latWareHouse = plan.getWarehouse().getLatitude();
-        float longWareHouse = plan.getWarehouse().getLongitude();
-   
-        float circleCenterX = ((longWareHouse - plan.getLongitudeMin()) / widthSegment) * width/4;
-        float circleCenterY = ((latWareHouse - plan.getLatitudeMin()) / heightSegment) * height/4;       
- 
+        float circleCenterX = tour.getFactorLongitudeToX(map.getWarehouse().getLongitude()) * this.screenWidth;
+        float circleCenterY = tour.getFactorLatitudeToY(map.getWarehouse().getLatitude()) * this.screenHeight;
+  
         Circle wareHouse = new Circle();
         wareHouse.setCenterX(circleCenterX);
         wareHouse.setCenterY(circleCenterY);
         wareHouse.setRadius(10.0f);
-        map.getChildren().add(wareHouse);
+        mapPane.getChildren().add(wareHouse);
         
         //display the deliveries destinations
-        for(Intersection d : plan.getDestinations())
-	    {     
-        	float latDestination = d.getLatitude();
-        	float longDestination = d.getLongitude();
-        	
-        	float circleCenterDestinationX = ((longDestination - plan.getLongitudeMin()) / widthSegment) * width/4;
-        	float circleCenterDestinationY = ((latDestination - plan.getLatitudeMin()) / heightSegment) * height/4;
-	        
-	        Circle destination = new Circle();
-	        destination.setFill(Color.BLUE);
-	        destination.setCenterX(circleCenterDestinationX);
-	        destination.setCenterY(circleCenterDestinationY);
-	        destination.setRadius(5.0f);
-	        map.getChildren().add(destination);
-		}
+        System.out.println(tour.getSteps());
+        if(tour.getSteps()!= null) {
+	        for( Delivery d : tour.getSteps())
+		    {     
+	        	System.out.println("on entre for");
+		    	Intersection dest = d.getDestination();
+	        	float latDestination = dest.getLatitude();
+	        	float longDestination = dest.getLongitude();
+	        	
+	        	float circleCenterDestinationX = tour.getFactorLongitudeToX(longDestination) * this.screenWidth;
+	        	float circleCenterDestinationY = tour.getFactorLatitudeToY(latDestination) * this.screenHeight;
+		        
+		        Circle destination = new Circle();
+		        destination.setFill(Color.BLUE);
+		        destination.setCenterX(circleCenterDestinationX);
+		        destination.setCenterY(circleCenterDestinationY);
+		        destination.setRadius(5.0f);
+		        mapPane.getChildren().add(destination);
+			}
+        }
 		
-        for (int counterIntersection = 0; counterIntersection < plan.getNodes().size(); counterIntersection++) 
+        for (Intersection i : map.getNodes().values()) 
         { 
-        	Intersection i = plan.getNodes().get(plan.getNodes().keySet().toArray()[counterIntersection]);
-        	for (int counterSegment = 0; counterSegment < i.getOutSections().size(); counterSegment++) 
-        	{ 
-        		Segment s = i.getOutSections().get(counterSegment);
+        	for (Segment s : i.getOutSections()) 
+        	{        		
+        		float x1 = tour.getFactorLongitudeToX(i.getLongitude()) * this.screenWidth;
+        		float y1 = tour.getFactorLatitudeToY(i.getLatitude()) * this.screenHeight;
+        		float x2 = tour.getFactorLongitudeToX(s.getDestination().getLongitude()) * this.screenWidth;
+        		float y2 = tour.getFactorLatitudeToY(s.getDestination().getLatitude()) * this.screenHeight;
         		
-        		float x1 = ((i.getLongitude() - plan.getLongitudeMin()) / widthSegment) * width/4;
-        		float y1 = ((i.getLatitude() - plan.getLatitudeMin()) / heightSegment) * height/4;
-        		float x2 = ((s.getDestination().getLongitude() - plan.getLongitudeMin()) / widthSegment) * width/4;
-        		float y2 = ((s.getDestination().getLatitude() - plan.getLatitudeMin()) / heightSegment) * height/4;
+        		//System.out.println(x1);
+        		//System.out.println(y1);
         		
         		Line newLine = new Line(x1 , y1 , x2 , y2); 
-        		map.getChildren().add(newLine);	
+        		mapPane.getChildren().add(newLine);	
             }
         } 
         
-        display(map);
+        display(mapPane);
 	}
 
-	public void display(Pane map) {
+	public void display(Pane mapPane) {
 		
 		HBox hbox = new HBox();
 		hbox.setMinWidth(width / 2);
@@ -180,7 +170,7 @@ public class newRequestView extends Application implements Observer {
 		vBoxcreateNewRequest.getChildren().add(date);
 		vBoxcreateNewRequest.getChildren().add(new Label("Localisation:"));
 		
-		vBoxcreateNewRequest.getChildren().add(map);
+		vBoxcreateNewRequest.getChildren().add(mapPane);
 		vBoxcreateNewRequest.getChildren().add(new Label("Time-window"));
 		ComboBox<String> timeWindow = new ComboBox<String>();
 		timeWindow.setStyle("-fx-text-fill: #000000;\r\n"
@@ -209,12 +199,14 @@ public class newRequestView extends Application implements Observer {
 		Scene scene = new Scene(vbox, Double.MAX_VALUE, Double.MAX_VALUE);
 		stage.setScene(scene);		
 			
-		map.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		mapPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				if(clicked == false)
 				{
-					controller.newPositionToAdd((float)event.getY(), (float)event.getX());
+					float longitude = tour.getFactorXToLongitude((float)(event.getX()/screenWidth));
+					float latitude = tour.getFactorYToLatitude((float)(event.getY()/screenHeight));
+					controller.addDelivery(latitude, longitude);
 				}				
 				clicked = true;
 			}
@@ -224,19 +216,19 @@ public class newRequestView extends Application implements Observer {
 			@Override
 			public void handle(MouseEvent event) {
 				System.out.println("TSP");
-				Intersection ptDepart = plan.getWarehouse();
+				Intersection ptDepart = map.getWarehouse();
 				List<Intersection> sommets = new ArrayList<Intersection>();
 				Long id1 = Long.parseLong("2292223595");
 							
-				Intersection intersection1 = plan.getNodes().get(id1);
+				Intersection intersection1 = map.getNodes().get(id1);
 				sommets.add(ptDepart);
 				sommets.add(intersection1);
 				Long id2 = Long.parseLong("26317214");
-				Intersection intersection2 = plan.getNodes().get(id2);
+				Intersection intersection2 = map.getNodes().get(id2);
 				sommets.add(intersection2);
 				
 				System.out.println("Debut TSP");
-				RunTSP testTSP = new RunTSP(3, sommets, plan);
+				RunTSP testTSP = new RunTSP(3, sommets, map);
 				testTSP.start();
 				System.out.println("Fin TSP");
 
@@ -256,7 +248,7 @@ public class newRequestView extends Application implements Observer {
 				        	   mv.setCouriers(couriers);
 				        	   mv.setHeight(height);
 				        	   mv.setWidth(width);
-				        	   mv.setPlan(plan);
+				        	   mv.setPlan(map);
 				        	   mv.start(stage);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
@@ -270,15 +262,16 @@ public class newRequestView extends Application implements Observer {
 	
 	@Override
 	public void update(Observable observed, Object arg) {
-		createMap(this.plan);
+		this.tour = (Tour) observed;
+		createMap(this.map);	
 	}
 
 	public Map getPlan() {
-		return plan;
+		return map;
 	}
 
-	public void setPlan(Map plan) {
-		this.plan = plan;
+	public void setPlan(Map map) {
+		this.map = map;
 	}
 
 	public Controller getController() {
@@ -321,6 +314,8 @@ public class newRequestView extends Application implements Observer {
 		this.stage = stage;
 	}
 	
-	
+	public void setTour(Tour tour) {
+		this.tour = tour;
+	}
 
 }

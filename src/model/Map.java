@@ -1,7 +1,5 @@
 package model;
 
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -83,36 +81,4 @@ public class Map extends Observable {
 	public void setLongitudeMax(float longitudeMax) {
 		this.longitudeMax = longitudeMax;
 	}
-	
-	
-	
-	public void addPosition(float y, float x)
-	{
-		//Translate pixel coordinates to street coordinates
-		 float widthSegment = this.getLongitudeMax() - this.getLongitudeMin();
-	     float heightSegment = this.getLatitudeMax() - this.getLatitudeMin();
-	     GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-	     float width = gd.getDisplayMode().getWidth();
-	     float height = gd.getDisplayMode().getHeight();
-			
-	     float xStreet = (4*x * widthSegment)/width + this.getLongitudeMin();
-	     float yStreet = (4*y * heightSegment)/height + this.getLatitudeMin();
-	     
-	     Intersection closer = null;
-	     float minimumDistance = Float.MAX_VALUE;
-	     //select the intersection closer
-	     for(Intersection i : this.getNodes().values())
-	     {
-			 float dist = (float) Math.sqrt((i.getLatitude() - yStreet) * (i.getLatitude() - yStreet) + (i.getLongitude() - xStreet) * (i.getLongitude() - xStreet));
-	    	 
-	    	 if(dist < minimumDistance)
-	    	 {
-	    		 minimumDistance = dist;
-	    		 closer = i;
-	    	 }
-	     }
-
-		destinations.add(closer);
-		notifyObservers();
-	}	
 }

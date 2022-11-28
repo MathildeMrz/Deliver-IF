@@ -22,6 +22,7 @@ import model.Courier;
 import model.Intersection;
 import model.Map;
 import model.Segment;
+import model.Tour;
 import observer.Observable;
 import observer.Observer;
 
@@ -33,6 +34,7 @@ public class mapView extends Application implements Observer{
 	private int height;
 	private ListView<Courier> couriers;
 	private Stage stage;
+	private Tour tour;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -40,7 +42,7 @@ public class mapView extends Application implements Observer{
 		/*Init attributes*/
 		this.stage = stage;	
 		this.plan.addObserver(this);
-		this.controller = new Controller(this.stage, this.plan, this.couriers);
+		this.controller = new Controller(this.stage, this.tour, this.couriers);
 
 		/*Resize the window*/
 		stage.setResizable(true);
@@ -176,7 +178,8 @@ public class mapView extends Application implements Observer{
 				        	   nr.setHeight(height);
 				        	   nr.setWidth(width);
 				        	   nr.setPlan(plan);
-				        	   nr.start(stage);
+				        	   nr.setTour(tour);
+				        	   nr.start(stage);	   
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -236,6 +239,10 @@ public class mapView extends Application implements Observer{
 
 	public void setStage(Stage stage) {
 		this.stage = stage;
+	}
+	
+	public void setTour(Tour tour) {
+		this.tour = tour;
 	}
 
 	@Override

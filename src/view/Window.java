@@ -14,15 +14,17 @@ import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 import model.Courier;
 import model.Map;
+import model.Tour;
 import xml.XMLdeserializer;
 
 public class Window  extends Application  {
-	private Map plan;
+	private Map map;
 	private Controller controller;
 	private int width;
 	private int height;
 	private ListView<Courier> couriers;
 	private mapView mv;
+	private Tour tour;
 	
 	public static void main(String[] args) throws Exception {
 		Application.launch(args);
@@ -37,17 +39,20 @@ public class Window  extends Application  {
 		this.height = gd.getDisplayMode().getHeight();
 		this.couriers = initCouriers();
 
-		this.plan = new Map();
+		this.map = new Map();
+
 		/*Deserialize XML file*/
-		XMLdeserializer.load(this.plan);
+		XMLdeserializer.load(this.map);
 		
+		this.tour = new Tour(map);
 		this.mv = new mapView();
 		this.mv.setController(this.controller);
 		this.mv.setCouriers(this.couriers);
 		this.mv.setHeight(this.height);
 		this.mv.setWidth(this.width);
-		this.mv.setPlan(this.plan);
-		this.mv.start(new Stage());
+		this.mv.setPlan(this.map);
+		this.mv.setTour(tour);
+		this.mv.start(new Stage());	
 		
 	}
 
