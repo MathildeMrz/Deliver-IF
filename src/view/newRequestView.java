@@ -2,6 +2,7 @@ package view;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import algorithm.RunTSP;
@@ -12,6 +13,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -44,6 +46,13 @@ public class newRequestView extends Application implements Observer {
 	private boolean clicked;
 	private int screenWidth; 
 	private int screenHeight; 
+	private float requestedX;
+	private float requestedY;
+	private LocalDate requestedDate;
+	private String requestedStartingTimeWindow;
+	//private Tour requestedTour;
+	private final int noOfDaysToAdd = 2;
+	private Delivery requestedDelivery;
 	
 	public newRequestView()
 	{
@@ -157,15 +166,14 @@ public class newRequestView extends Application implements Observer {
 		VBox vBoxcreateNewRequest = new VBox();
 		vBoxcreateNewRequest.setMaxWidth(Double.MAX_VALUE);
 		vBoxcreateNewRequest.setMaxHeight(Double.MAX_VALUE);
-		//vBoxcreateNewRequest.setFillWidth(true);
-		//BackgroundFill bf = new BackgroundFill(Color.LIGHTYELLOW, new CornerRadii(1), null);
-		//vBoxcreateNewRequest.setBackground(new Background(bf));
+		
 		DatePicker date = new DatePicker();
 		date.setStyle("-fx-text-fill: #000000;\r\n"
 				+ "    -fx-border-color: #e6bf4b;\r\n"
 				+ "    -fx-border-radius: 3px;\r\n"
 				+ "	   -fx-background-color: rgb(49, 89, 47);");
 		date.setValue(LocalDate.now());
+		requestedDate = date.getValue();
 		vBoxcreateNewRequest.getChildren().add(new Label("Date:"));
 		vBoxcreateNewRequest.getChildren().add(date);
 		vBoxcreateNewRequest.getChildren().add(new Label("Localisation:"));
@@ -207,8 +215,36 @@ public class newRequestView extends Application implements Observer {
 					float longitude = tour.getFactorXToLongitude((float)(event.getX()/screenWidth));
 					float latitude = tour.getFactorYToLatitude((float)(event.getY()/screenHeight));
 					controller.addDelivery(latitude, longitude);
+					requestedX = (float)event.getX();
+					requestedY = (float)event.getY();
 				}				
 				clicked = true;
+			}
+		});
+		
+		// Listener for updating the checkout date w.r.t check in date
+		date.valueProperty().addListener((ov, oldValue, newValue) -> {			
+				requestedDate = newValue.plusDays(noOfDaysToAdd);
+	            System.out.println("You clicked: " + requestedDate);
+        });
+		
+		timeWindow.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+			   System.out.println("requestedStartingTimeWindow :"+newValue);
+			   requestedStartingTimeWindow = newValue;
+			}); 
+	
+			
+		buttonValidate.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				System.out.println("Validate");
+				if(requestedStartingTimeWindow != null && requestedX != 0.0f && requestedY != 0.0f)
+				{
+					//TODO : V�rifier que attributs non vides
+					requestedDelivery = new Delivery();
+					//System.out.println("New delivery created");
+					//controller.newDeliveryToAdd(requestedDelivery);
+				}			
 			}
 		});
 		
@@ -227,8 +263,12 @@ public class newRequestView extends Application implements Observer {
 				Intersection intersection2 = map.getNodes().get(id2);
 				sommets.add(intersection2);
 				
+				Long id3 = Long.parseLong("21604601");
+				Intersection intersection3 = plan.getNodes().get(id3);
+				sommets.add(intersection3);
+				
 				System.out.println("Debut TSP");
-				RunTSP testTSP = new RunTSP(3, sommets, map);
+				RunTSP testTSP = new RunTSP(4, sommets, plan);
 				testTSP.start();
 				System.out.println("Fin TSP");
 
@@ -274,41 +314,41 @@ public class newRequestView extends Application implements Observer {
 		this.map = map;
 	}
 
-	public Controller getController() {
-		return controller;
-	}
+public void setPlan(Map plan) {
+	this.plan = plan;
+}
 
-	public void setController(Controller controller) {
-		this.controller = controller;
-	}
+public Controller getController() {
+	return controller;
+}
 
-	public int getWidth() {
-		return width;
-	}
+public void setController(Controller controller) {
+	this.controller = controller;
+}
 
-	public void setWidth(int width) {
-		this.width = width;
-	}
+public int getWidth() {
+	return width;
+}
 
-	public int getHeight() {
-		return height;
-	}
+public void setWidth(int width) {
+	this.width = width;
+}
 
-	public void setHeight(int height) {
-		this.height = height;
-	}
+public int getHeight() {
+	return height;
+}
 
-	public ListView<Courier> getCouriers() {
-		return couriers;
-	}
+public void setHeight(int height) {
+	this.height = height;
+}
 
-	public void setCouriers(ListView<Courier> couriers) {
-		this.couriers = couriers;
-	}
+public ListView<Courier> getCouriers() {
+	return couriers;
+}
 
-	public Stage getStage() {
-		return stage;
-	}
+public void setCouriers(ListView<Courier> couriers) {
+	this.couriers = couriers;
+}
 
 	public void setStage(Stage stage) {
 		this.stage = stage;
@@ -318,4 +358,8 @@ public class newRequestView extends Application implements Observer {
 		this.tour = tour;
 	}
 
+public void setStage(Stage stage) {
+	this.stage = stage;
 }
+}
+
