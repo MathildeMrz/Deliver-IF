@@ -2,14 +2,14 @@ package tests;
 
 import model.Intersection;
 import model.Segment;
-import model.Plan;
+import model.Map;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 public class PlanTest {
-	protected Plan plan;
+	protected Map plan;
 	protected Intersection inter1;
 	protected Intersection inter2;
 	protected Segment seg1;
@@ -21,7 +21,7 @@ public class PlanTest {
 		inter2 = new Intersection(6874512, (float)46.365, (float)4.34585);
 		seg1 = new Segment(inter1, (float)27.6, "Rue Albert");
 		seg2 = new Segment(inter2, (float)67.2, "Rue du fromage");
-		plan = new Plan();
+		plan = new Map();
 	}
 	
 	@Test

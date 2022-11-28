@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 import observer.Observable;
 
-public class Plan extends Observable {
+public class Map extends Observable {
 	private HashMap<Long, Intersection> nodes;
 	private ArrayList<Intersection> destinations;
 	private Intersection warehouse;
@@ -16,7 +16,7 @@ public class Plan extends Observable {
 	private float longitudeMin;
 	private float longitudeMax;
 	
-	public Plan() {
+	public Map() {
 		this.nodes  = new HashMap<Long,Intersection>();
 		this.destinations  = new ArrayList<Intersection>();
 		this.warehouse = null;
@@ -98,8 +98,7 @@ public class Plan extends Observable {
 	     float xStreet = (4*x * widthSegment)/width + this.getLongitudeMin();
 	     float yStreet = (4*y * heightSegment)/height + this.getLatitudeMin();
 	     
-	     float closerX = xStreet;
-	     float closerY = yStreet;
+	     Intersection closer = null;
 	     float minimumDistance = Float.MAX_VALUE;
 	     //select the intersection closer
 	     for(Intersection i : this.getNodes().values())
@@ -109,14 +108,11 @@ public class Plan extends Observable {
 	    	 if(dist < minimumDistance)
 	    	 {
 	    		 minimumDistance = dist;
-	    		 closerX = i.getLongitude();
-	    		 closerY = i.getLatitude();    		 
+	    		 closer = i;
 	    	 }
 	     }
 
-		//Id automatique ??
-		Intersection newPosition = new Intersection(1212, closerY, closerX);
-		destinations.add(newPosition);
+		destinations.add(closer);
 		notifyObservers();
 	}	
 }

@@ -4,16 +4,16 @@ import java.util.List;
 import java.util.ArrayList;
 
 import model.Intersection;
-import model.Plan;
+import model.Map;
 
 public class RunTSP {
 	
 	private static int nbVertices;
 	private static List <Intersection> Intersection=new ArrayList<Intersection>();
-	private static Plan lePlan;
+	private static Map lePlan;
 	
 	
-	public RunTSP(int nbVertices, List<Intersection> intersection,Plan lePlan) {
+	public RunTSP(int nbVertices, List<Intersection> intersection,Map lePlan) {
 		this.nbVertices = nbVertices;
 		Intersection = intersection;
 		this.lePlan=lePlan;

@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
 
 import model.Intersection;
 import model.Segment;
-import model.Plan;
+import model.Map;
 
 public class XMLserializer{// Singleton
 	
@@ -40,7 +40,7 @@ public class XMLserializer{// Singleton
 	 * @throws TransformerException
 	 * @throws ExceptionXML
 	 */
-	public void save(Plan plan) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException, ExceptionXML{
+	public void save(Map plan) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException, ExceptionXML{
 		File xml = XMLfileOpener.getInstance().open(false);
   		StreamResult result = new StreamResult(xml);
        	document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
@@ -51,7 +51,7 @@ public class XMLserializer{// Singleton
         xformer.transform(source, result);
 	}
 
-	private Element createPlanElt(Plan plan) {
+	private Element createPlanElt(Map plan) {
 		Element racine = document.createElement("map");
 		eltRoot = document.createElement("warehouse");
 		createAttribute(eltRoot,"address",Long.toString(plan.getWarehouse().getId()));

@@ -20,14 +20,14 @@ import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import model.Courier;
 import model.Intersection;
-import model.Plan;
+import model.Map;
 import model.Segment;
 import observer.Observable;
 import observer.Observer;
 
 public class mapView extends Application implements Observer{
 
-	private Plan plan;
+	private Map plan;
 	private Controller controller;
 	private int width;
 	private int height;
@@ -53,7 +53,7 @@ public class mapView extends Application implements Observer{
 		createMap(this.plan);	
 	}
 	
-	public void createMap(Plan plan)
+	public void createMap(Map plan)
 	{
 		Pane map = new Pane();
         map.setMinWidth(width/4);
@@ -190,11 +190,11 @@ public class mapView extends Application implements Observer{
 		this.stage.show();
 	}
 
-	public Plan getPlan() {
+	public Map getPlan() {
 		return plan;
 	}
 
-	public void setPlan(Plan plan) {
+	public void setPlan(Map plan) {
 		this.plan = plan;
 	}
 

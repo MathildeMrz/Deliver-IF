@@ -1,7 +1,7 @@
 package algorithm;
 
 import model.Intersection;
-import model.Plan;
+import model.Map;
 import model.Segment;
 import model.Path;
 import java.util.HashMap;
@@ -25,7 +25,7 @@ public class Dijkstra {
 	private HashMap<Double, List<Long>> intersectionsGrisesInversees;
 
 	// L'objet Plan de notre cas d'etude
-	private Plan lePlan;
+	private Map lePlan;
 	// Intersection d'ou l'on part
 	private Intersection ptDepart;
 
@@ -35,7 +35,7 @@ public class Dijkstra {
 	 * @param lePlan
 	 * @param pointDepart
 	 */
-	public Dijkstra(Plan lePlan, Intersection pointDepart) {
+	public Dijkstra(Map lePlan, Intersection pointDepart) {
 		this.lePlan = lePlan;
 		this.ptDepart = pointDepart;
 		
@@ -272,11 +272,11 @@ public class Dijkstra {
 		this.intersectionsGrisesInversees = intersectionsGrisesInversees;
 	}
 
-	public Plan getLePlan() {
+	public Map getLePlan() {
 		return lePlan;
 	}
 
-	public void setLePlan(Plan lePlan) {
+	public void setLePlan(Map lePlan) {
 		this.lePlan = lePlan;
 	}
 
