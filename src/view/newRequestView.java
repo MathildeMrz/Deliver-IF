@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import algorithm.RunTSP;
@@ -53,6 +54,12 @@ public class newRequestView extends Application implements Observer {
 	private ListView<Courier> couriers;
 	private Stage stage;
 	private boolean clicked;
+	private float requestedX;
+	private float requestedY;
+	private Date requestedDate;
+	private int requestedStartingTimeWindow;
+	private Tour requestedTour;
+	private Delivery requestedDelivery;
 	
 	public newRequestView()
 	{
@@ -167,9 +174,7 @@ public class newRequestView extends Application implements Observer {
 		VBox vBoxcreateNewRequest = new VBox();
 		vBoxcreateNewRequest.setMaxWidth(Double.MAX_VALUE);
 		vBoxcreateNewRequest.setMaxHeight(Double.MAX_VALUE);
-		//vBoxcreateNewRequest.setFillWidth(true);
-		//BackgroundFill bf = new BackgroundFill(Color.LIGHTYELLOW, new CornerRadii(1), null);
-		//vBoxcreateNewRequest.setBackground(new Background(bf));
+		
 		DatePicker date = new DatePicker();
 		date.setStyle("-fx-text-fill: #000000;\r\n"
 				+ "    -fx-border-color: #e6bf4b;\r\n"
@@ -214,9 +219,21 @@ public class newRequestView extends Application implements Observer {
 			public void handle(MouseEvent event) {
 				if(clicked == false)
 				{
-					controller.newPositionToAdd((float)event.getY(), (float)event.getX());
+					requestedX = (float)event.getX();
+					requestedY = (float)event.getY();
 				}				
 				clicked = true;
+			}
+		});
+		
+		buttonValidate.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				System.out.println("Validate");
+				//TODO : Vérifier que attributs non vides
+				//requestedDelivery = new Delivery();
+				controller.newPositionToAdd(requestedY, requestedX);
+				//controller.newDeliveryToAdd(requestedDelivery);
 			}
 		});
 		
