@@ -1,11 +1,15 @@
 package model;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import observer.Observable;
 
 public class Plan extends Observable {
-	private ArrayList<Intersection> nodes;
+	private HashMap<Long, Intersection> nodes;
+	private ArrayList<Intersection> destinations;
 	private Intersection warehouse;
 	private float latitudeMin;
 	private float latitudeMax;
@@ -13,7 +17,8 @@ public class Plan extends Observable {
 	private float longitudeMax;
 	
 	public Plan() {
-		this.nodes  = new ArrayList<Intersection>();
+		this.nodes  = new HashMap<Long,Intersection>();
+		this.destinations  = new ArrayList<Intersection>();
 		this.warehouse = null;
 		latitudeMin = Float.MAX_VALUE;
 		latitudeMax = 0;
@@ -22,20 +27,20 @@ public class Plan extends Observable {
 	}
 	
 	public void addWarehouse(Long intersectionID) {
-		for(Intersection node : this.nodes) {
-			if(node.getId() == intersectionID) {
-				this.warehouse = node;
-				break;
-			}
-		}
+		this.warehouse = this.nodes.get(intersectionID);
 	}
 	
 	public void addNode(Intersection node) {
-		this.nodes.add(node);
+		//this.nodes.add(node);
+		nodes.put(node.getId(), node);
 	}
 
-	public ArrayList<Intersection> getNodes() {
+	public HashMap<Long, Intersection> getNodes() {
 		return nodes;
+	}
+	
+	public ArrayList<Intersection> getDestinations() {
+		return destinations;
 	}
 
 	public Intersection getWarehouse() {
@@ -80,4 +85,38 @@ public class Plan extends Observable {
 	}
 	
 	
+	
+	public void addPosition(float y, float x)
+	{
+		//Translate pixel coordinates to street coordinates
+		 float widthSegment = this.getLongitudeMax() - this.getLongitudeMin();
+	     float heightSegment = this.getLatitudeMax() - this.getLatitudeMin();
+	     GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+	     float width = gd.getDisplayMode().getWidth();
+	     float height = gd.getDisplayMode().getHeight();
+			
+	     float xStreet = (4*x * widthSegment)/width + this.getLongitudeMin();
+	     float yStreet = (4*y * heightSegment)/height + this.getLatitudeMin();
+	     
+	     float closerX = xStreet;
+	     float closerY = yStreet;
+	     float minimumDistance = Float.MAX_VALUE;
+	     //select the intersection closer
+	     for(Intersection i : this.getNodes().values())
+	     {
+			 float dist = (float) Math.sqrt((i.getLatitude() - yStreet) * (i.getLatitude() - yStreet) + (i.getLongitude() - xStreet) * (i.getLongitude() - xStreet));
+	    	 
+	    	 if(dist < minimumDistance)
+	    	 {
+	    		 minimumDistance = dist;
+	    		 closerX = i.getLongitude();
+	    		 closerY = i.getLatitude();    		 
+	    	 }
+	     }
+
+		//Id automatique ??
+		Intersection newPosition = new Intersection(1212, closerY, closerX);
+		destinations.add(newPosition);
+		notifyObservers();
+	}	
 }
