@@ -44,6 +44,7 @@ import model.Delivery;
 import model.Intersection;
 import model.Map;
 import model.Segment;
+import model.Delivery;
 import model.Tour;
 import observer.Observable;
 import observer.Observer;
@@ -139,7 +140,7 @@ public class newRequestView extends Application implements Observer {
         		map.getChildren().add(newLine);	
             }
         } 
-        
+	
         display(map);
 	}
 
@@ -309,59 +310,58 @@ public class newRequestView extends Application implements Observer {
 		});
 	}
 	
-	@Override
-	public void update(Observable observed, Object arg) {
-		createMap(this.plan);
-	}
-
-	public Map getPlan() {
-		return plan;
-	}
-
-	public void setPlan(Map plan) {
-		this.plan = plan;
-	}
-
-	public Controller getController() {
-		return controller;
-	}
-
-	public void setController(Controller controller) {
-		this.controller = controller;
-	}
-
-	public int getWidth() {
-		return width;
-	}
-
-	public void setWidth(int width) {
-		this.width = width;
-	}
-
-	public int getHeight() {
-		return height;
-	}
-
-	public void setHeight(int height) {
-		this.height = height;
-	}
-
-	public ListView<Courier> getCouriers() {
-		return couriers;
-	}
-
-	public void setCouriers(ListView<Courier> couriers) {
-		this.couriers = couriers;
-	}
-
-	public Stage getStage() {
-		return stage;
-	}
-
-	public void setStage(Stage stage) {
-		this.stage = stage;
-	}
 	
-	
-
+@Override
+public void update(Observable observed, Object arg) {
+	createMap(this.plan);
 }
+
+public Map getPlan() {
+	return plan;
+}
+
+public void setPlan(Map plan) {
+	this.plan = plan;
+}
+
+public Controller getController() {
+	return controller;
+}
+
+public void setController(Controller controller) {
+	this.controller = controller;
+}
+
+public int getWidth() {
+	return width;
+}
+
+public void setWidth(int width) {
+	this.width = width;
+}
+
+public int getHeight() {
+	return height;
+}
+
+public void setHeight(int height) {
+	this.height = height;
+}
+
+public ListView<Courier> getCouriers() {
+	return couriers;
+}
+
+public void setCouriers(ListView<Courier> couriers) {
+	this.couriers = couriers;
+}
+
+public Stage getStage() {
+	return stage;
+}
+
+public void setStage(Stage stage) {
+	this.stage = stage;
+}
+}
+

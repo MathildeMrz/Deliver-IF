@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
-public class PlanTest {
+public class MapTest {
 	protected Map plan;
 	protected Intersection inter1;
 	protected Intersection inter2;
@@ -27,7 +27,7 @@ public class PlanTest {
 	@Test
 	public void testAddAndGetNode() {
 		plan.addNode(inter1);
-		assertEquals(inter1, plan.getNodes().get(0));
+		assertEquals(inter1, plan.getNodes().get(new Long(2756625)));
 	}
 
 	@Test
@@ -35,13 +35,6 @@ public class PlanTest {
 		plan.addNode(inter1);
 		plan.addWarehouse(Long.parseLong("2756625"));
 		assertEquals(inter1, plan.getWarehouse());
-	}
-
-	@Test
-	public void testToString() {
-		plan.addNode(inter1);
-		plan.addWarehouse(Long.parseLong("2756625"));
-		assertEquals("Plan [nodes=[Intersection [id=2756625, latitude=45.365, longitude=5.34585]], warehouse=Intersection [id=2756625, latitude=45.365, longitude=5.34585]]", plan.toString());
 	}
 
 }
