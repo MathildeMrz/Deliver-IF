@@ -136,9 +136,7 @@ public class newRequestView extends Application implements Observer {
 		hbox.setMinWidth(width / 2);
 		hbox.setMinHeight(height / 3);
 		hbox.setStyle("-fx-border-color: rgb(49, 89, 47);\r\n"
-				+ "    -fx-border-radius: 5;\r\n");
-		
-		
+				+ "    -fx-border-radius: 5;\r\n");	
 		
 		/*hboxNavbar*/
 		HBox hboxNavbar = new HBox();
@@ -162,15 +160,14 @@ public class newRequestView extends Application implements Observer {
 		
 		vBoxCouriers.getChildren().add(new Label("Select a courier:"));
 		vBoxCouriers.getChildren().add(couriers);
-		vBoxCouriers.setDisable(true);		
 		
 		/*vBoxcreateNewRequest*/		
 		VBox vBoxcreateNewRequest = new VBox();
 		vBoxcreateNewRequest.setMaxWidth(Double.MAX_VALUE);
 		vBoxcreateNewRequest.setMaxHeight(Double.MAX_VALUE);
-		vBoxcreateNewRequest.setFillWidth(true);
-		BackgroundFill bf = new BackgroundFill(Color.LIGHTYELLOW, new CornerRadii(1), null);
-		vBoxcreateNewRequest.setBackground(new Background(bf));
+		//vBoxcreateNewRequest.setFillWidth(true);
+		//BackgroundFill bf = new BackgroundFill(Color.LIGHTYELLOW, new CornerRadii(1), null);
+		//vBoxcreateNewRequest.setBackground(new Background(bf));
 		DatePicker date = new DatePicker();
 		date.setStyle("-fx-text-fill: #000000;\r\n"
 				+ "    -fx-border-color: #e6bf4b;\r\n"
@@ -180,15 +177,8 @@ public class newRequestView extends Application implements Observer {
 		vBoxcreateNewRequest.getChildren().add(new Label("Date:"));
 		vBoxcreateNewRequest.getChildren().add(date);
 		vBoxcreateNewRequest.getChildren().add(new Label("Localisation:"));
-		Button buttonShowMap = new Button("Display map");
-		buttonShowMap.setStyle("-fx-text-fill: #000000;\r\n"
-				+ "    -fx-border-color: #e6bf4b;\r\n"
-				+ "    -fx-border-radius: 3px;\r\n"
-				+ "	   -fx-background-color: #ffffff; ");
 		
-		//buttonShowMap.setDisable(true);
-		vBoxcreateNewRequest.getChildren().add(buttonShowMap);
-		//vBoxcreateNewRequest.getChildren().add(map);
+		vBoxcreateNewRequest.getChildren().add(map);
 		vBoxcreateNewRequest.getChildren().add(new Label("Time-window"));
 		ComboBox<String> timeWindow = new ComboBox<String>();
 		timeWindow.setStyle("-fx-text-fill: #000000;\r\n"
@@ -247,13 +237,6 @@ public class newRequestView extends Application implements Observer {
 			}
 		});
 
-		
-		buttonShowMap.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				System.out.println("Display cliquable map");
-			}
-		});
 		
 		buttonChangePage.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
