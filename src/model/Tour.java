@@ -2,6 +2,7 @@ package model;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -105,8 +106,7 @@ public class Tour extends Observable {
 	}
 	
 	public float getFactorLongitudeToX(float longitude) {
-		return (longitude - map.getLongitudeMin()) / this.widthMap;
-		
+		return (longitude - map.getLongitudeMin()) / this.widthMap;		
 	}
 	
 	public float getFactorLatitudeToY(float latitude) {
@@ -116,6 +116,7 @@ public class Tour extends Observable {
 	public float getFactorXToLongitude(float x) {
 		return (x * this.widthMap) + map.getLongitudeMin(); 
 	}
+	
 	
 	public float getFactorYToLatitude(float y) {
 		return (y * this.heightMap) + map.getLatitudeMin();  
@@ -129,16 +130,12 @@ public class Tour extends Observable {
 	public float getHeightMap() {
 		return heightMap;
 	}
-
-	public void addDelivery(float latitude, float longitude)
+	
+	public Intersection getCloserIntersection(float latitude, float longitude)
 	{
-		//Translate pixel coordinates to street coordinates
-	     GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();	
-	     
-	     Intersection closer = null;
-	     float minimumDistance = Float.MAX_VALUE;
-	     //select the intersection closer
-	     for(Intersection i : map.getNodes().values())
+		float minimumDistance = Float.MAX_VALUE;
+		Intersection closer = null;
+		for(Intersection i : map.getNodes().values())
 	     {
 			 float dist = (float) Math.sqrt((i.getLatitude() - latitude) * (i.getLatitude() - latitude) + (i.getLongitude() - longitude) * (i.getLongitude() - longitude));
 	    	 
@@ -146,9 +143,15 @@ public class Tour extends Observable {
 	    	 {
 	    		 minimumDistance = dist;
 	    		 closer = i;
+	    		 System.out.println("closer changes");
 	    	 }
 	     }
-	    Delivery delivery = new Delivery("test", 8, closer);
+		return closer;
+	}
+	
+	public void addDelivery(Intersection closer, LocalDate date, int timeWindow)
+	{
+	    Delivery delivery = new Delivery("test", timeWindow, closer);
 	    steps.add(delivery);
 		notifyObservers();
 	}	

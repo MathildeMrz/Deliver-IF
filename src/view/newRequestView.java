@@ -49,10 +49,9 @@ public class newRequestView extends Application implements Observer {
 	private float requestedX;
 	private float requestedY;
 	private LocalDate requestedDate;
-	private String requestedStartingTimeWindow;
-	//private Tour requestedTour;
+	private int requestedStartingTimeWindow;
+	private Intersection closer;
 	private final int noOfDaysToAdd = 2;
-	private Delivery requestedDelivery;
 	
 	public newRequestView()
 	{
@@ -64,6 +63,7 @@ public class newRequestView extends Application implements Observer {
 		this.tour.addObserver(this);
 		createMap(this.map);
 		this.clicked = false;
+		this.closer = new Intersection();
 		this.stage.show();
 	}
 
@@ -90,7 +90,7 @@ public class newRequestView extends Application implements Observer {
         mapPane.getChildren().add(wareHouse);
         
         //display the deliveries destinations
-        System.out.println(tour.getSteps());
+        /*System.out.println(tour.getSteps());
         if(tour.getSteps()!= null) {
 	        for( Delivery d : tour.getSteps())
 		    {     
@@ -109,7 +109,7 @@ public class newRequestView extends Application implements Observer {
 		        destination.setRadius(5.0f);
 		        mapPane.getChildren().add(destination);
 			}
-        }
+        }*/
 		
         for (Intersection i : map.getNodes().values()) 
         { 
@@ -119,10 +119,7 @@ public class newRequestView extends Application implements Observer {
         		float y1 = tour.getFactorLatitudeToY(i.getLatitude()) * this.screenHeight;
         		float x2 = tour.getFactorLongitudeToX(s.getDestination().getLongitude()) * this.screenWidth;
         		float y2 = tour.getFactorLatitudeToY(s.getDestination().getLatitude()) * this.screenHeight;
-        		
-        		//System.out.println(x1);
-        		//System.out.println(y1);
-        		
+        	
         		Line newLine = new Line(x1 , y1 , x2 , y2); 
         		mapPane.getChildren().add(newLine);	
             }
@@ -180,14 +177,17 @@ public class newRequestView extends Application implements Observer {
 		
 		vBoxcreateNewRequest.getChildren().add(mapPane);
 		vBoxcreateNewRequest.getChildren().add(new Label("Time-window"));
-		ComboBox<String> timeWindow = new ComboBox<String>();
+		ComboBox<Integer> timeWindow = new ComboBox<Integer>();
 		timeWindow.setStyle("-fx-text-fill: #000000;\r\n"
 				+ "    -fx-border-color: #e6bf4b;\r\n"
 				+ "    -fx-border-radius: 3px;\r\n"
 				+ "	   -fx-background-color: #ffffff; ");
-		timeWindow.getItems().add("9h-10h");
-		timeWindow.getItems().add("10h-11h");
-		timeWindow.getItems().add("11h-12h");
+		timeWindow.getItems().add(9);
+		timeWindow.getItems().add(10);
+		timeWindow.getItems().add(11);
+		timeWindow.getSelectionModel().select(9);
+		requestedStartingTimeWindow = 9;
+
 		vBoxcreateNewRequest.getChildren().add(timeWindow);
 		Button buttonValidate = new Button("Valider");
 		buttonValidate.setStyle("-fx-text-fill: #000000;\r\n"
@@ -211,12 +211,30 @@ public class newRequestView extends Application implements Observer {
 			@Override
 			public void handle(MouseEvent event) {
 				if(clicked == false)
-				{
+				{				
+					requestedX = (float) event.getX();
+					requestedY = (float) event.getY();
+							
+					//Translate pixel coordinates to street coordinates (Values on the xml map)
 					float longitude = tour.getFactorXToLongitude((float)(event.getX()/screenWidth));
 					float latitude = tour.getFactorYToLatitude((float)(event.getY()/screenHeight));
-					controller.addDelivery(latitude, longitude);
-					requestedX = (float)event.getX();
-					requestedY = (float)event.getY();
+				
+					closer = tour.getCloserIntersection(latitude, longitude);
+					
+					//Closer values on the xml map
+					longitude = closer.getLongitude();
+					latitude = closer.getLatitude();		
+					
+					//Translate street coordinates to pixel coordinates(Values on panel map)
+					float circleCenterDestinationX =  tour.getFactorLongitudeToX(longitude)* screenWidth ;
+					float circleCenterDestinationY =  tour.getFactorLatitudeToY(latitude)* screenHeight;
+					
+			        Circle destination = new Circle();
+			        destination.setFill(Color.BLUE);
+			        destination.setCenterX(circleCenterDestinationX);
+			        destination.setCenterY(circleCenterDestinationY);
+			        destination.setRadius(5.0f);
+			        mapPane.getChildren().add(destination);
 				}				
 				clicked = true;
 			}
@@ -238,12 +256,9 @@ public class newRequestView extends Application implements Observer {
 			@Override
 			public void handle(MouseEvent event) {
 				System.out.println("Validate");
-				if(requestedStartingTimeWindow != null && requestedX != 0.0f && requestedY != 0.0f)
+				if(requestedX != 0.0f && requestedY != 0.0f)
 				{
-					//TODO : V�rifier que attributs non vides
-					//requestedDelivery = new Delivery();
-					//System.out.println("New delivery created");
-					//controller.newDeliveryToAdd(requestedDelivery);
+					controller.addDelivery(closer, requestedDate, requestedStartingTimeWindow);
 				}			
 			}
 		});
