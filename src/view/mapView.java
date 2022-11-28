@@ -10,6 +10,10 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableView; 
+import javafx.scene.control.TableColumn;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -23,6 +27,7 @@ import model.Intersection;
 import model.Map;
 import model.Segment;
 import model.Tour;
+import model.Delivery;
 import observer.Observable;
 import observer.Observer;
 
@@ -122,8 +127,8 @@ public class mapView extends Application implements Observer{
 		
 		VBox vBoxiIntentedTours = new VBox();
 		vBoxiIntentedTours.setStyle("-fx-border-style: solid inside;"
-	                + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
-	                + "-fx-border-radius: 5;" + "-fx-border-color: green;");
+                + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
+                + "-fx-border-radius: 5;" + "-fx-border-color: #f3f6f4;");
 		
 		VBox vBoxMap = new VBox();
 		vBoxMap.getChildren().add(map);
@@ -132,6 +137,24 @@ public class mapView extends Application implements Observer{
 		vBoxMap.getChildren().add(button);
 		Button buttonChangePage = new Button("New request");
 		vBoxMap.getChildren().add(buttonChangePage);
+		
+		//Modifications ajout tableau livraisons
+	    TableView<Delivery> table = new TableView<Delivery>();
+	    // Create column UserName (Data type of String).
+	    TableColumn<Delivery, Courier> courierCol //
+	        = new TableColumn<Delivery, Courier>("Courier name");
+	    TableColumn<Delivery, Intersection> locationCol //
+        	= new TableColumn<Delivery, Intersection>("Location");
+	    TableColumn<Delivery, String> timeWindowCol //
+	    	= new TableColumn<Delivery, String>("Time Window");
+	    courierCol.setPrefWidth(200.0d);
+	    locationCol.setPrefWidth(200.0d);
+	    timeWindowCol.setPrefWidth(200.0d);
+	    table.getColumns().addAll(courierCol, locationCol, timeWindowCol);
+	    vBoxiIntentedTours.getChildren().add(table);
+	    // -> Test ajout colonne
+	    
+	    //Fin modifications
 		
 		HBox hbox = new HBox();
 		hbox.setMinWidth(width / 2);
