@@ -72,8 +72,9 @@ public class Window  extends Application  {
 				try {
 
 					while ((st = br.readLine()) != null) {
-						String[] arrSplit_2 = st.split(";");
-						couriers.getItems().add(new Courier(arrSplit_2[0], Double.parseDouble(arrSplit_2[1])));
+						//String[] arrSplit_2 = st.split(";");
+						//couriers.getItems().add(new Courier(arrSplit_2[0], Double.parseDouble(arrSplit_2[1])));
+						couriers.getItems().add(new Courier(st));
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
