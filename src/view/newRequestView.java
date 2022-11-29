@@ -25,6 +25,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
+import javax.swing.JOptionPane;
 import model.Courier;
 import model.Delivery;
 import model.Intersection;
@@ -173,7 +174,7 @@ public class newRequestView extends Application implements Observer {
 		requestedDate = date.getValue();
 		vBoxcreateNewRequest.getChildren().add(new Label("Date:"));
 		vBoxcreateNewRequest.getChildren().add(date);
-		vBoxcreateNewRequest.getChildren().add(new Label("Localisation:"));
+		vBoxcreateNewRequest.getChildren().add(new Label("Localisation (select the delivery's destination by clicking on the map):"));
 		
 		vBoxcreateNewRequest.getChildren().add(mapPane);
 		vBoxcreateNewRequest.getChildren().add(new Label("Time-window"));
@@ -259,6 +260,9 @@ public class newRequestView extends Application implements Observer {
 				if(requestedX != 0.0f && requestedY != 0.0f)
 				{
 					controller.addDelivery(closer, requestedDate, requestedStartingTimeWindow);
+					//vBoxcreateNewRequest.getChildren().add(new Label("The delivery has been registered"));
+					JOptionPane.showMessageDialog(null, "The delivery has been registered");
+					System.out.println("Delivery added");
 				}			
 			}
 		});

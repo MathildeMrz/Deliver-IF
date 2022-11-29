@@ -6,7 +6,7 @@ import observer.Observable;
 
 public class Courier extends Observable {
 	private static final AtomicInteger ID_FACTORY = new AtomicInteger();
-	private static final double SPEED_COURIER=15.0;  
+	private static final double SPEED_COURIER = 15.0;  
 	private int id;
 	private String name;
 	private double speed;
