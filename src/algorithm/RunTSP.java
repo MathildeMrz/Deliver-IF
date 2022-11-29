@@ -1,6 +1,7 @@
 package algorithm;
 
 import java.util.List;
+import model.Segment;
 import java.util.ArrayList;
 
 import model.Intersection;
@@ -32,6 +33,25 @@ public class RunTSP {
 			for (int i=0; i<nbVertices; i++)
 				System.out.print(tsp.getSolution(i)+" ");
 			System.out.println("0");
+			
+			/*imprimer l'itinéraire*/
+			for(int i=1; i<nbVertices; i++)
+			{
+				List <Segment> steps= g.getPath(tsp.getSolution(i-1),tsp.getSolution(i)).getPath();
+				for(Segment s: steps)
+				{
+					System.out.print(s.getDestination().getId()+ " ");
+					System.out.println();
+				}
+			}
+			//dernière destination vers le warehouse
+			List <Segment> steps= g.getPath(tsp.getSolution(nbVertices-1),0).getPath();
+			for(Segment s: steps)
+			{
+				System.out.println(s.getDestination().getId()+ " ");
+				System.out.println();
+			}
+			
 		/*}*/
 	}
 

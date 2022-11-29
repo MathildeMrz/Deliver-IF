@@ -1,16 +1,17 @@
 package algorithm;
 
 import model.Intersection;
+import model.Segment;
+import model.Path;
 import model.Map;
 
 import java.util.List;
 import java.util.ArrayList;
 
 public class CompleteGraph implements Graph {
-	private static final int MAX_COST = 40;
-	private static final int MIN_COST = 10;
 	int nbVertices;
 	double [][] cost;
+	Path [][] path;
 	private static List <Intersection> Intersection;
 	
 	/**
@@ -21,22 +22,21 @@ public class CompleteGraph implements Graph {
 		this.nbVertices = nbVertices;
 		this.Intersection=intersection;
 
-		//int iseed = 1;
 		cost = new double[nbVertices][nbVertices];
+		path= new Path[nbVertices][nbVertices];
 		for (int i=0; i<nbVertices; i++){
 		    for (int j=0; j<nbVertices; j++){
 		        if (i == j) cost[i][j] = -1;
 		        else {
-		            /*int it = 16807 * (iseed % 127773) - 2836 * (iseed / 127773);
-		            if (it > 0)	iseed = it;
-		            else iseed = 2147483647 + it;
-		            cost[i][j] = MIN_COST + iseed % (MAX_COST-MIN_COST+1);*/
 		        	Dijkstra djikstra= new Dijkstra(lePlan,this.Intersection.get(i)) ;
 		        	System.out.println("Debut Dijkstra");
 		        	djikstra.run();
 		        	System.out.println("Fin Dijkstra");
 		        	cost[i][j] = djikstra.getCoutIntersection(this.Intersection.get(j).getId());
 		        	System.out.println("cost[i][j] : "+cost[i][j]);
+		        	
+		        	/*enregistrer l'itineraire*/
+		        	path[i][j]=djikstra.getItinerary(this.Intersection.get(j).getId());
 		        }
 		    }
 		}
@@ -52,6 +52,13 @@ public class CompleteGraph implements Graph {
 		if (i<0 || i>=nbVertices || j<0 || j>=nbVertices)
 			return -1.0;
 		return cost[i][j];
+	}
+
+	@Override
+	public Path getPath(int i, int j) {
+		if (i<0 || i>=nbVertices || j<0 || j>=nbVertices)
+			return null;
+		return path[i][j];
 	}
 
 	@Override

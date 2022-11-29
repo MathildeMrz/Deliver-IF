@@ -180,7 +180,7 @@ public class Dijkstra {
 		}
 	}
 
-	/*public Path getItinerary(Long idDestination) {
+	public Path getItinerary(Long idDestination) {
 
 		if (lePlan.getNodes().containsKey(idDestination)) {
 			Intersection intersectionDestination = lePlan.getNodes().get(idDestination);
@@ -212,17 +212,18 @@ public class Dijkstra {
 			if(cheminInverse.size() == 0) {
 				return null;
 			}
-			List<Segment> chemin = new ArrayList<Segment>();
+			ArrayList<Segment> chemin = new ArrayList<Segment>();
 			for (int i = cheminInverse.size() - 1; i != -1; i--) {
 				chemin.add(cheminInverse.get(i));
 			}
+			Path calculatedPath= new Path (chemin, ptDepart, intersectionDestination);
+			return calculatedPath;
 			
 		}
-		//return chemin;
-		//return cheminInverse;
-		Path calculatedPath= new Path (chemin, ptDepart, intersectionDestination);
-		return Path;
-	}*/
+		else{
+			return null;	
+		}
+	}
 
 	public HashMap<Long, Intersection> getPi() {
 		return pi;
