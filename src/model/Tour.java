@@ -21,13 +21,13 @@ public class Tour extends Observable {
 	private float widthMap;
 	private float heightMap;
 	
-	public Tour(ArrayList<Delivery> steps, Date startDate, Date endDate, ArrayList<Intersection> intersections, Courier courier, Map map)
+	public Tour(ArrayList<Delivery> steps, Date startDate, Date endDate, Courier courier, Map map)
 	{
 		this.id = ID_FACTORY.getAndIncrement();
 		steps = new ArrayList<Delivery>();
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.tourSteps = intersections;
+		this.tourSteps = new ArrayList<Intersection>();
 		this.courier = courier;
 		this.map = map;
 		this.widthMap = map.getLongitudeMax() - map.getLongitudeMin();
@@ -41,6 +41,7 @@ public class Tour extends Observable {
 		this.widthMap = map.getLongitudeMax() - map.getLongitudeMin();
 		this.heightMap = map.getLatitudeMax() - map.getLatitudeMin();	
 		steps = new ArrayList<Delivery>();
+		this.tourSteps = new ArrayList<Intersection>();
 	}
 
 	public int getId() {
@@ -63,8 +64,8 @@ public class Tour extends Observable {
 		this.endDate = endDate;
 	}
 
-	public void setIntersections(ArrayList<Intersection> intersections) {
-		this.tourSteps = intersections;
+	public void setTourSteps(ArrayList<Intersection> tourSteps) {
+		this.tourSteps = tourSteps;
 	}
 
 	public void setCourier(Courier courier) {
@@ -91,7 +92,7 @@ public class Tour extends Observable {
 		return endDate;
 	}
 
-	public ArrayList<Intersection> getIntersections() {
+	public ArrayList<Intersection> getTourSteps() {
 		return tourSteps;
 	}
 
@@ -155,5 +156,11 @@ public class Tour extends Observable {
 	    steps.add(delivery);
 		notifyObservers();
 	}	
+	
+	public void addTourSteps(Intersection tourSteps)
+	{
+		this.tourSteps.add(tourSteps);
+		notifyObservers();
+	}
 	
 }

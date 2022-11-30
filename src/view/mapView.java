@@ -50,6 +50,7 @@ public class mapView extends Application implements Observer{
 		/*Init attributes*/
 		this.stage = stage;	
 		this.map.addObserver(this);
+		this.tour.addObserver(this);
 		this.controller = new Controller(this.stage, this.tour, this.couriers);
 
 		/*Resize the window*/
@@ -88,16 +89,16 @@ public class mapView extends Application implements Observer{
         mapPane.getChildren().add(wareHouse);
         
         //display the deliveries destinations
-        for(Intersection d : map.getDestinations())
+        for(Delivery d : tour.getSteps())
 	    {     
-        	float latDestination = d.getLatitude();
-        	float longDestination = d.getLongitude();
+        	float latDestination = d.getDestination().getLatitude();
+        	float longDestination = d.getDestination().getLongitude();
         	
         	float circleCenterDestinationX = tour.getFactorLongitudeToX(longDestination) * this.screenWidth;
         	float circleCenterDestinationY = tour.getFactorLatitudeToY(latDestination) * this.screenHeight;
 	        
 	        Circle destination = new Circle();
-	        destination.setFill(Color.YELLOW);
+	        destination.setFill(Color.BLUE);
 	        destination.setCenterX(circleCenterDestinationX);
 	        destination.setCenterY(circleCenterDestinationY);
 	        destination.setRadius(5.0f);
@@ -118,21 +119,23 @@ public class mapView extends Application implements Observer{
         		mapPane.getChildren().add(newLine);	
             }
         } 
+      
         
      // display the tour
-        for (Intersection tourStep : map.getTourSteps()) 
-        { 
-        	for (Segment s : tourStep.getOutSections()) 
-        	{     
-        		float x1 = tour.getFactorLongitudeToX(tourStep.getLongitude()) * this.screenWidth;
-        		float y1 = tour.getFactorLatitudeToY(tourStep.getLatitude()) * this.screenHeight;
-        		float x2 = tour.getFactorLongitudeToX(s.getDestination().getLongitude()) * this.screenWidth;
-        		float y2 = tour.getFactorLatitudeToY(s.getDestination().getLatitude()) * this.screenHeight;
+        if(tour.getSteps()!= null) {
+	        for (int i =0; i<tour.getTourSteps().size() -1; i++) { 
+	        	
+        		float x1 = tour.getFactorLongitudeToX(tour.getTourSteps().get(i).getLongitude()) * this.screenWidth;
+        		float y1 = tour.getFactorLatitudeToY(tour.getTourSteps().get(i).getLatitude()) * this.screenHeight;
+        		float x2 = tour.getFactorLongitudeToX(tour.getTourSteps().get(i+1).getLongitude()) * this.screenWidth;
+        		float y2 = tour.getFactorLatitudeToY(tour.getTourSteps().get(i+1).getLatitude()) * this.screenHeight;
         	
         		Line newLine = new Line(x1 , y1 , x2 , y2); 
+        		newLine.setStroke(Color.RED);
+        		newLine.setStrokeWidth(4);
         		mapPane.getChildren().add(newLine);	
-            }
-        } 
+	        } 
+        }
         
         display(mapPane);
 	}
@@ -182,22 +185,15 @@ public class mapView extends Application implements Observer{
 		button.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				Intersection ptDepart = map.getWarehouse();
 				List<Intersection> sommets = new ArrayList<Intersection>();
-				Long id1 = Long.parseLong("2292223595");
-							
-				Intersection intersection1 = map.getNodes().get(id1);
-				sommets.add(ptDepart);
-				sommets.add(intersection1);
-				Long id2 = Long.parseLong("26317214");
-				Intersection intersection2 = map.getNodes().get(id2);
-				sommets.add(intersection2);
-				
+				sommets.add(map.getWarehouse());
+				for(Delivery d : tour.getSteps()) {
+					sommets.add(d.getDestination());
+				}
 				System.out.println("Debut TSP");
-				RunTSP testTSP = new RunTSP(3, sommets, map);
+				RunTSP testTSP = new RunTSP(sommets.size(), sommets, map, tour);
 				testTSP.start();
 				System.out.println("Fin TSP");
-
 			}
 		});
 		
@@ -284,8 +280,7 @@ public class mapView extends Application implements Observer{
 
 	@Override
 	public void update(Observable observed, Object arg) {
-		// TODO Auto-generated method stub
-		
+		this.createMap(map);	
 	}
 
 }

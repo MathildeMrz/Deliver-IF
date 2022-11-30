@@ -2,27 +2,32 @@ package algorithm;
 
 import java.util.List;
 import model.Segment;
+import model.Tour;
+import observer.Observable;
+
 import java.util.ArrayList;
 
 import model.Intersection;
 import model.Map;
 
-public class RunTSP {
+public class RunTSP extends Observable {
 	
 	private static int nbVertices;
 	private static List <Intersection> Intersection=new ArrayList<Intersection>();
 	private static Map lePlan;
+	private Tour tour;
 	
 	
-	public RunTSP(int nbVertices, List<Intersection> intersection,Map lePlan) {
+	public RunTSP(int nbVertices, List<Intersection> intersection,Map lePlan, Tour tour) {
 		this.nbVertices = nbVertices;
 		Intersection = intersection;
 		this.lePlan=lePlan;
+		this.tour = tour;
 	}
 
 
 
-	public static void start() {
+	public void start() {
 		TemplateTSP tsp = new TSP1();
 		/*for (int nbVertices = 8; nbVertices <= 16; nbVertices += 2){*/
 			Graph g = new CompleteGraph(nbVertices,Intersection,lePlan);
@@ -35,28 +40,24 @@ public class RunTSP {
 			System.out.println("0");
 			
 			/*imprimer l'itinéraire*/
-			ArrayList <Intersection> intersection_steps=new ArrayList <Intersection>();
-			intersection_steps.add(Intersection.get(tsp.getSolution(0)));
+			tour.addTourSteps(Intersection.get(tsp.getSolution(0)));
 			for(int i=1; i<nbVertices; i++)
 			{
 				List <Segment> steps= g.getPath(tsp.getSolution(i-1),tsp.getSolution(i)).getPath();
 				for(Segment s: steps)
 				{
-					System.out.print(s.getDestination().getId()+ " ");
-					intersection_steps.add(s.getDestination());
-					
+					tour.addTourSteps(s.getDestination());		
 				}
 			}
 			//dernière destination vers le warehouse
 			List <Segment> steps= g.getPath(tsp.getSolution(nbVertices-1),0).getPath();
 			for(Segment s: steps)
 			{
-				System.out.println(s.getDestination().getId()+ " ");
-				intersection_steps.add(s.getDestination());
+				tour.addTourSteps(s.getDestination());	
 			}
-			System.out.println();
 			
 		/*}*/
 	}
+
 
 }

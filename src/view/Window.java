@@ -50,7 +50,7 @@ public class Window  extends Application  {
 		this.mv.setCouriers(this.couriers);
 		this.mv.setHeight(this.height);
 		this.mv.setWidth(this.width);
-		this.mv.setPlan(this.map);
+		this.mv.setMap(this.map);
 		this.mv.setTour(tour);
 		this.mv.start(new Stage());	
 		
