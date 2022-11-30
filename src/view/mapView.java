@@ -34,20 +34,22 @@ import observer.Observer;
 
 public class mapView extends Application implements Observer{
 
-	private Map plan;
+	private Map map;
 	private Controller controller;
 	private int width;
 	private int height;
 	private ListView<Courier> couriers;
 	private Stage stage;
 	private Tour tour;
+	private int screenWidth; 
+	private int screenHeight;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
 		
 		/*Init attributes*/
 		this.stage = stage;	
-		this.plan.addObserver(this);
+		this.map.addObserver(this);
 		this.controller = new Controller(this.stage, this.tour, this.couriers);
 
 		/*Resize the window*/
@@ -58,73 +60,84 @@ public class mapView extends Application implements Observer{
 		//stage.setFullScreen(true);
 		
 		/*Display stage*/
-		createMap(this.plan);	
+		createMap(this.map);	
 	}
 	
-	public void createMap(Map plan)
+	public void createMap(Map map)
 	{
-		Pane map = new Pane();
-        map.setMinWidth(width/4);
-        map.setMinHeight(height/4);  
+		this.screenHeight = height/4;
+		this.screenWidth = width/4;
+		
+		Pane mapPane = new Pane();
+		mapPane.setMinWidth(width/4);
+		mapPane.setMinHeight(height/4);  
 
-        map.setStyle("-fx-border-style: solid inside;"
+		mapPane.setStyle("-fx-border-style: solid inside;"
                 + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
                 + "-fx-border-radius: 5;" + "-fx-border-color: blue;");
     
-        float widthSegment = plan.getLongitudeMax() - plan.getLongitudeMin();
-        float heightSegment = plan.getLatitudeMax() - plan.getLatitudeMin();
 
         //Add warehouse
-        float latWareHouse = plan.getWarehouse().getLatitude();
-        float longWareHouse = plan.getWarehouse().getLongitude();
-   
-        float circleCenterX = ((longWareHouse - plan.getLongitudeMin()) / widthSegment) * width/4;
-        float circleCenterY = ((latWareHouse - plan.getLatitudeMin()) / heightSegment) * height/4;       
- 
+		float circleCenterX = tour.getFactorLongitudeToX(map.getWarehouse().getLongitude()) * this.screenWidth;
+        float circleCenterY = tour.getFactorLatitudeToY(map.getWarehouse().getLatitude()) * this.screenHeight;
+        
         Circle wareHouse = new Circle();
         wareHouse.setCenterX(circleCenterX);
         wareHouse.setCenterY(circleCenterY);
         wareHouse.setRadius(10.0f);
-        map.getChildren().add(wareHouse);
+        mapPane.getChildren().add(wareHouse);
         
         //display the deliveries destinations
-        for(Intersection d : plan.getDestinations())
+        for(Intersection d : map.getDestinations())
 	    {     
         	float latDestination = d.getLatitude();
         	float longDestination = d.getLongitude();
         	
-        	float circleCenterDestinationX = ((longDestination - plan.getLongitudeMin()) / widthSegment) * width/4;
-        	float circleCenterDestinationY = ((latDestination - plan.getLatitudeMin()) / heightSegment) * height/4;
+        	float circleCenterDestinationX = tour.getFactorLongitudeToX(longDestination) * this.screenWidth;
+        	float circleCenterDestinationY = tour.getFactorLatitudeToY(latDestination) * this.screenHeight;
 	        
 	        Circle destination = new Circle();
 	        destination.setFill(Color.YELLOW);
 	        destination.setCenterX(circleCenterDestinationX);
 	        destination.setCenterY(circleCenterDestinationY);
 	        destination.setRadius(5.0f);
-	        map.getChildren().add(destination);
+	        mapPane.getChildren().add(destination);
 		}
 		
-        for (int counterIntersection = 0; counterIntersection < plan.getNodes().size(); counterIntersection++) 
+        // display the map
+        for (Intersection i : map.getNodes().values()) 
         { 
-        	Intersection i = plan.getNodes().get(plan.getNodes().keySet().toArray()[counterIntersection]);
-        	for (int counterSegment = 0; counterSegment < i.getOutSections().size(); counterSegment++) 
-        	{ 
-        		Segment s = i.getOutSections().get(counterSegment);
-        		
-        		float x1 = ((i.getLongitude() - plan.getLongitudeMin()) / widthSegment) * width/4;
-        		float y1 = ((i.getLatitude() - plan.getLatitudeMin()) / heightSegment) * height/4;
-        		float x2 = ((s.getDestination().getLongitude() - plan.getLongitudeMin()) / widthSegment) * width/4;
-        		float y2 = ((s.getDestination().getLatitude() - plan.getLatitudeMin()) / heightSegment) * height/4;
-        		
+        	for (Segment s : i.getOutSections()) 
+        	{      
+        		float x1 = tour.getFactorLongitudeToX(i.getLongitude()) * this.screenWidth;
+        		float y1 = tour.getFactorLatitudeToY(i.getLatitude()) * this.screenHeight;
+        		float x2 = tour.getFactorLongitudeToX(s.getDestination().getLongitude()) * this.screenWidth;
+        		float y2 = tour.getFactorLatitudeToY(s.getDestination().getLatitude()) * this.screenHeight;
+        	
         		Line newLine = new Line(x1 , y1 , x2 , y2); 
-        		map.getChildren().add(newLine);	
+        		mapPane.getChildren().add(newLine);	
             }
         } 
         
-        display(map);
+     // display the tour
+        for (Intersection tourStep : map.getTourSteps()) 
+        { 
+        	for (Segment s : tourStep.getOutSections()) 
+        	{     
+        		float x1 = tour.getFactorLongitudeToX(tourStep.getLongitude()) * this.screenWidth;
+        		float y1 = tour.getFactorLatitudeToY(tourStep.getLatitude()) * this.screenHeight;
+        		float x2 = tour.getFactorLongitudeToX(s.getDestination().getLongitude()) * this.screenWidth;
+        		float y2 = tour.getFactorLatitudeToY(s.getDestination().getLatitude()) * this.screenHeight;
+        	
+        		Line newLine = new Line(x1 , y1 , x2 , y2); 
+        		mapPane.getChildren().add(newLine);	
+            }
+        } 
+        
+        display(mapPane);
 	}
 
-	public void display(Pane map) {
+	public void display(Pane mapPane) {
 		
 		VBox vBoxiIntentedTours = new VBox();
 		vBoxiIntentedTours.setStyle("-fx-border-style: solid inside;"
@@ -132,7 +145,7 @@ public class mapView extends Application implements Observer{
                 + "-fx-border-radius: 5;" + "-fx-border-color: #f3f6f4;");
 		
 		VBox vBoxMap = new VBox();
-		vBoxMap.getChildren().add(map);
+		vBoxMap.getChildren().add(mapPane);
 
 		Button button = new Button("TSP");
 		vBoxMap.getChildren().add(button);
@@ -169,19 +182,19 @@ public class mapView extends Application implements Observer{
 		button.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				Intersection ptDepart = plan.getWarehouse();
+				Intersection ptDepart = map.getWarehouse();
 				List<Intersection> sommets = new ArrayList<Intersection>();
 				Long id1 = Long.parseLong("2292223595");
 							
-				Intersection intersection1 = plan.getNodes().get(id1);
+				Intersection intersection1 = map.getNodes().get(id1);
 				sommets.add(ptDepart);
 				sommets.add(intersection1);
 				Long id2 = Long.parseLong("26317214");
-				Intersection intersection2 = plan.getNodes().get(id2);
+				Intersection intersection2 = map.getNodes().get(id2);
 				sommets.add(intersection2);
 				
 				System.out.println("Debut TSP");
-				RunTSP testTSP = new RunTSP(3, sommets, plan);
+				RunTSP testTSP = new RunTSP(3, sommets, map);
 				testTSP.start();
 				System.out.println("Fin TSP");
 
@@ -201,7 +214,7 @@ public class mapView extends Application implements Observer{
 				        	   nr.setCouriers(couriers);
 				        	   nr.setHeight(height);
 				        	   nr.setWidth(width);
-				        	   nr.setPlan(plan);
+				        	   nr.setPlan(map);
 				        	   nr.setTour(tour);
 				        	   nr.start(stage);	   
 							} catch (Exception e) {
@@ -217,12 +230,12 @@ public class mapView extends Application implements Observer{
 		this.stage.show();
 	}
 
-	public Map getPlan() {
-		return plan;
+	public Map getMap() {
+		return map;
 	}
 
-	public void setPlan(Map plan) {
-		this.plan = plan;
+	public void setMap(Map map) {
+		this.map = map;
 	}
 
 	public Controller getController() {
