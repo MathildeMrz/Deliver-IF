@@ -62,8 +62,8 @@ public class newRequestView extends Application implements Observer {
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.stage = stage;
-		stage.setFullScreen(true);
-		//this.tour.addObserver(this);
+		stage.setWidth(width/1.3);
+		stage.setHeight(height/1.35);
 		createMap(this.map);
 		this.clicked = false;
 		this.closer = new Intersection();
@@ -133,7 +133,6 @@ public class newRequestView extends Application implements Observer {
 	}
 
 	public void display(Pane mapPane) {
-		
 		HBox hbox = new HBox();
 		hbox.setMinWidth(width / 2);
 		hbox.setMinHeight(height / 3);
@@ -210,7 +209,6 @@ public class newRequestView extends Application implements Observer {
 
 		Scene scene = new Scene(vbox, Double.MAX_VALUE, Double.MAX_VALUE);
 		stage.setScene(scene);		
-			
 		mapPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -399,6 +397,10 @@ public void setDeliveries(ListView<Delivery> deliveries) {
 
 public void setStage(Stage stage) {
 	this.stage = stage;
+}
+
+public Stage getStage() {
+	return this.stage;
 }
 }
 

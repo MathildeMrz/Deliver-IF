@@ -2,6 +2,8 @@ package view;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.desktop.ScreenSleepEvent;
+import java.awt.geom.Rectangle2D;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,6 +13,7 @@ import java.io.IOException;
 import controller.Controller;
 import javafx.application.Application;
 import javafx.scene.control.ListView;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Courier;
 import model.Delivery;

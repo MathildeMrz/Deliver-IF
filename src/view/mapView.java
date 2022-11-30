@@ -54,10 +54,8 @@ public class mapView extends Application implements Observer{
 		System.out.println("2");
 
 		/*Resize the window*/
-		stage.setResizable(true);
-		stage.setFullScreen(true);
-		stage.centerOnScreen();
-		//stage.setFullScreen(true);
+		stage.setWidth(width/1.3);
+		stage.setHeight(height/1.4);
 		/*Display stage*/
 		createMap(this.map);	
 	}
@@ -222,6 +220,7 @@ public class mapView extends Application implements Observer{
 				        	   nr.setPlan(map);
 				        	   nr.setTour(tour);
 				        	   nr.setDeliveries(deliveries);
+				        	   
 				        	   nr.start(stage);	   
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
