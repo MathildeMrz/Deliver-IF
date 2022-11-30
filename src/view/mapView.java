@@ -43,6 +43,7 @@ public class mapView extends Application implements Observer{
 	private Tour tour;
 	private int screenWidth; 
 	private int screenHeight;
+	private int margin;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -55,8 +56,7 @@ public class mapView extends Application implements Observer{
 
 		/*Resize the window*/
 		stage.setResizable(true);
-		stage.setWidth(width / 2);
-		stage.setHeight(height / 3);
+		stage.setFullScreen(true);
 		stage.centerOnScreen();
 		//stage.setFullScreen(true);
 		
@@ -66,21 +66,23 @@ public class mapView extends Application implements Observer{
 	
 	public void createMap(Map map)
 	{
-		this.screenHeight = height/4;
-		this.screenWidth = width/4;
+		this.screenHeight = (int)(height/(2.5));
+		this.screenWidth = (int)(width/(2.5));
+		this.margin = 45;
 		
 		Pane mapPane = new Pane();
-		mapPane.setMinWidth(width/4);
-		mapPane.setMinHeight(height/4);  
+		mapPane.setMinWidth(screenHeight);
+		mapPane.setMinHeight(screenHeight);
+		
 
 		mapPane.setStyle("-fx-border-style: solid inside;"
                 + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
-                + "-fx-border-radius: 5;" + "-fx-border-color: blue;");
+                + "-fx-border-radius: 5;" + "-fx-border-color: blue;" + "-fx-border-insets: 30px;");
     
 
         //Add warehouse
-		float circleCenterX = tour.getFactorLongitudeToX(map.getWarehouse().getLongitude()) * this.screenWidth;
-        float circleCenterY = tour.getFactorLatitudeToY(map.getWarehouse().getLatitude()) * this.screenHeight;
+		float circleCenterX = tour.getFactorLongitudeToX(map.getWarehouse().getLongitude()) * this.screenWidth + margin;
+        float circleCenterY = tour.getFactorLatitudeToY(map.getWarehouse().getLatitude()) * this.screenHeight + margin;
         
         Circle wareHouse = new Circle();
         wareHouse.setCenterX(circleCenterX);
@@ -99,8 +101,8 @@ public class mapView extends Application implements Observer{
 	        
 	        Circle destination = new Circle();
 	        destination.setFill(Color.BLUE);
-	        destination.setCenterX(circleCenterDestinationX);
-	        destination.setCenterY(circleCenterDestinationY);
+	        destination.setCenterX(circleCenterDestinationX + margin);
+	        destination.setCenterY(circleCenterDestinationY + margin);
 	        destination.setRadius(5.0f);
 	        mapPane.getChildren().add(destination);
 		}
@@ -115,7 +117,7 @@ public class mapView extends Application implements Observer{
         		float x2 = tour.getFactorLongitudeToX(s.getDestination().getLongitude()) * this.screenWidth;
         		float y2 = tour.getFactorLatitudeToY(s.getDestination().getLatitude()) * this.screenHeight;
         	
-        		Line newLine = new Line(x1 , y1 , x2 , y2); 
+        		Line newLine = new Line(x1 + margin, y1 + margin, x2 + margin, y2 + margin); 
         		mapPane.getChildren().add(newLine);	
             }
         } 
@@ -130,7 +132,7 @@ public class mapView extends Application implements Observer{
         		float x2 = tour.getFactorLongitudeToX(tour.getTourSteps().get(i+1).getLongitude()) * this.screenWidth;
         		float y2 = tour.getFactorLatitudeToY(tour.getTourSteps().get(i+1).getLatitude()) * this.screenHeight;
         	
-        		Line newLine = new Line(x1 , y1 , x2 , y2); 
+        		Line newLine = new Line(x1 + margin, y1 + margin, x2 + margin, y2 + margin); 
         		newLine.setStroke(Color.RED);
         		newLine.setStrokeWidth(4);
         		mapPane.getChildren().add(newLine);	
@@ -145,7 +147,7 @@ public class mapView extends Application implements Observer{
 		VBox vBoxiIntentedTours = new VBox();
 		vBoxiIntentedTours.setStyle("-fx-border-style: solid inside;"
                 + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
-                + "-fx-border-radius: 5;" + "-fx-border-color: #f3f6f4;");
+                + "-fx-border-radius: 5;" + "-fx-border-color: #f3f6f4;" + "-fx-margin: 120 150 150 120;");
 		
 		VBox vBoxMap = new VBox();
 		vBoxMap.getChildren().add(mapPane);

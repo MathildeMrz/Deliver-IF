@@ -23,6 +23,7 @@ public class RunTSP extends Observable {
 		Intersection = intersection;
 		this.lePlan=lePlan;
 		this.tour = tour;
+		this.tour.clearTourSteps();
 	}
 
 

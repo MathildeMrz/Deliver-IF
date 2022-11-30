@@ -163,4 +163,8 @@ public class Tour extends Observable {
 		notifyObservers();
 	}
 	
+	public void clearTourSteps() {
+		this.tourSteps.clear();
+	}
+	
 }

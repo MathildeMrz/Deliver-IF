@@ -46,7 +46,8 @@ public class newRequestView extends Application implements Observer {
 	private Stage stage;
 	private boolean clicked;
 	private int screenWidth; 
-	private int screenHeight; 
+	private int screenHeight;
+	private int margin;
 	private float requestedX;
 	private float requestedY;
 	private LocalDate requestedDate;
@@ -61,6 +62,7 @@ public class newRequestView extends Application implements Observer {
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.stage = stage;
+		stage.setFullScreen(true);
 		this.tour.addObserver(this);
 		createMap(this.map);
 		this.clicked = false;
@@ -70,23 +72,24 @@ public class newRequestView extends Application implements Observer {
 
 	public void createMap(Map map)
 	{
-		this.screenHeight = height/4;
-		this.screenWidth = width/4;
+		this.screenHeight = height/2;
+		this.screenWidth = width/2;
+		this.margin = 50;
 		Pane mapPane = new Pane();
         mapPane.setMinWidth(screenWidth);
         mapPane.setMinHeight(screenHeight);  
 
         mapPane.setStyle("-fx-border-style: solid inside;"
                 + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
-                + "-fx-border-radius: 5;" + "-fx-border-color: blue;");
+                + "-fx-border-radius: 5;" + "-fx-border-color: blue;" + "-fx-border-insets: 30px;");
 
         //Add warehouse
         float circleCenterX = tour.getFactorLongitudeToX(map.getWarehouse().getLongitude()) * this.screenWidth;
         float circleCenterY = tour.getFactorLatitudeToY(map.getWarehouse().getLatitude()) * this.screenHeight;
   
         Circle wareHouse = new Circle();
-        wareHouse.setCenterX(circleCenterX);
-        wareHouse.setCenterY(circleCenterY);
+        wareHouse.setCenterX(circleCenterX +margin);
+        wareHouse.setCenterY(circleCenterY +margin);
         wareHouse.setRadius(10.0f);
         mapPane.getChildren().add(wareHouse);
         
@@ -121,7 +124,7 @@ public class newRequestView extends Application implements Observer {
         		float x2 = tour.getFactorLongitudeToX(s.getDestination().getLongitude()) * this.screenWidth;
         		float y2 = tour.getFactorLatitudeToY(s.getDestination().getLatitude()) * this.screenHeight;
         	
-        		Line newLine = new Line(x1 , y1 , x2 , y2); 
+        		Line newLine = new Line(x1 + margin, y1 + margin, x2 + margin, y2 + margin); 
         		mapPane.getChildren().add(newLine);	
             }
         } 
@@ -213,12 +216,12 @@ public class newRequestView extends Application implements Observer {
 			public void handle(MouseEvent event) {
 				if(clicked == false)
 				{				
-					requestedX = (float) event.getX();
-					requestedY = (float) event.getY();
+					requestedX = (float) event.getX() - margin;
+					requestedY = (float) event.getY() - margin;
 							
 					//Translate pixel coordinates to street coordinates (Values on the xml map)
-					float longitude = tour.getFactorXToLongitude((float)(event.getX()/screenWidth));
-					float latitude = tour.getFactorYToLatitude((float)(event.getY()/screenHeight));
+					float longitude = tour.getFactorXToLongitude(requestedX/screenWidth);
+					float latitude = tour.getFactorYToLatitude(requestedY/screenHeight);
 				
 					closer = tour.getCloserIntersection(latitude, longitude);
 					
@@ -232,8 +235,8 @@ public class newRequestView extends Application implements Observer {
 					
 			        Circle destination = new Circle();
 			        destination.setFill(Color.BLUE);
-			        destination.setCenterX(circleCenterDestinationX);
-			        destination.setCenterY(circleCenterDestinationY);
+			        destination.setCenterX(circleCenterDestinationX + margin);
+			        destination.setCenterY(circleCenterDestinationY + margin);
 			        destination.setRadius(5.0f);
 			        mapPane.getChildren().add(destination);
 				}				
