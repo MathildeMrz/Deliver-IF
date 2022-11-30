@@ -52,7 +52,7 @@ public class newRequestView extends Application implements Observer {
 	private float requestedY;
 	private LocalDate requestedDate;
 	private int requestedStartingTimeWindow;
-	private Intersection closer;
+	private Intersection closerIntersection;
 	private final int noOfDaysToAdd = 2;
 	
 	public newRequestView()
@@ -66,7 +66,7 @@ public class newRequestView extends Application implements Observer {
 		stage.setHeight(height/1.35);
 		createMap(this.map);
 		this.clicked = false;
-		this.closer = new Intersection();
+		this.closerIntersection = new Intersection();
 		this.stage.show();
 	}
 
@@ -221,11 +221,11 @@ public class newRequestView extends Application implements Observer {
 					float longitude = tour.getFactorXToLongitude(requestedX/screenWidth);
 					float latitude = tour.getFactorYToLatitude(requestedY/screenHeight);
 				
-					closer = tour.getCloserIntersection(latitude, longitude);
+					closerIntersection = tour.getCloserIntersection(latitude, longitude);
 					
 					//Closer values on the xml map
-					longitude = closer.getLongitude();
-					latitude = closer.getLatitude();		
+					longitude = closerIntersection.getLongitude();
+					latitude = closerIntersection.getLatitude();		
 					
 					//Translate street coordinates to pixel coordinates(Values on panel map)
 					float circleCenterDestinationX =  tour.getFactorLongitudeToX(longitude)* screenWidth ;
@@ -261,7 +261,7 @@ public class newRequestView extends Application implements Observer {
 				if(requestedX != 0.0f && requestedY != 0.0f)
 				{
 					System.out.println("BBBBBBBBBBBBBBBBB");
-					controller.addDelivery(closer, requestedDate, requestedStartingTimeWindow);
+					controller.addDelivery(closerIntersection, requestedDate, requestedStartingTimeWindow);
 					System.out.println("AAAAAAAAAAAA");
 					//vBoxcreateNewRequest.getChildren().add(new Label("The delivery has been registered"));
 					JOptionPane.showMessageDialog(null, "The delivery has been registered");
