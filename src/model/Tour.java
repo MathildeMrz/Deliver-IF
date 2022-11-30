@@ -135,7 +135,7 @@ public class Tour extends Observable {
 	public Intersection getCloserIntersection(float latitude, float longitude)
 	{
 		float minimumDistance = Float.MAX_VALUE;
-		Intersection closer = null;
+		Intersection closerIntersection = null;
 		for(Intersection i : map.getNodes().values())
 	     {
 			 float dist = (float) Math.sqrt((i.getLatitude() - latitude) * (i.getLatitude() - latitude) + (i.getLongitude() - longitude) * (i.getLongitude() - longitude));
@@ -143,17 +143,17 @@ public class Tour extends Observable {
 	    	 if(dist < minimumDistance)
 	    	 {
 	    		 minimumDistance = dist;
-	    		 closer = i;
-	    		 System.out.println("closer changes");
+	    		 closerIntersection = i;
+	    		 System.out.println("closerIntersection changes");
 	    	 }
 	     }
-		return closer;
+		return closerIntersection;
 	}
 	
-	public void addDelivery(Intersection closer, LocalDate date, int timeWindow)
+	public void addDelivery(Intersection closerIntersection, LocalDate date, int timeWindow)
 	{
 		System.out.println("EEEEEEEEEEEEEEE");
-	    Delivery delivery = new Delivery("test", timeWindow, closer);
+	    Delivery delivery = new Delivery("test", timeWindow, closerIntersection);
 	    System.out.println("DDDDDDDDDDDDDD");
 	    steps.add(delivery);
 	    System.out.println("Avant notify");
