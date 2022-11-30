@@ -8,6 +8,7 @@ import observer.Observable;
 public class Map extends Observable {
 	private HashMap<Long, Intersection> nodes;
 	private ArrayList<Intersection> destinations;
+	//private ArrayList<Tour> tours;
 	private Intersection warehouse;
 	private float latitudeMin;
 	private float latitudeMax;
@@ -17,6 +18,7 @@ public class Map extends Observable {
 	public Map() {
 		this.nodes  = new HashMap<Long,Intersection>();
 		this.destinations  = new ArrayList<Intersection>();
+		//this.tours = new ArrayList<Tour>();
 		this.warehouse = null;
 		latitudeMin = Float.MAX_VALUE;
 		latitudeMax = 0;
@@ -40,6 +42,10 @@ public class Map extends Observable {
 	public ArrayList<Intersection> getDestinations() {
 		return destinations;
 	}
+	
+	/*public ArrayList<Tour> getTours() {
+		return tours;
+	}*/
 
 	public Intersection getWarehouse() {
 		return warehouse;
