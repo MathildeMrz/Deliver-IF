@@ -13,6 +13,7 @@ import javafx.application.Application;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 import model.Courier;
+import model.Delivery;
 import model.Map;
 import model.Tour;
 import xml.XMLdeserializer;
@@ -23,6 +24,7 @@ public class Window  extends Application  {
 	private int width;
 	private int height;
 	private ListView<Courier> couriers;
+	private ListView<Delivery> deliveries;
 	private mapView mv;
 	private Tour tour;
 	
@@ -45,6 +47,7 @@ public class Window  extends Application  {
 		XMLdeserializer.load(this.map);
 		
 		this.tour = new Tour(map);
+		this.deliveries = initDeliveries();
 		this.mv = new mapView();
 		this.mv.setController(this.controller);
 		this.mv.setCouriers(this.couriers);
@@ -52,7 +55,22 @@ public class Window  extends Application  {
 		this.mv.setWidth(this.width);
 		this.mv.setMap(this.map);
 		this.mv.setTour(tour);
+		System.out.println("Deliveries of window "+deliveries);
+		this.mv.setDeliveries(deliveries);
 		this.mv.start(new Stage());	
+		
+	}
+	
+	public ListView<Delivery> initDeliveries()
+	{
+		//ArrayList<Tour> tours = plan.getTours();
+		//for(Tour t : )
+		this.deliveries = new ListView<Delivery>();
+		for(Delivery d : tour.getSteps())
+		{
+			deliveries.getItems().add(d);
+		}
+		return deliveries;
 		
 	}
 

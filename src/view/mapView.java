@@ -2,6 +2,7 @@ package view;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import algorithm.RunTSP;
 import controller.Controller;
 import javafx.application.Application;
@@ -9,11 +10,8 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TableView; 
-import javafx.scene.control.TableColumn;
-import javafx.collections.ObservableList;
-import javafx.collections.FXCollections;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -22,13 +20,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
-import javax.swing.JOptionPane;
 import model.Courier;
+import model.Delivery;
 import model.Intersection;
 import model.Map;
 import model.Segment;
 import model.Tour;
-import model.Delivery;
 import observer.Observable;
 import observer.Observer;
 
@@ -39,6 +36,7 @@ public class mapView extends Application implements Observer{
 	private int width;
 	private int height;
 	private ListView<Courier> couriers;
+	private ListView<Delivery> deliveries;
 	private Stage stage;
 	private Tour tour;
 	private int screenWidth; 
@@ -50,20 +48,27 @@ public class mapView extends Application implements Observer{
 		
 		/*Init attributes*/
 		this.stage = stage;	
-		this.map.addObserver(this);
+		//this.map.addObserver(this);
 		this.tour.addObserver(this);
 		this.controller = new Controller(this.stage, this.tour, this.couriers);
+		System.out.println("2");
 
 		/*Resize the window*/
 		stage.setResizable(true);
 		stage.setFullScreen(true);
 		stage.centerOnScreen();
 		//stage.setFullScreen(true);
-		
 		/*Display stage*/
 		createMap(this.map);	
 	}
 	
+	public ListView<Delivery> getDeliveries() {
+		return deliveries;
+	}
+
+	public void setDeliveries(ListView<Delivery> deliveries) {
+		this.deliveries = deliveries;
+	}
 	public void createMap(Map map)
 	{
 		this.screenHeight = (int)(height/(2.5));
@@ -158,19 +163,21 @@ public class mapView extends Application implements Observer{
 		vBoxMap.getChildren().add(buttonChangePage);
 		
 		//Modifications ajout tableau livraisons
-	    TableView<Delivery> table = new TableView<Delivery>();
-	    // Create column UserName (Data type of String).
-	    TableColumn<Delivery, Courier> courierCol //
-	        = new TableColumn<Delivery, Courier>("Courier name");
-	    TableColumn<Delivery, Intersection> locationCol //
-        	= new TableColumn<Delivery, Intersection>("Location");
-	    TableColumn<Delivery, String> timeWindowCol //
-	    	= new TableColumn<Delivery, String>("Time Window");
-	    courierCol.setPrefWidth(200.0d);
-	    locationCol.setPrefWidth(200.0d);
-	    timeWindowCol.setPrefWidth(200.0d);
-	    table.getColumns().addAll(courierCol, locationCol, timeWindowCol);
-	    vBoxiIntentedTours.getChildren().add(table);
+	    //TableView<Delivery> table = new TableView<Delivery>();
+	    //Create column UserName (Data type of String).
+	    //TableColumn<Delivery, Courier> courierCol //
+	        //= new TableColumn<Delivery, Courier>("Courier name");
+	    //TableColumn<Delivery, Intersection> locationCol //
+        	//= new TableColumn<Delivery, Intersection>("Location");
+	    //TableColumn<Delivery, String> timeWindowCol //
+	    	//= new TableColumn<Delivery, String>("Time Window");
+	    //courierCol.setPrefWidth(200.0d);
+	    //locationCol.setPrefWidth(200.0d);
+	    //timeWindowCol.setPrefWidth(200.0d);
+	    //table.getColumns().addAll(courierCol, locationCol, timeWindowCol);
+		System.out.println(deliveries);
+		vBoxiIntentedTours.getChildren().add(new Label("Deliveries of the day:"));
+	    vBoxiIntentedTours.getChildren().add(deliveries);
 	    // -> Test ajout colonne
 	    
 	    //Fin modifications
@@ -214,6 +221,7 @@ public class mapView extends Application implements Observer{
 				        	   nr.setWidth(width);
 				        	   nr.setPlan(map);
 				        	   nr.setTour(tour);
+				        	   nr.setDeliveries(deliveries);
 				        	   nr.start(stage);	   
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
@@ -282,6 +290,12 @@ public class mapView extends Application implements Observer{
 
 	@Override
 	public void update(Observable observed, Object arg) {
+		// TODO Auto-generated method stub
+		if(arg instanceof Delivery)
+		{
+			System.out.println("object :"+arg);
+			deliveries.getItems().add((Delivery) arg);
+		}
 		this.createMap(map);	
 	}
 

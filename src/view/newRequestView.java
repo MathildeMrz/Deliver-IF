@@ -2,8 +2,9 @@ package view;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import javax.swing.JOptionPane;
 
 import algorithm.RunTSP;
 import controller.Controller;
@@ -13,7 +14,6 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -25,7 +25,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
-import javax.swing.JOptionPane;
 import model.Courier;
 import model.Delivery;
 import model.Intersection;
@@ -43,6 +42,7 @@ public class newRequestView extends Application implements Observer {
 	private int width;
 	private int height;
 	private ListView<Courier> couriers;
+	private ListView<Delivery> deliveries;
 	private Stage stage;
 	private boolean clicked;
 	private int screenWidth; 
@@ -63,7 +63,7 @@ public class newRequestView extends Application implements Observer {
 	public void start(Stage stage) throws Exception {
 		this.stage = stage;
 		stage.setFullScreen(true);
-		this.tour.addObserver(this);
+		//this.tour.addObserver(this);
 		createMap(this.map);
 		this.clicked = false;
 		this.closer = new Intersection();
@@ -175,8 +175,8 @@ public class newRequestView extends Application implements Observer {
 				+ "	   -fx-background-color: rgb(49, 89, 47);");
 		date.setValue(LocalDate.now());
 		requestedDate = date.getValue();
-		vBoxcreateNewRequest.getChildren().add(new Label("Date:"));
-		vBoxcreateNewRequest.getChildren().add(date);
+		//vBoxcreateNewRequest.getChildren().add(new Label("Date:"));
+		//vBoxcreateNewRequest.getChildren().add(date);
 		vBoxcreateNewRequest.getChildren().add(new Label("Localisation (select the delivery's destination by clicking on the map):"));
 		
 		vBoxcreateNewRequest.getChildren().add(mapPane);
@@ -262,10 +262,28 @@ public class newRequestView extends Application implements Observer {
 				System.out.println("Validate");
 				if(requestedX != 0.0f && requestedY != 0.0f)
 				{
+					System.out.println("BBBBBBBBBBBBBBBBB");
 					controller.addDelivery(closer, requestedDate, requestedStartingTimeWindow);
+					System.out.println("AAAAAAAAAAAA");
 					//vBoxcreateNewRequest.getChildren().add(new Label("The delivery has been registered"));
 					JOptionPane.showMessageDialog(null, "The delivery has been registered");
 					System.out.println("Delivery added");
+					//Change page
+					try 
+			 	   {		
+			     	   mapView mv = new mapView();
+			     	   mv.setController(controller);
+			     	   mv.setCouriers(couriers);
+			     	   mv.setHeight(height);
+			     	   mv.setWidth(width);
+			     	   mv.setMap(map);
+			     	   mv.setTour(tour); 
+			     	   mv.setDeliveries(deliveries);
+			     	   mv.start(stage);	 
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}			
 			}
 		});
@@ -308,6 +326,7 @@ public class newRequestView extends Application implements Observer {
 				        	   mapView mv = new mapView();
 				        	   mv.setController(controller);
 				        	   mv.setCouriers(couriers);
+				        	   mv.setDeliveries(deliveries);
 				        	   mv.setHeight(height);
 				        	   mv.setWidth(width);
 				        	   mv.setMap(map);
@@ -325,8 +344,8 @@ public class newRequestView extends Application implements Observer {
 	
 	@Override
 	public void update(Observable observed, Object arg) {
-		this.tour = (Tour) observed;
-		createMap(this.map);	
+		//createMap(this.map);	
+	
 	}
 
 	public Map getPlan() {
@@ -368,6 +387,10 @@ public ListView<Courier> getCouriers() {
 
 public void setCouriers(ListView<Courier> couriers) {
 	this.couriers = couriers;
+}
+
+public void setDeliveries(ListView<Delivery> deliveries) {
+	this.deliveries = deliveries;
 }
 	
 	public void setTour(Tour tour) {

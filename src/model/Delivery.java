@@ -19,7 +19,7 @@ public class Delivery extends Observable {
 
 	@Override
 	public String toString() {
-		return "Delivery [id=" + id + ", startTime=" + startTime + ", destination=" + destination + "]";
+		return "Delivery : time-window : " + startTime + " à " + (startTime+1) + ", destination=" + destination;
 	}
 
 	public int getId() {

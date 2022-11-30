@@ -152,9 +152,13 @@ public class Tour extends Observable {
 	
 	public void addDelivery(Intersection closer, LocalDate date, int timeWindow)
 	{
+		System.out.println("EEEEEEEEEEEEEEE");
 	    Delivery delivery = new Delivery("test", timeWindow, closer);
+	    System.out.println("DDDDDDDDDDDDDD");
 	    steps.add(delivery);
-		notifyObservers();
+	    System.out.println("Avant notify");
+		notifyObservers(delivery);
+		System.out.println("FFFFFFFFFFFFFF");
 	}	
 	
 	public void addTourSteps(Intersection tourSteps)
