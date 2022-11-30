@@ -15,19 +15,19 @@ public class Tour extends Observable {
 	private ArrayList<Delivery> steps;
 	private Date startDate;
 	private Date endDate;
-	private Path intersections;
+	private ArrayList<Intersection> tourSteps;
 	private Courier courier;
 	private Map map;
 	private float widthMap;
 	private float heightMap;
 	
-	public Tour(ArrayList<Delivery> steps, Date startDate, Date endDate, Path intersections, Courier courier, Map map)
+	public Tour(ArrayList<Delivery> steps, Date startDate, Date endDate, Courier courier, Map map)
 	{
 		this.id = ID_FACTORY.getAndIncrement();
 		steps = new ArrayList<Delivery>();
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.intersections = intersections;
+		this.tourSteps = new ArrayList<Intersection>();
 		this.courier = courier;
 		this.map = map;
 		this.widthMap = map.getLongitudeMax() - map.getLongitudeMin();
@@ -41,6 +41,7 @@ public class Tour extends Observable {
 		this.widthMap = map.getLongitudeMax() - map.getLongitudeMin();
 		this.heightMap = map.getLatitudeMax() - map.getLatitudeMin();	
 		steps = new ArrayList<Delivery>();
+		this.tourSteps = new ArrayList<Intersection>();
 	}
 
 	public int getId() {
@@ -63,8 +64,8 @@ public class Tour extends Observable {
 		this.endDate = endDate;
 	}
 
-	public void setIntersections(Path intersections) {
-		this.intersections = intersections;
+	public void setTourSteps(ArrayList<Intersection> tourSteps) {
+		this.tourSteps = tourSteps;
 	}
 
 	public void setCourier(Courier courier) {
@@ -91,8 +92,8 @@ public class Tour extends Observable {
 		return endDate;
 	}
 
-	public Path getIntersections() {
-		return intersections;
+	public ArrayList<Intersection> getTourSteps() {
+		return tourSteps;
 	}
 
 	public Courier getCourier() {
@@ -102,7 +103,7 @@ public class Tour extends Observable {
 	@Override
 	public String toString() {
 		return "Tour [id=" + id + ", steps=" + steps + ", startDate=" + startDate + ", endDate=" + endDate
-				+ ", intersections=" + intersections + ", courier=" + courier + "]";
+				+ ", intersections=" + tourSteps + ", courier=" + courier + "]";
 	}
 	
 	public float getFactorLongitudeToX(float longitude) {
@@ -159,5 +160,11 @@ public class Tour extends Observable {
 		notifyObservers(delivery);
 		System.out.println("FFFFFFFFFFFFFF");
 	}	
+	
+	public void addTourSteps(Intersection tourSteps)
+	{
+		this.tourSteps.add(tourSteps);
+		notifyObservers();
+	}
 	
 }

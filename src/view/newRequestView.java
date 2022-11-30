@@ -186,7 +186,7 @@ public class newRequestView extends Application implements Observer {
 		timeWindow.getItems().add(9);
 		timeWindow.getItems().add(10);
 		timeWindow.getItems().add(11);
-		timeWindow.getSelectionModel().select(9);
+		timeWindow.getSelectionModel().select(0);
 		requestedStartingTimeWindow = 9;
 
 		vBoxcreateNewRequest.getChildren().add(timeWindow);
@@ -273,7 +273,7 @@ public class newRequestView extends Application implements Observer {
 			     	   mv.setCouriers(couriers);
 			     	   mv.setHeight(height);
 			     	   mv.setWidth(width);
-			     	   mv.setPlan(map);
+			     	   mv.setMap(map);
 			     	   mv.setTour(tour); 
 			     	   mv.setDeliveries(deliveries);
 			     	   mv.start(stage);	 
@@ -305,7 +305,7 @@ public class newRequestView extends Application implements Observer {
 				sommets.add(intersection3);
 				
 				System.out.println("Debut TSP");
-				RunTSP testTSP = new RunTSP(4, sommets, map);
+				RunTSP testTSP = new RunTSP(4, sommets, map, tour);
 				testTSP.start();
 				System.out.println("Fin TSP");
 
@@ -326,7 +326,8 @@ public class newRequestView extends Application implements Observer {
 				        	   mv.setDeliveries(deliveries);
 				        	   mv.setHeight(height);
 				        	   mv.setWidth(width);
-				        	   mv.setPlan(map);
+				        	   mv.setMap(map);
+				        	   mv.setTour(tour);
 				        	   mv.start(stage);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
