@@ -35,13 +35,16 @@ public class RunTSP {
 			System.out.println("0");
 			
 			/*imprimer l'itinéraire*/
+			ArrayList <Intersection> intersection_steps=new ArrayList <Intersection>();
+			intersection_steps.add(Intersection.get(tsp.getSolution(0)));
 			for(int i=1; i<nbVertices; i++)
 			{
 				List <Segment> steps= g.getPath(tsp.getSolution(i-1),tsp.getSolution(i)).getPath();
 				for(Segment s: steps)
 				{
 					System.out.print(s.getDestination().getId()+ " ");
-					System.out.println();
+					intersection_steps.add(s.getDestination());
+					
 				}
 			}
 			//dernière destination vers le warehouse
@@ -49,8 +52,9 @@ public class RunTSP {
 			for(Segment s: steps)
 			{
 				System.out.println(s.getDestination().getId()+ " ");
-				System.out.println();
+				intersection_steps.add(s.getDestination());
 			}
+			System.out.println();
 			
 		/*}*/
 	}
