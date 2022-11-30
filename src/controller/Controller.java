@@ -17,10 +17,10 @@ public class Controller {
 		this.tour= tour;
 	}
 
-	public void addDelivery(Intersection closer, LocalDate date, int timeWindow) {
+	public void addDelivery(Intersection closerIntersection, LocalDate date, int timeWindow) {
 		System.out.println("CCCCCCCCCCCCCCCCCCCC");
-		System.out.println("closer "+closer+" date "+date+" timeWindow "+timeWindow);
-		tour.addDelivery(closer, date, timeWindow);
+		System.out.println("closerIntersection "+closerIntersection+" date "+date+" timeWindow "+timeWindow);
+		tour.addDelivery(closerIntersection, date, timeWindow);
 		System.out.println("DDDDDDDDDDDDDD");
 	}
 }
