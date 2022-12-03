@@ -11,7 +11,7 @@ public abstract class TemplateTSP implements TSP {
 	private int timeLimit;
 	private long startTime;
 	
-	public void searchSolution(int timeLimit, Graph g, double cost [][]){
+	public void searchSolution(int timeLimit, Graph g){
 		if (timeLimit <= 0) return;
 		startTime = System.currentTimeMillis();	
 		this.timeLimit = timeLimit;
@@ -22,6 +22,7 @@ public abstract class TemplateTSP implements TSP {
 		Collection<Integer> visited = new ArrayList<Integer>(g.getNbVertices());
 		visited.add(0); // The first visited vertex is 0
 		bestSolCost = Double.MAX_VALUE;
+		double [][]cost=g.getTableCost();
 		branchAndBound(0, unvisited, visited, 0,cost);
 	}
 	
@@ -44,7 +45,7 @@ public abstract class TemplateTSP implements TSP {
 	 * @return a lower bound of the cost of paths in <code>g</code> starting from <code>currentVertex</code>, visiting 
 	 * every vertex in <code>unvisited</code> exactly once, and returning back to vertex <code>0</code>.
 	 */
-	protected abstract int bound(Integer currentVertex, Collection<Integer> unvisited, double cost[][]);
+	protected abstract double bound(Integer currentVertex, Collection<Integer> unvisited, double cost[][]);
 	
 	/**
 	 * Method that must be defined in TemplateTSP subclasses
@@ -79,7 +80,7 @@ public abstract class TemplateTSP implements TSP {
 	        	visited.add(nextVertex);
 	            unvisited.remove(nextVertex);
 	            branchAndBound(nextVertex, unvisited, visited, 
-	            		currentCost+g.getCost(currentVertex, nextVertex));
+	            		currentCost+g.getCost(currentVertex, nextVertex),cost);
 	            visited.remove(nextVertex);
 	            unvisited.add(nextVertex);
 	        }	    

@@ -1,6 +1,7 @@
 package algorithm;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class TSP2 extends TSP1 {
 	

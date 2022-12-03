@@ -10,7 +10,7 @@ public interface TSP {
 	 * @param g
 	 * @param cost [][]
 	 */
-	public void searchSolution(int timeLimit, Graph g, double cost [][]);
+	public void searchSolution(int timeLimit, Graph g);
 	
 	/**
 	 * @param i

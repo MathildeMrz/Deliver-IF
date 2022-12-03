@@ -28,5 +28,10 @@ public interface Graph {
 	 * @return the path of arc (i,j) if (i,j) is an arc; -1 otherwise
 	 */
 	public abstract Path getPath(int i, int j);
+	
+	/** 
+	 * @return the table of costs
+	 */
+	public abstract double [][] getTableCost();
 
 }

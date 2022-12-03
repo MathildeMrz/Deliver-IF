@@ -53,6 +53,11 @@ public class CompleteGraph implements Graph {
 			return -1.0;
 		return cost[i][j];
 	}
+	
+	@Override
+	public double [][] getTableCost() {
+		return cost;
+	}
 
 	@Override
 	public Path getPath(int i, int j) {

@@ -63,8 +63,8 @@ public class RunTSP extends Observable {
 			tour.initArrivals();
 			for(int i=1; i<nbVertices; i++)
 				/*calcul de la durée*/
-				tour.setArrival(this.Intersection.get(tsp.getSolution(i)),g.getCost(tsp.getSolution(i-1),tsp.getSolution(i)*0.004));
-			tour.setArrival(this.Intersection.get(0),g.getCost(tsp.getSolution(nbVertices-1),tsp.getSolution(0)*0.004);
+				tour.setArrival(this.Intersection.get(tsp.getSolution(i)),g.getCost(tsp.getSolution(i-1),tsp.getSolution(i))*0.004);
+			tour.setArrival(this.Intersection.get(0),g.getCost(tsp.getSolution(nbVertices-1),tsp.getSolution(0))*0.004);
 			//END NEW
 			
 		/*}*/

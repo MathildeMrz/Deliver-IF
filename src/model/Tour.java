@@ -5,6 +5,8 @@ import java.awt.GraphicsEnvironment;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import observer.Observable;
@@ -13,16 +15,16 @@ public class Tour extends Observable {
 	private static final AtomicInteger ID_FACTORY = new AtomicInteger();
 	private int id;
 	private ArrayList<Delivery> steps;
-	private Date startDate;
-	private Date endDate;
+	private LocalDateTime startDate;
+	private LocalDateTime endDate;
 	private ArrayList<Intersection> tourSteps;
-	private Date [][] tourTimes;
+	private LocalDateTime [] tourTimes;
 	private Courier courier;
 	private Map map;
 	private float widthMap;
 	private float heightMap;
 	
-	public Tour(ArrayList<Delivery> steps, Date startDate, Date endDate, Courier courier, Map map)
+	public Tour(ArrayList<Delivery> steps, LocalDateTime startDate, LocalDateTime endDate, Courier courier, Map map)
 	{
 		this.id = ID_FACTORY.getAndIncrement();
 		steps = new ArrayList<Delivery>();
@@ -48,18 +50,23 @@ public class Tour extends Observable {
 	//NEW : ADD TIME OF ARRIVALS TO DELIVERY POINTS
 	public void initArrivals()
 	{
-		this.tourTimes=new Date [this.tourSteps.size()];
+		this.tourTimes=new LocalDateTime [this.tourSteps.size()];
+		tourTimes[0]=this.startDate;
 	}
 	
 	public void setArrival(Intersection deliveryPt,double minutes)
 	{
-		for(int i=1; i<this.tourTimes.size(); i++)
+		for(int i=1; i<this.tourTimes.length; i++)
 		{
 			if(this.tourSteps.get(i)==deliveryPt)
 			{
-				long timeInSecs = this.tourTimes[i-1].getTimeInMillis();
-				this.tourTimes[i]= new Date(timeInSecs + (minutes * 60 * 1000));
-				System.out.println("After adding"+ minutes +" mins : " + this.tourTimes[i]);
+				this.tourTimes[i]=this.tourTimes[i-1].plusMinutes((long)(minutes));
+				
+				//display
+				DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");  
+				String formatDateTime = this.tourTimes[i].format(format);   
+				System.out.println("After Formatting: " + formatDateTime );  
+				
 			}
 		}
 	}
@@ -77,11 +84,11 @@ public class Tour extends Observable {
 		this.steps = steps;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(LocalDateTime startDate) {
 		this.startDate = startDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(LocalDateTime endDate) {
 		this.endDate = endDate;
 	}
 
@@ -105,11 +112,11 @@ public class Tour extends Observable {
 		return steps;
 	}
 
-	public Date getStartDate() {
+	public LocalDateTime getStartDate() {
 		return startDate;
 	}
 
-	public Date getEndDate() {
+	public LocalDateTime getEndDate() {
 		return endDate;
 	}
 
