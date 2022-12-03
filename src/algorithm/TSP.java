@@ -8,8 +8,9 @@ public interface TSP {
 	 * Warning: The computed tour always start from vertex 0
 	 * @param limitTime
 	 * @param g
+	 * @param cost [][]
 	 */
-	public void searchSolution(int timeLimit, Graph g);
+	public void searchSolution(int timeLimit, Graph g, double cost [][]);
 	
 	/**
 	 * @param i
