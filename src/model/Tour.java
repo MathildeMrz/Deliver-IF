@@ -16,6 +16,7 @@ public class Tour extends Observable {
 	private Date startDate;
 	private Date endDate;
 	private ArrayList<Intersection> tourSteps;
+	private Date [][] tourTimes;
 	private Courier courier;
 	private Map map;
 	private float widthMap;
@@ -43,7 +44,27 @@ public class Tour extends Observable {
 		steps = new ArrayList<Delivery>();
 		this.tourSteps = new ArrayList<Intersection>();
 	}
-
+	
+	//NEW : ADD TIME OF ARRIVALS TO DELIVERY POINTS
+	public void initArrivals()
+	{
+		this.tourTimes=new Date [this.tourSteps.size()];
+	}
+	
+	public void setArrival(Intersection deliveryPt,double minutes)
+	{
+		for(int i=1; i<this.tourTimes.size(); i++)
+		{
+			if(this.tourSteps.get(i)==deliveryPt)
+			{
+				long timeInSecs = this.tourTimes[i-1].getTimeInMillis();
+				this.tourTimes[i]= new Date(timeInSecs + (minutes * 60 * 1000));
+				System.out.println("After adding"+ minutes +" mins : " + this.tourTimes[i]);
+			}
+		}
+	}
+	//END NEW
+	
 	public int getId() {
 		return id;
 	}
