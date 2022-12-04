@@ -61,10 +61,15 @@ public class RunTSP extends Observable {
 			
 			//NEW: ADD TIME OF ARRIVALS TO DELIVERY POINTS
 			tour.initArrivals();
+			System.out.println("Tour : "+tour.toString());
+			System.out.println("nbVertices : "+nbVertices);
 			for(int i=1; i<nbVertices; i++)
+			{
 				/*calcul de la durée*/
-				tour.setArrival(this.Intersection.get(tsp.getSolution(i)),g.getCost(tsp.getSolution(i-1),tsp.getSolution(i))*0.004);
-			tour.setArrival(this.Intersection.get(0),g.getCost(tsp.getSolution(nbVertices-1),tsp.getSolution(0))*0.004);
+				//tour.setArrival(this.Intersection.get(tsp.getSolution(i)),i,g.getCost(tsp.getSolution(i-1),tsp.getSolution(i))*0.004);
+				tour.setArrival(this.Intersection.get(tsp.getSolution(i)),i,g.getCost(tsp.getSolution(i-1),tsp.getSolution(i))*0.004);
+			}
+			tour.setArrival(this.Intersection.get(tsp.getSolution(0)),nbVertices,g.getCost(tsp.getSolution(nbVertices-1),tsp.getSolution(0))*0.004);
 			//END NEW
 			
 		/*}*/
