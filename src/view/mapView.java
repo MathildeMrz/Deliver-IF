@@ -61,18 +61,18 @@ public class mapView extends Application implements Observer{
 		System.out.println("2");
 
 		/*Resize the window*/
-		stage.setWidth(width/1.3);
-		stage.setHeight(height/1.4);
+		stage.setWidth(width);
+		stage.setHeight(height);
 		/*Display stage*/
 		createMap(this.map);
 		
 		//TSP run every time 
 		List<Intersection> sommets = new ArrayList<Intersection>();
 		sommets.add(map.getWarehouse());
-		System.out.println("tour.getSteps() -> "+tour.getSteps());
-		if(!tour.getSteps().isEmpty())
+		System.out.println("tour.getSteps() -> "+tour.getUnorderedDeliveries());
+		if(!tour.getUnorderedDeliveries().isEmpty())
 		{
-			for(Delivery d : tour.getSteps()) {
+			for(Delivery d : tour.getUnorderedDeliveries()) {
 				System.out.println("Delivery d destination: "+d.getDestination());
 				sommets.add(d.getDestination());
 			}
@@ -92,8 +92,9 @@ public class mapView extends Application implements Observer{
 	}
 	public void createMap(Map map)
 	{
-		this.screenHeight = (int)(height/(2.5));
-		this.screenWidth = (int)(width/(2.5));
+		this.screenWidth = (int)(width/(2));
+		this.screenHeight = (int)(width/(2 *map.getRatioLongOverLat()));
+		
 		this.margin = 45;
 		
 		Pane mapPane = new Pane();
@@ -109,15 +110,15 @@ public class mapView extends Application implements Observer{
 	        //Add warehouse
 			float circleCenterX = tour.getFactorLongitudeToX(map.getWarehouse().getLongitude()) * this.screenWidth + margin;
 	        float circleCenterY = tour.getFactorLatitudeToY(map.getWarehouse().getLatitude()) * this.screenHeight + margin;
-	        
-	        Circle wareHouse = new Circle();
-	        wareHouse.setCenterX(circleCenterX);
-	        wareHouse.setCenterY(circleCenterY);
-	        wareHouse.setRadius(10.0f);
-	        mapPane.getChildren().add(wareHouse);
-	        
+        
+			Circle wareHouse = new Circle();
+			wareHouse.setCenterX(circleCenterX);
+			wareHouse.setCenterY(circleCenterY);
+			wareHouse.setRadius(7.0f);
+			mapPane.getChildren().add(wareHouse);
+        
 	        //display the deliveries destinations
-	        for(Delivery d : tour.getSteps())
+	        for(Delivery d : tour.getUnorderedDeliveries())
 		    {     
 	        	float latDestination = d.getDestination().getLatitude();
 	        	float longDestination = d.getDestination().getLongitude();
@@ -150,13 +151,13 @@ public class mapView extends Application implements Observer{
 	      
 	        
 	     // display the tour
-	        if(tour.getSteps()!= null) {
-		        for (int i =0; i<tour.getTourSteps().size() -1; i++) { 
+	        if(tour.getUnorderedDeliveries()!= null) {
+		        for (int i =0; i<tour.getOrderedDeliveries().size() -1; i++) { 
 		        	
-	        		float x1 = tour.getFactorLongitudeToX(tour.getTourSteps().get(i).getLongitude()) * this.screenWidth;
-	        		float y1 = tour.getFactorLatitudeToY(tour.getTourSteps().get(i).getLatitude()) * this.screenHeight;
-	        		float x2 = tour.getFactorLongitudeToX(tour.getTourSteps().get(i+1).getLongitude()) * this.screenWidth;
-	        		float y2 = tour.getFactorLatitudeToY(tour.getTourSteps().get(i+1).getLatitude()) * this.screenHeight;
+	        		float x1 = tour.getFactorLongitudeToX(tour.getOrderedDeliveries().get(i).getLongitude()) * this.screenWidth;
+	        		float y1 = tour.getFactorLatitudeToY(tour.getOrderedDeliveries().get(i).getLatitude()) * this.screenHeight;
+	        		float x2 = tour.getFactorLongitudeToX(tour.getOrderedDeliveries().get(i+1).getLongitude()) * this.screenWidth;
+	        		float y2 = tour.getFactorLatitudeToY(tour.getOrderedDeliveries().get(i+1).getLatitude()) * this.screenHeight;
 	        	
 	        		Line newLine = new Line(x1 + margin, y1 + margin, x2 + margin, y2 + margin); 
 	        		newLine.setStroke(Color.RED);
@@ -192,8 +193,15 @@ public class mapView extends Application implements Observer{
 					XMLdeserializer.load(map, stage);
 					map.setMapLoaded();
 					tour.calculateWidthHeightMap();
+					tour.clearOrderedDeliveries();
+					tour.clearUnorderedDeliveries();
+					deliveries.getItems().clear();
+					map.setRatio();
 					createMap(map);
 				} catch (ParserConfigurationException | SAXException | IOException | ExceptionXML e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

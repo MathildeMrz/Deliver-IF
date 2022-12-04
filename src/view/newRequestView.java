@@ -62,8 +62,8 @@ public class newRequestView extends Application implements Observer {
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.stage = stage;
-		stage.setWidth(width/1.3);
-		stage.setHeight(height/1.35);
+		stage.setWidth(width);
+		stage.setHeight(height);
 		createMap(this.map);
 		this.clicked = false;
 		this.closerIntersection = new Intersection();
@@ -72,8 +72,8 @@ public class newRequestView extends Application implements Observer {
 
 	public void createMap(Map map)
 	{
-		this.screenHeight = height/2;
-		this.screenWidth = width/2;
+		this.screenWidth = (int)(width/(2));
+		this.screenHeight = (int)(width/(2 *map.getRatioLongOverLat()));
 		this.margin = 50;
 		Pane mapPane = new Pane();
         mapPane.setMinWidth(screenWidth);
@@ -90,7 +90,7 @@ public class newRequestView extends Application implements Observer {
         Circle wareHouse = new Circle();
         wareHouse.setCenterX(circleCenterX +margin);
         wareHouse.setCenterY(circleCenterY +margin);
-        wareHouse.setRadius(10.0f);
+        wareHouse.setRadius(7.0f);
         mapPane.getChildren().add(wareHouse);
         
         //display the deliveries destinations

@@ -15,10 +15,10 @@ import observer.Observable;
 public class Tour extends Observable {
 	private static final AtomicInteger ID_FACTORY = new AtomicInteger();
 	private int id;
-	private ArrayList<Delivery> steps;
+	private ArrayList<Delivery> unorderedDeliveries;
 	private LocalDateTime startDate;
 	private LocalDateTime endDate;
-	private ArrayList<Intersection> tourSteps;
+	private ArrayList<Intersection> orderedDeliveries;
 	private LocalDateTime [] tourTimes;
 	private Courier courier;
 	private Map map;
@@ -31,11 +31,12 @@ public class Tour extends Observable {
 		steps = new ArrayList<Delivery>();
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.tourSteps = new ArrayList<Intersection>();
+		this.orderedDeliveries = new ArrayList<Intersection>();
 		this.courier = courier;
 		this.map = map;
 		this.widthMap = map.getLongitudeMax() - map.getLongitudeMin();
 		this.heightMap = map.getLatitudeMax() - map.getLatitudeMin();	
+		
 	}
 	
 	public Tour(Map map)
@@ -44,15 +45,15 @@ public class Tour extends Observable {
 		this.map = map;
 		this.widthMap = map.getLongitudeMax() - map.getLongitudeMin();
 		this.heightMap = map.getLatitudeMax() - map.getLatitudeMin();	
-		steps = new ArrayList<Delivery>();
-		this.tourSteps = new ArrayList<Intersection>();
+		unorderedDeliveries = new ArrayList<Delivery>();
+		this.orderedDeliveries = new ArrayList<Intersection>();
 	}
 	
 	//NEW : ADD TIME OF ARRIVALS TO DELIVERY POINTS
 	public void initArrivals()
 	{
 		//this.tourTimes=new LocalDateTime [this.tourSteps.size()];
-		this.tourTimes=new LocalDateTime [this.steps.size()+2];
+		this.tourTimes=new LocalDateTime [this.unorderedDeliveries.size()+2];
 		tourTimes[0]=this.startDate;
 	}
 	
@@ -80,15 +81,15 @@ public class Tour extends Observable {
 			this.endDate = this.tourTimes[orderOfArrival];
 		}
 		//Association of the arrival time and the delivery corresponding 
-		int sizeSteps = this.steps.size();
+		int sizeSteps = this.unorderedDeliveries.size();
 		System.out.println("deliveryPt.getId() : "+deliveryPt.getId());
 		for (int i=0; i<sizeSteps; i++)
 		{
-			System.out.println("this.steps.get(i).getDestination().getId() : "+this.steps.get(i).getDestination().getId());
-			if((this.steps.get(i).getDestination().getId()) == deliveryPt.getId())
+			System.out.println("this.steps.get(i).getDestination().getId() : "+this.unorderedDeliveries.get(i).getDestination().getId());
+			if((this.unorderedDeliveries.get(i).getDestination().getId()) == deliveryPt.getId())
 			{
-				this.steps.get(i).setArrival(this.tourTimes[orderOfArrival]);
-				System.out.println("New status of delivery : "+this.steps.get(i).toString());
+				this.unorderedDeliveries.get(i).setArrival(this.tourTimes[orderOfArrival]);
+				System.out.println("New status of delivery : "+this.unorderedDeliveries.get(i).toString());
 			}
 		}
 		/*for(int i=1; i<this.tourTimes.length; i++)
@@ -117,7 +118,7 @@ public class Tour extends Observable {
 	}
 
 	public void setSteps(ArrayList<Delivery> steps) {
-		this.steps = steps;
+		this.unorderedDeliveries = steps;
 	}
 
 	public void setStartDate(LocalDateTime startDate) {
@@ -129,7 +130,7 @@ public class Tour extends Observable {
 	}
 
 	public void setTourSteps(ArrayList<Intersection> tourSteps) {
-		this.tourSteps = tourSteps;
+		this.orderedDeliveries = tourSteps;
 	}
 
 	public void setCourier(Courier courier) {
@@ -144,8 +145,8 @@ public class Tour extends Observable {
 		this.heightMap = heightMap;
 	}
 
-	public ArrayList<Delivery> getSteps() {
-		return steps;
+	public ArrayList<Delivery> getUnorderedDeliveries() {
+		return unorderedDeliveries;
 	}
 
 	public LocalDateTime getStartDate() {
@@ -156,8 +157,8 @@ public class Tour extends Observable {
 		return endDate;
 	}
 
-	public ArrayList<Intersection> getTourSteps() {
-		return tourSteps;
+	public ArrayList<Intersection> getOrderedDeliveries() {
+		return orderedDeliveries;
 	}
 
 	public Courier getCourier() {
@@ -166,8 +167,8 @@ public class Tour extends Observable {
 
 	@Override
 	public String toString() {
-		return "Tour [id=" + id + ", steps=" + steps + ", startDate=" + startDate + ", endDate=" + endDate
-				+ ", intersections=" + tourSteps + ", courier=" + courier + "]";
+		return "Tour [id=" + id + ", steps=" + unorderedDeliveries + ", startDate=" + startDate + ", endDate=" + endDate
+				+ ", intersections=" + orderedDeliveries + ", courier=" + courier + "]";
 	}
 	
 	public void calculateWidthHeightMap() {
@@ -236,20 +237,24 @@ public class Tour extends Observable {
 		System.out.println("EEEEEEEEEEEEEEE");
 	    Delivery delivery = new Delivery("test", timeWindow, closerIntersection,null);
 	    System.out.println("DDDDDDDDDDDDDD");
-	    steps.add(delivery);
+	    unorderedDeliveries.add(delivery);
 	    System.out.println("Avant notify");
 		notifyObservers(delivery);
 		System.out.println("FFFFFFFFFFFFFF");
 	}	
 	
-	public void addTourSteps(Intersection tourSteps)
+	public void addDeliveryToOrderedDeliveries(Intersection tourSteps)
 	{
-		this.tourSteps.add(tourSteps);
+		this.orderedDeliveries.add(tourSteps);
 		notifyObservers();
 	}
 	
-	public void clearTourSteps() {
-		this.tourSteps.clear();
+	public void clearUnorderedDeliveries() {
+		this.unorderedDeliveries.clear();
+	}
+	
+	public void clearOrderedDeliveries() {
+		this.orderedDeliveries.clear();
 	}
 	
 }

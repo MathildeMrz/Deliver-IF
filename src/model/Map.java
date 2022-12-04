@@ -15,6 +15,7 @@ public class Map extends Observable {
 	private float latitudeMax;
 	private float longitudeMin;
 	private float longitudeMax;
+	private float ratioLongOverLat;
 	
 	public Map() {
 		this.nodes  = new HashMap<Long,Intersection>();
@@ -26,6 +27,7 @@ public class Map extends Observable {
 		latitudeMax = 0;
 		longitudeMin = Float.MAX_VALUE;
 		longitudeMax = 0;
+		ratioLongOverLat = 1;
 	}
 	
 	public void addWarehouse(Long intersectionID) {
@@ -61,6 +63,10 @@ public class Map extends Observable {
 	public void resetMap() {
 		this.nodes.clear();
 		this.destinations.clear();
+		this.latitudeMin = Float.MAX_VALUE;
+		this.latitudeMax = 0;
+		this.longitudeMin = Float.MAX_VALUE;
+		this.longitudeMax = 0;
 	}
 
 	public float getLatitudeMin() {
@@ -103,5 +109,11 @@ public class Map extends Observable {
 		this.isLoaded = true;
 	}
 	
+	public void setRatio() {
+		this.ratioLongOverLat = (this.longitudeMax-this.longitudeMin) / (this.latitudeMax - this.latitudeMin);
+	}
 	
+	public float getRatioLongOverLat() {
+		return ratioLongOverLat;
+	}
 }

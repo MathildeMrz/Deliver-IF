@@ -23,7 +23,7 @@ public class RunTSP extends Observable {
 		Intersection = intersection;
 		this.lePlan=lePlan;
 		this.tour = tour;
-		this.tour.clearTourSteps();
+		this.tour.clearOrderedDeliveries();
 	}
 
 
@@ -43,20 +43,20 @@ public class RunTSP extends Observable {
 			
 			
 			/*imprimer l'itinéraire*/
-			tour.addTourSteps(Intersection.get(tsp.getSolution(0)));
+			tour.addDeliveryToOrderedDeliveries(Intersection.get(tsp.getSolution(0)));
 			for(int i=1; i<nbVertices; i++)
 			{
 				List <Segment> steps= g.getPath(tsp.getSolution(i-1),tsp.getSolution(i)).getPath();
 				for(Segment s: steps)
 				{
-					tour.addTourSteps(s.getDestination());		
+					tour.addDeliveryToOrderedDeliveries(s.getDestination());		
 				}
 			}
 			//dernière destination vers le warehouse
 			List <Segment> steps= g.getPath(tsp.getSolution(nbVertices-1),0).getPath();
 			for(Segment s: steps)
 			{
-				tour.addTourSteps(s.getDestination());	
+				tour.addDeliveryToOrderedDeliveries(s.getDestination());	
 			}
 			
 			//NEW: ADD TIME OF ARRIVALS TO DELIVERY POINTS

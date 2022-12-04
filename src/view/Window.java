@@ -40,8 +40,12 @@ public class Window  extends Application  {
 	@Override
 	public void start(Stage arg0) throws Exception {
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		this.width = gd.getDisplayMode().getWidth();
-		this.height = gd.getDisplayMode().getHeight();
+		this.width = (int)Screen.getPrimary().getBounds().getWidth();
+		//this.width = gd.getDisplayMode().getWidth();
+		//this.height = gd.getDisplayMode().getHeight();
+		this.height = (int)Screen.getPrimary().getBounds().getHeight();
+		this.width = (int)Screen.getPrimary().getVisualBounds().getWidth();
+		this.height = (int)Screen.getPrimary().getVisualBounds().getHeight();
 		this.couriers = initCouriers();
 
 		this.map = new Map();
@@ -66,7 +70,7 @@ public class Window  extends Application  {
 		//ArrayList<Tour> tours = plan.getTours();
 		//for(Tour t : )
 		this.deliveries = new ListView<Delivery>();
-		for(Delivery d : tour.getSteps())
+		for(Delivery d : tour.getUnorderedDeliveries())
 		{
 			deliveries.getItems().add(d);
 		}

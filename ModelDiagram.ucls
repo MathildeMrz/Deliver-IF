@@ -65,115 +65,167 @@
     </display>  
   </class>  
   <association id="8">    
-    <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="9" name="map"/>      
-      <multiplicity id="10" minimum="0" maximum="1"/>    
+    <bendpoint x="975" y="411"/>    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="9" name="destination">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="10" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
-    <end type="TARGET" refId="7" navigable="true"/>    
+    <end type="TARGET" refId="2" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="11">    
-    <bendpoint x="925" y="360"/>    
-    <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="12" name="origin"/>      
-      <multiplicity id="13" minimum="0" maximum="1"/>    
+    <bendpoint x="1125" y="415"/>    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="12" name="destinations">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="13" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="2" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="14">    
-    <bendpoint x="1020" y="462"/>    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="15" name="destination"/>      
-      <multiplicity id="16" minimum="0" maximum="1"/>    
+    <bendpoint x="1129" y="306"/>    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="15" name="nodes">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="16" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="2" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="17">    
-    <bendpoint x="1071" y="248"/>    
-    <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="18" name="tourSteps"/>      
-      <multiplicity id="19" minimum="0" maximum="2147483647"/>    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="18" name="warehouse">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="19" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="2" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="20">    
-    <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="21" name="steps"/>      
-      <multiplicity id="22" minimum="0" maximum="2147483647"/>    
-    </end>    
-    <end type="TARGET" refId="4" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="23">    
-    <bendpoint x="975" y="411"/>    
-    <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="24" name="destination"/>      
-      <multiplicity id="25" minimum="0" maximum="1"/>    
+    <bendpoint x="960" y="304"/>    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="21" name="destination">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="22" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="2" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="26">    
+  <association id="23">    
     <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="27" name="courier"/>      
-      <multiplicity id="28" minimum="0" maximum="1"/>    
+      <attribute id="24" name="courier">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="25" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="5" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="29">    
-    <bendpoint x="1129" y="306"/>    
-    <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="30" name="nodes"/>      
-      <multiplicity id="31" minimum="0" maximum="2147483647"/>    
+  <association id="26">    
+    <bendpoint x="925" y="360"/>    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="27" name="origin">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="28" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="2" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="32">    
-    <bendpoint x="1085" y="468"/>    
-    <end type="SOURCE" refId="2" navigable="false">      
-      <attribute id="33" name="outSections"/>      
-      <multiplicity id="34" minimum="0" maximum="2147483647"/>    
+  <association id="29">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="30" name="map">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="31" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
-    <end type="TARGET" refId="1" navigable="true"/>    
+    <end type="TARGET" refId="7" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="32">    
+    <bendpoint x="1020" y="462"/>    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="33" name="destination">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="34" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="35">    
-    <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="36" name="path"/>      
-      <multiplicity id="37" minimum="0" maximum="2147483647"/>    
+    <bendpoint x="1085" y="468"/>    
+    <end type="SOURCE" refId="2" navigable="false">      
+      <attribute id="36" name="outSections">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="37" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="1" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="38">    
-    <bendpoint x="960" y="304"/>    
-    <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="39" name="destination"/>      
-      <multiplicity id="40" minimum="0" maximum="1"/>    
+    <bendpoint x="1071" y="248"/>    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="39" name="orderedDeliveries">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="40" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="2" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="41">    
-    <bendpoint x="1125" y="415"/>    
-    <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="42" name="destinations"/>      
-      <multiplicity id="43" minimum="0" maximum="2147483647"/>    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="42" name="unorderedDeliveries">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="43" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
+    <end type="TARGET" refId="4" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="44">    
-    <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="45" name="warehouse"/>      
-      <multiplicity id="46" minimum="0" maximum="1"/>    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="45" name="path">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="46" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
+    <end type="TARGET" refId="1" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
