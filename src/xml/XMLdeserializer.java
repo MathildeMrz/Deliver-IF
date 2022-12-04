@@ -12,6 +12,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javafx.stage.Stage;
 import model.Intersection;
 import model.Map;
 import model.Segment;
@@ -26,8 +27,8 @@ public class XMLdeserializer {
 	 * @throws IOException
 	 * @throws ExceptionXML
 	 */
-	public static void load(Map plan) throws ParserConfigurationException, SAXException, IOException, ExceptionXML{
-		File xml = XMLfileOpener.getInstance().open(true);
+	public static void load(Map plan, Stage stage) throws ParserConfigurationException, SAXException, IOException, ExceptionXML{
+		File xml = XMLfileOpener.getInstance().open(true, stage);
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();	
         Document document = docBuilder.parse(xml);
         Element root = document.getDocumentElement();

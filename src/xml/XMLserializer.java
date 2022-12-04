@@ -16,6 +16,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javafx.stage.Stage;
 import model.Intersection;
 import model.Segment;
 import model.Map;
@@ -40,8 +41,8 @@ public class XMLserializer{// Singleton
 	 * @throws TransformerException
 	 * @throws ExceptionXML
 	 */
-	public void save(Map plan) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException, ExceptionXML{
-		File xml = XMLfileOpener.getInstance().open(false);
+	public void save(Map plan, Stage stage) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException, ExceptionXML{
+		File xml = XMLfileOpener.getInstance().open(false, stage);
   		StreamResult result = new StreamResult(xml);
        	document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
        	document.appendChild(createPlanElt(plan));

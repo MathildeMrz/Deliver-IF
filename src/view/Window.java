@@ -45,9 +45,6 @@ public class Window  extends Application  {
 		this.couriers = initCouriers();
 
 		this.map = new Map();
-
-		/*Deserialize XML file*/
-		XMLdeserializer.load(this.map);
 		
 		this.tour = new Tour(map);
 		this.deliveries = initDeliveries();

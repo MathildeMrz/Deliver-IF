@@ -1,8 +1,11 @@
 package xml;
 
 import java.io.File;
-import javax.swing.JFileChooser;
+import javafx.stage.FileChooser;
+//import javax.swing.JFileChooser;
 import javax.swing.filechooser.*;
+
+import javafx.stage.Stage;
 
 public class XMLfileOpener extends FileFilter {// Singleton
 	
@@ -13,18 +16,22 @@ public class XMLfileOpener extends FileFilter {// Singleton
 		return instance;
 	}
 
- 	public File open(boolean read) throws ExceptionXML{
- 		int returnVal;
- 		JFileChooser jFileChooserXML = new JFileChooser();
-        jFileChooserXML.setFileFilter(this);
-        jFileChooserXML.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        if (read)
-         	returnVal = jFileChooserXML.showOpenDialog(null);
+ 	public File open(boolean read, Stage stage) throws ExceptionXML{
+ 		File file;
+ 		FileChooser fileChooserXML = new FileChooser();
+// 		jFileChooserXML.setLayout();
+//        fileChooserXML.setFileFilter(this);
+//        fileChooserXML.setFileSelectionMode(FileChooser.);
+        if (read) {
+        	System.out.println("Avant ouverture");
+         	file = fileChooserXML.showOpenDialog(stage);
+         	System.out.println("après ouverture");
+        }
         else
-         	returnVal = jFileChooserXML.showSaveDialog(null);
-        if (returnVal != JFileChooser.APPROVE_OPTION) 
+         	file = fileChooserXML.showSaveDialog(stage);
+        if (file == null) 
         	throw new ExceptionXML("Problem when opening file");
-        return new File(jFileChooserXML.getSelectedFile().getAbsolutePath());
+        return file;
  	}
  	
  	@Override

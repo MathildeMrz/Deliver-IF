@@ -170,6 +170,11 @@ public class Tour extends Observable {
 				+ ", intersections=" + tourSteps + ", courier=" + courier + "]";
 	}
 	
+	public void calculateWidthHeightMap() {
+		this.widthMap = map.getLongitudeMax() - map.getLongitudeMin();
+		this.heightMap = map.getLatitudeMax() - map.getLatitudeMin();
+	}
+	
 	public float getFactorLongitudeToX(float longitude) {
 		return (longitude - map.getLongitudeMin()) / this.widthMap;		
 	}

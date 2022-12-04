@@ -10,6 +10,7 @@ public class Map extends Observable {
 	private ArrayList<Intersection> destinations;
 	//private ArrayList<Tour> tours;
 	private Intersection warehouse;
+	private boolean isLoaded;
 	private float latitudeMin;
 	private float latitudeMax;
 	private float longitudeMin;
@@ -20,6 +21,7 @@ public class Map extends Observable {
 		this.destinations  = new ArrayList<Intersection>();
 		//this.tours = new ArrayList<Tour>();
 		this.warehouse = null;
+		this.isLoaded = false;
 		latitudeMin = Float.MAX_VALUE;
 		latitudeMax = 0;
 		longitudeMin = Float.MAX_VALUE;
@@ -55,6 +57,11 @@ public class Map extends Observable {
 	public String toString() {
 		return "Plan [nodes=" + nodes + ", warehouse=" + warehouse + "]";
 	}
+	
+	public void resetMap() {
+		this.nodes.clear();
+		this.destinations.clear();
+	}
 
 	public float getLatitudeMin() {
 		return latitudeMin;
@@ -87,4 +94,14 @@ public class Map extends Observable {
 	public void setLongitudeMax(float longitudeMax) {
 		this.longitudeMax = longitudeMax;
 	}
+
+	public boolean getIsLoaded() {
+		return isLoaded;
+	}
+
+	public void setMapLoaded() {
+		this.isLoaded = true;
+	}
+	
+	
 }

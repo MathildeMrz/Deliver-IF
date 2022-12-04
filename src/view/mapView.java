@@ -1,7 +1,12 @@
 package view;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 import algorithm.RunTSP;
 import controller.Controller;
@@ -28,6 +33,8 @@ import model.Segment;
 import model.Tour;
 import observer.Observable;
 import observer.Observer;
+import xml.ExceptionXML;
+import xml.XMLdeserializer;
 
 public class mapView extends Application implements Observer{
 
@@ -98,65 +105,66 @@ public class mapView extends Application implements Observer{
                 + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
                 + "-fx-border-radius: 5;" + "-fx-border-color: blue;" + "-fx-border-insets: 30px;");
     
-
-        //Add warehouse
-		float circleCenterX = tour.getFactorLongitudeToX(map.getWarehouse().getLongitude()) * this.screenWidth + margin;
-        float circleCenterY = tour.getFactorLatitudeToY(map.getWarehouse().getLatitude()) * this.screenHeight + margin;
-        
-        Circle wareHouse = new Circle();
-        wareHouse.setCenterX(circleCenterX);
-        wareHouse.setCenterY(circleCenterY);
-        wareHouse.setRadius(10.0f);
-        mapPane.getChildren().add(wareHouse);
-        
-        //display the deliveries destinations
-        for(Delivery d : tour.getSteps())
-	    {     
-        	float latDestination = d.getDestination().getLatitude();
-        	float longDestination = d.getDestination().getLongitude();
-        	
-        	float circleCenterDestinationX = tour.getFactorLongitudeToX(longDestination) * this.screenWidth;
-        	float circleCenterDestinationY = tour.getFactorLatitudeToY(latDestination) * this.screenHeight;
+		if(this.map.getIsLoaded()) {
+	        //Add warehouse
+			float circleCenterX = tour.getFactorLongitudeToX(map.getWarehouse().getLongitude()) * this.screenWidth + margin;
+	        float circleCenterY = tour.getFactorLatitudeToY(map.getWarehouse().getLatitude()) * this.screenHeight + margin;
 	        
-	        Circle destination = new Circle();
-	        destination.setFill(Color.BLUE);
-	        destination.setCenterX(circleCenterDestinationX + margin);
-	        destination.setCenterY(circleCenterDestinationY + margin);
-	        destination.setRadius(5.0f);
-	        mapPane.getChildren().add(destination);
-		}
-		
-        // display the map
-        for (Intersection i : map.getNodes().values()) 
-        { 
-        	for (Segment s : i.getOutSections()) 
-        	{      
-        		float x1 = tour.getFactorLongitudeToX(i.getLongitude()) * this.screenWidth;
-        		float y1 = tour.getFactorLatitudeToY(i.getLatitude()) * this.screenHeight;
-        		float x2 = tour.getFactorLongitudeToX(s.getDestination().getLongitude()) * this.screenWidth;
-        		float y2 = tour.getFactorLatitudeToY(s.getDestination().getLatitude()) * this.screenHeight;
-        	
-        		Line newLine = new Line(x1 + margin, y1 + margin, x2 + margin, y2 + margin); 
-        		mapPane.getChildren().add(newLine);	
-            }
-        } 
-      
-        
-     // display the tour
-        if(tour.getSteps()!= null) {
-	        for (int i =0; i<tour.getTourSteps().size() -1; i++) { 
+	        Circle wareHouse = new Circle();
+	        wareHouse.setCenterX(circleCenterX);
+	        wareHouse.setCenterY(circleCenterY);
+	        wareHouse.setRadius(10.0f);
+	        mapPane.getChildren().add(wareHouse);
+	        
+	        //display the deliveries destinations
+	        for(Delivery d : tour.getSteps())
+		    {     
+	        	float latDestination = d.getDestination().getLatitude();
+	        	float longDestination = d.getDestination().getLongitude();
 	        	
-        		float x1 = tour.getFactorLongitudeToX(tour.getTourSteps().get(i).getLongitude()) * this.screenWidth;
-        		float y1 = tour.getFactorLatitudeToY(tour.getTourSteps().get(i).getLatitude()) * this.screenHeight;
-        		float x2 = tour.getFactorLongitudeToX(tour.getTourSteps().get(i+1).getLongitude()) * this.screenWidth;
-        		float y2 = tour.getFactorLatitudeToY(tour.getTourSteps().get(i+1).getLatitude()) * this.screenHeight;
-        	
-        		Line newLine = new Line(x1 + margin, y1 + margin, x2 + margin, y2 + margin); 
-        		newLine.setStroke(Color.RED);
-        		newLine.setStrokeWidth(4);
-        		mapPane.getChildren().add(newLine);	
+	        	float circleCenterDestinationX = tour.getFactorLongitudeToX(longDestination) * this.screenWidth;
+	        	float circleCenterDestinationY = tour.getFactorLatitudeToY(latDestination) * this.screenHeight;
+		        
+		        Circle destination = new Circle();
+		        destination.setFill(Color.BLUE);
+		        destination.setCenterX(circleCenterDestinationX + margin);
+		        destination.setCenterY(circleCenterDestinationY + margin);
+		        destination.setRadius(5.0f);
+		        mapPane.getChildren().add(destination);
+			}
+			
+	        // display the map
+	        for (Intersection i : map.getNodes().values()) 
+	        { 
+	        	for (Segment s : i.getOutSections()) 
+	        	{      
+	        		float x1 = tour.getFactorLongitudeToX(i.getLongitude()) * this.screenWidth;
+	        		float y1 = tour.getFactorLatitudeToY(i.getLatitude()) * this.screenHeight;
+	        		float x2 = tour.getFactorLongitudeToX(s.getDestination().getLongitude()) * this.screenWidth;
+	        		float y2 = tour.getFactorLatitudeToY(s.getDestination().getLatitude()) * this.screenHeight;
+	        	
+	        		Line newLine = new Line(x1 + margin, y1 + margin, x2 + margin, y2 + margin); 
+	        		mapPane.getChildren().add(newLine);	
+	            }
 	        } 
-        }
+	      
+	        
+	     // display the tour
+	        if(tour.getSteps()!= null) {
+		        for (int i =0; i<tour.getTourSteps().size() -1; i++) { 
+		        	
+	        		float x1 = tour.getFactorLongitudeToX(tour.getTourSteps().get(i).getLongitude()) * this.screenWidth;
+	        		float y1 = tour.getFactorLatitudeToY(tour.getTourSteps().get(i).getLatitude()) * this.screenHeight;
+	        		float x2 = tour.getFactorLongitudeToX(tour.getTourSteps().get(i+1).getLongitude()) * this.screenWidth;
+	        		float y2 = tour.getFactorLatitudeToY(tour.getTourSteps().get(i+1).getLatitude()) * this.screenHeight;
+	        	
+	        		Line newLine = new Line(x1 + margin, y1 + margin, x2 + margin, y2 + margin); 
+	        		newLine.setStroke(Color.RED);
+	        		newLine.setStrokeWidth(4);
+	        		mapPane.getChildren().add(newLine);	
+		        } 
+	        }
+		}
         
         display(mapPane);
 	}
@@ -173,9 +181,56 @@ public class mapView extends Application implements Observer{
 
 		/*Button button = new Button("TSP");
 		vBoxMap.getChildren().add(button);*/
-		Button buttonChangePage = new Button("New request");
-		vBoxMap.getChildren().add(buttonChangePage);
+		Button buttonLoadMap = new Button("Load a Map");
+		vBoxMap.getChildren().add(buttonLoadMap);
 		
+		buttonLoadMap.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				try {
+					map.resetMap();
+					XMLdeserializer.load(map, stage);
+					map.setMapLoaded();
+					tour.calculateWidthHeightMap();
+					createMap(map);
+				} catch (ParserConfigurationException | SAXException | IOException | ExceptionXML e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		//Ajout du bouton new request seulement si une map est chargée
+		if(this.map.getIsLoaded()) {
+			Button buttonChangePage = new Button("New request");
+			vBoxMap.getChildren().add(buttonChangePage);
+			buttonChangePage.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				
+				Platform.runLater(new Runnable() {
+				       public void run() { 
+				    	   try 
+				    	   {		
+				        	   newRequestView nr = new newRequestView();
+				        	   nr.setController(controller);
+				        	   nr.setCouriers(couriers);
+				        	   nr.setHeight(height);
+				        	   nr.setWidth(width);
+				        	   nr.setPlan(map);
+				        	   nr.setTour(tour);
+				        	   nr.setDeliveries(deliveries);
+				        	   
+				        	   nr.start(stage);	   
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}						
+				       }
+				    });
+				}
+			});
+		}
 		//Modifications ajout tableau livraisons
 	    //TableView<Delivery> table = new TableView<Delivery>();
 	    //Create column UserName (Data type of String).
@@ -219,33 +274,6 @@ public class mapView extends Application implements Observer{
 				System.out.println("Fin TSP");
 			}
 		});*/
-		
-		buttonChangePage.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				
-				Platform.runLater(new Runnable() {
-				       public void run() { 
-				    	   try 
-				    	   {		
-				        	   newRequestView nr = new newRequestView();
-				        	   nr.setController(controller);
-				        	   nr.setCouriers(couriers);
-				        	   nr.setHeight(height);
-				        	   nr.setWidth(width);
-				        	   nr.setPlan(map);
-				        	   nr.setTour(tour);
-				        	   nr.setDeliveries(deliveries);
-				        	   
-				        	   nr.start(stage);	   
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}						
-				       }
-				    });
-			}
-		});
 		
 		this.stage.setScene(scene);
 		this.stage.show();
