@@ -107,7 +107,7 @@ public class mapView extends Application implements Observer{
         Circle wareHouse = new Circle();
         wareHouse.setCenterX(circleCenterX);
         wareHouse.setCenterY(circleCenterY);
-        wareHouse.setRadius(10.0f);
+        wareHouse.setRadius(7.0f);
         mapPane.getChildren().add(wareHouse);
         
         //display the deliveries destinations

@@ -90,7 +90,7 @@ public class newRequestView extends Application implements Observer {
         Circle wareHouse = new Circle();
         wareHouse.setCenterX(circleCenterX +margin);
         wareHouse.setCenterY(circleCenterY +margin);
-        wareHouse.setRadius(10.0f);
+        wareHouse.setRadius(7.0f);
         mapPane.getChildren().add(wareHouse);
         
         //display the deliveries destinations
