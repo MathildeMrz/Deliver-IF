@@ -57,7 +57,23 @@ public class mapView extends Application implements Observer{
 		stage.setWidth(width/1.3);
 		stage.setHeight(height/1.4);
 		/*Display stage*/
-		createMap(this.map);	
+		createMap(this.map);
+		
+		//TSP run every time 
+		List<Intersection> sommets = new ArrayList<Intersection>();
+		sommets.add(map.getWarehouse());
+		System.out.println("tour.getSteps() -> "+tour.getSteps());
+		if(!tour.getSteps().isEmpty())
+		{
+			for(Delivery d : tour.getSteps()) {
+				System.out.println("Delivery d destination: "+d.getDestination());
+				sommets.add(d.getDestination());
+			}
+			System.out.println("Debut TSP");
+			RunTSP testTSP = new RunTSP(sommets.size(), sommets, map, tour);
+			testTSP.start();
+			System.out.println("Fin TSP");
+		}
 	}
 	
 	public ListView<Delivery> getDeliveries() {
@@ -155,8 +171,8 @@ public class mapView extends Application implements Observer{
 		VBox vBoxMap = new VBox();
 		vBoxMap.getChildren().add(mapPane);
 
-		Button button = new Button("TSP");
-		vBoxMap.getChildren().add(button);
+		/*Button button = new Button("TSP");
+		vBoxMap.getChildren().add(button);*/
 		Button buttonChangePage = new Button("New request");
 		vBoxMap.getChildren().add(buttonChangePage);
 		
@@ -189,7 +205,7 @@ public class mapView extends Application implements Observer{
 		hbox.getChildren().add(vBoxiIntentedTours);
 		Scene scene = new Scene(hbox, 200, 500);
 		
-		button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		/*button.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				List<Intersection> sommets = new ArrayList<Intersection>();
@@ -202,7 +218,7 @@ public class mapView extends Application implements Observer{
 				testTSP.start();
 				System.out.println("Fin TSP");
 			}
-		});
+		});*/
 		
 		buttonChangePage.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override

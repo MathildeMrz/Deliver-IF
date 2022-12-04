@@ -260,11 +260,9 @@ public class newRequestView extends Application implements Observer {
 				System.out.println("Validate");
 				if(requestedX != 0.0f && requestedY != 0.0f)
 				{
-					System.out.println("BBBBBBBBBBBBBBBBB");
 					controller.addDelivery(closerIntersection, requestedDate, requestedStartingTimeWindow);
-					System.out.println("AAAAAAAAAAAA");
 					//vBoxcreateNewRequest.getChildren().add(new Label("The delivery has been registered"));
-					JOptionPane.showMessageDialog(null, "The delivery has been registered");
+					//JOptionPane.showMessageDialog(null, "The delivery has been registered");
 					System.out.println("Delivery added");
 					//Change page
 					try 
