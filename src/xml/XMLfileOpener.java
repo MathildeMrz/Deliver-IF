@@ -2,6 +2,8 @@ package xml;
 
 import java.io.File;
 import javafx.stage.FileChooser;
+
+import javax.swing.JFileChooser;
 //import javax.swing.JFileChooser;
 import javax.swing.filechooser.*;
 
@@ -32,6 +34,20 @@ public class XMLfileOpener extends FileFilter {// Singleton
         if (file == null) 
         	throw new ExceptionXML("Problem when opening file");
         return file;
+ 	}
+ 	
+ 	public File open(boolean read) throws ExceptionXML{
+ 		int returnVal;
+ 		JFileChooser jFileChooserXML = new JFileChooser();
+        jFileChooserXML.setFileFilter(this);
+        jFileChooserXML.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        if (read)
+         	returnVal = jFileChooserXML.showOpenDialog(null);
+        else
+         	returnVal = jFileChooserXML.showSaveDialog(null);
+        if (returnVal != JFileChooser.APPROVE_OPTION) 
+        	throw new ExceptionXML("Problem when opening file");
+        return new File(jFileChooserXML.getSelectedFile().getAbsolutePath());
  	}
  	
  	@Override
