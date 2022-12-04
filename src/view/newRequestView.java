@@ -185,11 +185,12 @@ public class newRequestView extends Application implements Observer {
 				+ "    -fx-border-color: #e6bf4b;\r\n"
 				+ "    -fx-border-radius: 3px;\r\n"
 				+ "	   -fx-background-color: #ffffff; ");
+		timeWindow.getItems().add(8);
 		timeWindow.getItems().add(9);
 		timeWindow.getItems().add(10);
 		timeWindow.getItems().add(11);
 		timeWindow.getSelectionModel().select(0);
-		requestedStartingTimeWindow = 9;
+		requestedStartingTimeWindow = 8;
 
 		vBoxcreateNewRequest.getChildren().add(timeWindow);
 		Button buttonValidate = new Button("Valider");
