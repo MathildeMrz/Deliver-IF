@@ -54,8 +54,8 @@ public class mapView extends Application implements Observer{
 		System.out.println("2");
 
 		/*Resize the window*/
-		stage.setWidth(width/1.3);
-		stage.setHeight(height/1.4);
+		stage.setWidth(width);
+		stage.setHeight(height);
 		/*Display stage*/
 		createMap(this.map);
 		
@@ -85,8 +85,9 @@ public class mapView extends Application implements Observer{
 	}
 	public void createMap(Map map)
 	{
-		this.screenHeight = (int)(height/(2.5));
-		this.screenWidth = (int)(width/(2.5));
+		this.screenWidth = (int)(width/(2));
+		this.screenHeight = (int)(width/(2 *map.getRatioLongOverLat()));
+		
 		this.margin = 45;
 		
 		Pane mapPane = new Pane();

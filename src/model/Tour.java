@@ -36,6 +36,7 @@ public class Tour extends Observable {
 		this.map = map;
 		this.widthMap = map.getLongitudeMax() - map.getLongitudeMin();
 		this.heightMap = map.getLatitudeMax() - map.getLatitudeMin();	
+		
 	}
 	
 	public Tour(Map map)
