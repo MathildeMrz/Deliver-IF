@@ -193,7 +193,7 @@ public class newRequestView extends Application implements Observer {
 		requestedStartingTimeWindow = 8;
 
 		vBoxcreateNewRequest.getChildren().add(timeWindow);
-		Button buttonValidate = new Button("Valider");
+		Button buttonValidate = new Button("Valider la livraison");
 		buttonValidate.setStyle("-fx-text-fill: #000000;\r\n"
 				+ "    -fx-border-color: #e6bf4b;\r\n"
 				+ "    -fx-border-radius: 3px;\r\n"
@@ -316,25 +316,31 @@ public class newRequestView extends Application implements Observer {
 		buttonChangePage.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				
-				Platform.runLater(new Runnable() {
-				       public void run() {             
-				           try {		
-				        	   mapView mv = new mapView();
-				        	   mv.setController(controller);
-				        	   mv.setCouriers(couriers);
-				        	   mv.setDeliveries(deliveries);
-				        	   mv.setHeight(height);
-				        	   mv.setWidth(width);
-				        	   mv.setMap(map);
-				        	   mv.setTour(tour);
-				        	   mv.start(stage);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-				       }
-				    });
+//				int retour = JOptionPane.showConfirmDialog(this,
+//			             "OK - Annuler", 
+//			             "titre",
+//			             JOptionPane.OK_CANCEL_OPTION);
+				if (JOptionPane.showConfirmDialog(null, "Vos changements ne seront pas enregistrés", "Confirmation", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)
+				{
+					Platform.runLater(new Runnable() {
+					       public void run() {             
+					           try {		
+					        	   mapView mv = new mapView();
+					        	   mv.setController(controller);
+					        	   mv.setCouriers(couriers);
+					        	   mv.setDeliveries(deliveries);
+					        	   mv.setHeight(height);
+					        	   mv.setWidth(width);
+					        	   mv.setMap(map);
+					        	   mv.setTour(tour);
+					        	   mv.start(stage);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+					       }
+					});
+				}
 			}
 		});
 	}
