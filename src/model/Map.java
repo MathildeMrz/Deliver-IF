@@ -27,7 +27,7 @@ public class Map extends Observable {
 		latitudeMax = 0;
 		longitudeMin = Float.MAX_VALUE;
 		longitudeMax = 0;
-		ratioLongOverLat = 1;
+		ratioLongOverLat = (float) 1.5;
 	}
 	
 	public void addWarehouse(Long intersectionID) {
