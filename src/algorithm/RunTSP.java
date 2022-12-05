@@ -29,8 +29,8 @@ public class RunTSP extends Observable {
 
 
 	public void start() {
-		//TemplateTSP tsp = new TSP2();
-		TemplateTSP tsp = new TSP1();
+		TemplateTSP tsp = new TSP2();
+		//TemplateTSP tsp = new TSP1();
 		/*for (int nbVertices = 8; nbVertices <= 16; nbVertices += 2){*/
 			Graph g = new CompleteGraph(nbVertices,Intersection,lePlan);
 			long startTime = System.currentTimeMillis();
