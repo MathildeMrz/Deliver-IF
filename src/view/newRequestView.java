@@ -57,6 +57,7 @@ public class newRequestView extends Application implements Observer {
 	private LocalDate requestedDate;
 	private int requestedStartingTimeWindow;
 	private Intersection closestIntersection;
+	private Courier requestedCourier;
 	private final int noOfDaysToAdd = 2;
 	private MapView mapView;
 	private MapLayer mapPolygoneMarkerLayer;
@@ -74,6 +75,7 @@ public class newRequestView extends Application implements Observer {
 		display();
 		this.closestIntersection = new Intersection();
 		this.stage.show();
+		System.out.println("NR : " + mapPolygoneMarkerLayer);
 	}
 	
 	public void display() {
@@ -97,9 +99,14 @@ public class newRequestView extends Application implements Observer {
 				
 		/*vBoxCouriers*/
 		VBox vBoxCouriers= new VBox();		
-		vBoxCouriers.getChildren().add(new Label("Select a courier:"));
+		vBoxCouriers.getChildren().add(new Label("Select a courier:"));		
 		vBoxCouriers.getChildren().add(couriers);
-		
+		couriers.getSelectionModel().select(0);
+		requestedCourier = couriers.getItems().get(0);		
+		couriers.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+			   System.out.println("requestedCourier :"+requestedCourier);
+			   requestedCourier = newValue;
+			});
 		
 		DatePicker date = new DatePicker();
 		date.setStyle("-fx-text-fill: #000000;\r\n"
@@ -115,11 +122,12 @@ public class newRequestView extends Application implements Observer {
 				+ "    -fx-border-color: #e6bf4b;\r\n"
 				+ "    -fx-border-radius: 3px;\r\n"
 				+ "	   -fx-background-color: #ffffff; ");
+		timeWindow.getItems().add(8);
 		timeWindow.getItems().add(9);
 		timeWindow.getItems().add(10);
 		timeWindow.getItems().add(11);
 		timeWindow.getSelectionModel().select(0);
-		requestedStartingTimeWindow = 9;
+		requestedStartingTimeWindow = timeWindow.getItems().get(0);
 
 		vBoxCouriers.getChildren().add(timeWindow);
 		Button buttonValidate = new Button("Valider");
@@ -166,7 +174,6 @@ public class newRequestView extends Application implements Observer {
 			}
 		});
 		
-		
 		timeWindow.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
 			   System.out.println("requestedStartingTimeWindow :"+newValue);
 			   requestedStartingTimeWindow = newValue;
@@ -182,22 +189,17 @@ public class newRequestView extends Application implements Observer {
 					   System.out.println("requestedStartingTimeWindow :"+newValue);
 					   requestedStartingTimeWindow = newValue;
 					}); 
+	
 			
 		buttonValidate.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("Validate");
 				if(requestedX != 0.0f && requestedY != 0.0f)
 				{
-					controller.addDelivery(closestIntersection, requestedDate, requestedStartingTimeWindow);
-					
-					//vBoxcreateNewRequest.getChildren().add(new Label("The delivery has been registered"));
-					//JOptionPane.showMessageDialog(null, "The delivery has been registered");
-					System.out.println("Delivery added");
-					//Change page
+					controller.addDelivery(closestIntersection, requestedDate ,requestedStartingTimeWindow, requestedCourier);				
 					try 
 			 	   {		
-					   mapView mv = new mapView();
+			     	   mapView mv = new mapView();
 			     	   mv.setController(controller);
 			     	   mv.setCouriers(couriers);
 			     	   mv.setHeight(height);
@@ -214,7 +216,8 @@ public class newRequestView extends Application implements Observer {
 					}
 				}			
 			}
-		});		
+		});
+		
 		
 		buttonChangePage.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override

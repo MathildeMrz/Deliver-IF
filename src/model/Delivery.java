@@ -11,13 +11,15 @@ public class Delivery extends Observable {
 	private int startTime;
 	private Intersection destination;
 	private LocalDateTime arrival;
+	private Courier courier;
 	
-	public Delivery(String name, int startTime, Intersection destination, LocalDateTime arrival)
+	public Delivery(String name, int startTime, Intersection destination, LocalDateTime arrival, Courier courier)
 	{
 		this.id = ID_FACTORY.getAndIncrement();
 		this.startTime = startTime;
 		this.destination = destination;
 		this.arrival = arrival;
+		this.courier = courier;
 	}
 
 	public LocalDateTime getArrival() {
@@ -30,7 +32,7 @@ public class Delivery extends Observable {
 
 	@Override
 	public String toString() {
-		return "Delivery -> arrival : "+arrival+" time-window : " + startTime + " Ã  " + (startTime+1) + ", destination=" + destination;
+		return this.courier+" : arrival : "+arrival+" time-window : " + startTime + " à " + (startTime+1) + ", destination=" + destination;
 	}
 
 	public int getId() {

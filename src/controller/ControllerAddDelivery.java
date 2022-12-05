@@ -17,8 +17,7 @@ public class ControllerAddDelivery {
 		this.tour= tour;
 	}
 
-	public void addDelivery(Intersection closerIntersection, LocalDate date, int timeWindow) {
-		System.out.println("closerIntersection "+closerIntersection+" date "+date+" timeWindow "+timeWindow);
-		tour.addDelivery(closerIntersection, date, timeWindow);
+	public void addDelivery(Intersection closerIntersection, LocalDate date, int timeWindow, Courier courier) {
+		tour.addDelivery(closerIntersection, date, timeWindow, courier);
 	}
 }
