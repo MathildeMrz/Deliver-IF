@@ -176,7 +176,7 @@ public class newRequestView extends Application implements Observer {
 					closestIntersection = tour.getClosestIntersection(latitude, longitude);
 					
 					MapPoint mapPointPin = new MapPoint(closestIntersection.getLatitude(), closestIntersection.getLongitude());
-					newDelivery = new CustomCircleMarkerLayer(mapPointPin, 4, javafx.scene.paint.Color.BLUE);
+					newDelivery = new CustomCircleMarkerLayer(mapPointPin, 6, javafx.scene.paint.Color.BLUE);
 					mapView.addLayer(newDelivery);
 					display();
 				}				
@@ -206,6 +206,10 @@ public class newRequestView extends Application implements Observer {
 			public void handle(MouseEvent event) {
 				System.out.println("Validate");
 				mapView.removeLayer(newDelivery);
+				for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) 
+		        {   
+					getMapView().removeLayer(customCircleMarkerLayer);
+		        }
 				if(requestedX != 0.0f && requestedY != 0.0f)
 				{
 					controller.addDelivery(closestIntersection, requestedDate ,requestedStartingTimeWindow, requestedCourier);				
@@ -237,6 +241,10 @@ public class newRequestView extends Application implements Observer {
 				if (JOptionPane.showConfirmDialog(null, "Vos changements ne seront pas enregistrés", "Confirmation", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)
 				{
 					mapView.removeLayer(newDelivery);
+					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) 
+			        {   
+						getMapView().removeLayer(customCircleMarkerLayer);
+			        }
 					Platform.runLater(new Runnable() {
 					       public void run() {             
 					           try {		

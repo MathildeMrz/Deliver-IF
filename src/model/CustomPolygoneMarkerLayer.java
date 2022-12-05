@@ -16,15 +16,15 @@ public class CustomPolygoneMarkerLayer extends MapLayer{
     private double[] points;
     private MapView mapView;
    
-	 public CustomPolygoneMarkerLayer(ArrayList<MapPoint> mapPoints, MapView mapView) {	
+	 public CustomPolygoneMarkerLayer(ArrayList<MapPoint> mapPoints, MapView mapView, Color lineColor, int lineWidth) {	
 		 this.mapView = mapView;
 		 this.mapPoints = mapPoints;
 		 this.points = new double[mapPoints.size()*2];
 		 this.line = new Polyline();				 
 	
 		 line.setFill(Color.TRANSPARENT);
-		 line.setStroke(Color.BLUE);
-		 line.setStrokeWidth(5);
+		 line.setStroke(lineColor);
+		 line.setStrokeWidth(lineWidth);
 		 this.getChildren().add(line);
 	 }
 

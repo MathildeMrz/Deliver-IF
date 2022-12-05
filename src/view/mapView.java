@@ -26,6 +26,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.Courier;
 import model.CustomCircleMarkerLayer;
@@ -100,16 +101,31 @@ public class mapView extends Application implements Observer {
 				tour.getTourSteps().add(this.map.getWarehouse());
 				ArrayList<MapPoint> points = new ArrayList<MapPoint>();
 
-				int cptDble = 0;
 				for (int i = 0; i < tour.getTourSteps().size(); i++) {
 					double x1 = tour.getTourSteps().get(i).getLongitude();
 					double y1 = tour.getTourSteps().get(i).getLatitude();
 					points.add(new MapPoint(y1, x1));
 				}
 				this.mapView.removeLayer(mapPolygoneMarkerLayer);
-				mapPolygoneMarkerLayer = new CustomPolygoneMarkerLayer(points, this.mapView);
+				mapPolygoneMarkerLayer = new CustomPolygoneMarkerLayer(points, this.mapView, Color.BLUE, 5);
 				this.mapView.addLayer(mapPolygoneMarkerLayer);
 			}
+			
+			//add mapBorders
+			ArrayList<MapPoint> borderPoints = new ArrayList<MapPoint>();
+			double longMin = this.map.getLongitudeMin();
+			System.out.println(longMin);
+			double longMax = this.map.getLongitudeMax();
+			double latMin = this.map.getLatitudeMin();
+			double latMax = this.map.getLatitudeMax();
+			double coeff = (longMax - longMin)/40;
+			borderPoints.add(new MapPoint(latMax + coeff, longMin - coeff));
+			borderPoints.add(new MapPoint(latMax + coeff, longMax + coeff));
+			borderPoints.add(new MapPoint(latMin - coeff, longMax + coeff));
+			borderPoints.add(new MapPoint(latMin - coeff, longMin - coeff));
+			borderPoints.add(new MapPoint(latMax + coeff, longMin - coeff));
+			CustomPolygoneMarkerLayer border = new CustomPolygoneMarkerLayer(borderPoints, this.mapView, Color.BLACK, 3);
+			this.mapView.addLayer(border);
 
 		}
 		display();

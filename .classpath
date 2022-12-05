@@ -1,49 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="target/classes" path="src">
-		<attributes>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="target/generated-sources/annotations">
-		<attributes>
-			<attribute name="ignore_optional_problems" value="true"/>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="m2e-apt" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="target/test-classes" path="target/generated-test-sources/test-annotations">
-		<attributes>
-			<attribute name="ignore_optional_problems" value="true"/>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="m2e-apt" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17">
 		<attributes>
-			<attribute name="module" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-<<<<<<< HEAD
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/Junit/hamcrest-core-1.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/Junit/junit-4.13.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.base.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.controls.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.fxml.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.graphics.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.media.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.swing.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.web.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx-swt.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/gluonhq_map-20221205T070909Z-001/gluonhq_map/javafx-base-16.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/gluonhq_map-20221205T070909Z-001/gluonhq_map/javafx-base-16-linux.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/gluonhq_map-20221205T070909Z-001/gluonhq_map/javafx-controls-16.jar"/>
@@ -53,26 +14,26 @@
 	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/gluonhq_map-20221205T070909Z-001/gluonhq_map/maps-2.0.0-ea+6.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/gluonhq_map-20221205T070909Z-001/gluonhq_map/storage-4.0.11.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/gluonhq_map-20221205T070909Z-001/gluonhq_map/util-4.0.11.jar"/>
-=======
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/javafx-sdk-19/lib/javafx.base.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/javafx-sdk-19/lib/javafx.controls.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/javafx-sdk-19/lib/javafx.fxml.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/javafx-sdk-19/lib/javafx.graphics.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/javafx-sdk-19/lib/javafx.media.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/javafx-sdk-19/lib/javafx.swing.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/javafx-sdk-19/lib/javafx.web.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/javafx-sdk-19/lib/javafx-swt.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/junit-jars/hamcrest-core-1.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/junit-jars/junit-4.13.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/jar_files (3)/javafx-base-16.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/jar_files (3)/javafx-base-16-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/jar_files (3)/javafx-controls-16.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/jar_files (3)/javafx-controls-16-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/jar_files (3)/javafx-graphics-16.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/jar_files (3)/javafx-graphics-16-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/jar_files (3)/maps-2.0.0-ea+6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/jar_files (3)/storage-4.0.11.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/jar_files (3)/util-4.0.11.jar"/>
->>>>>>> 3aad29573dd30514501c68fc000079cd1bf44286
+	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.base.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.controls.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.fxml.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.graphics.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.media.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.swing.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx.web.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/javafx-sdk-19/javafx-sdk-19/lib/javafx-swt.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/Junit/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Phellycie/Documents/4IF/AGILE/Junit/junit-4.13.2.jar"/>
+	<classpathentry kind="src" output="target/classes" path="src">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -235,7 +235,7 @@ public class Tour extends Observable {
 			}
 		}
 	    Delivery delivery = new Delivery("test", timeWindow, closerIntersection,startDate ,courier);
-	    unorderedDeliveries.add(delivery);
+	    deliveries.add(delivery);
 		notifyObservers(delivery);
 	}	
 
