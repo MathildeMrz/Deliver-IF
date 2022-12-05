@@ -2,6 +2,9 @@ package view;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +26,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -49,6 +54,7 @@ public class mapView extends Application implements Observer {
 	private int height;
 	private ListView<Courier> couriers;
 	private ListView<Delivery> deliveries;
+	private ArrayList<Tour> tours = new ArrayList<>();
 	private Stage stage;
 	private Tour tour;
 	private MapView mapView;
@@ -166,7 +172,64 @@ public class mapView extends Application implements Observer {
 				+ "-fx-border-radius: 5;" + "-fx-border-color: #f3f6f4;" + "-fx-margin: 120 150 150 120;");
 
 		vBoxiIntentedTours.getChildren().add(new Label("Deliveries of the day:"));
-		vBoxiIntentedTours.getChildren().add(deliveries);
+		
+		//TEST : CREATE THE COURIERS + TOURS + DELIVERIES 
+		Courier courier1 = new Courier("Marilou");
+		Courier courier2 = new Courier("Félicie");
+		Courier courier3 = new Courier("Fatma");
+		
+		ArrayList<Delivery> deliveries1 = new ArrayList<>();
+		ArrayList<Delivery> deliveries2 = new ArrayList<>();
+		ArrayList<Delivery> deliveries3 = new ArrayList<>();
+		
+		Long id2=Long.parseLong("1850080438");
+		Intersection inter2= map.getNodes().get(id2);
+		Long id3=Long.parseLong("25319182");
+		Intersection inter3= map.getNodes().get(id3);
+		Long id4=Long.parseLong("1042749162");
+		Intersection inter4= map.getNodes().get(id4);
+		Long id5=Long.parseLong("21703596");
+		Intersection inter5= map.getNodes().get(id5);
+		Long id6=Long.parseLong("26575616");
+		Intersection inter6= map.getNodes().get(id6);
+		
+		deliveries1.add(new Delivery("Livraison", 8, inter2, LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 45)), courier1));
+		deliveries1.add(new Delivery("Livraison", 8, inter3, LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 22)), courier1));
+		deliveries1.add(new Delivery("Livraison", 9, inter4, LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 15)), courier1));
+		deliveries2.add(new Delivery("Livraison", 8, inter5, LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 38)), courier2));
+		deliveries2.add(new Delivery("Livraison", 10, inter5, LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 18)), courier2));
+		
+		Tour tour1 = new Tour(deliveries1,LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 0)),LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 55)),courier1,map);
+		Tour tour2 = new Tour(deliveries2,LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 0)),LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 45)),courier2,map);
+		Tour tour3 = new Tour(deliveries3,LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 0)),LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 0)),courier3,map);
+		tours.add(tour1);
+		tours.add(tour2);
+		tours.add(tour3);
+		//TREEVIEW OF THE DELIVERIES FOR EACH COURIER 
+		// Create the TreeView
+		TreeView treeView = new TreeView();
+		// Create the Root TreeItem
+		TreeItem rootItem = new TreeItem("Deliveries");
+		
+		ArrayList<TreeItem> courierItems = new ArrayList<TreeItem>();
+		
+		tours.forEach((t)->{
+			TreeItem courierItem = new TreeItem(t.getCourier().getName());
+			ArrayList<TreeItem> deliveryItems = new ArrayList<TreeItem>();
+			ArrayList<Delivery> tourDeliveries = t.getDeliveries();
+			tourDeliveries.forEach((d)->{
+				TreeItem deliveryItem = new TreeItem(d.toString());
+				deliveryItems.add(deliveryItem);
+			});
+			courierItem.getChildren().addAll(deliveryItems);
+			courierItems.add(courierItem);
+		});
+		// Add children to the root
+		rootItem.getChildren().addAll(courierItems);
+		// Set the Root Node
+		treeView.setRoot(rootItem);
+		
+		vBoxiIntentedTours.getChildren().add(treeView);
 
 		// -> Test ajout colonne
 

@@ -28,7 +28,8 @@ public class Tour extends Observable {
 	public Tour(ArrayList<Delivery> steps, LocalDateTime startDate, LocalDateTime endDate, Courier courier, Map map)
 	{
 		this.id = ID_FACTORY.getAndIncrement();
-		steps = new ArrayList<Delivery>();
+		//steps = new ArrayList<Delivery>();
+		this.deliveries = steps;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.tourSteps = new ArrayList<Intersection>();
