@@ -71,7 +71,6 @@ public class mapView extends Application implements Observer{
 		/*Resize the window*/
 		stage.setWidth(width/1.3);
 		stage.setHeight(height/1.4);
-		System.out.println("MV 1 : " + mapPolygoneMarkerLayer);
 		
 		System.out.println("this.map 2 : "+this.map);
 		createMap(this.map);
@@ -156,7 +155,6 @@ public class mapView extends Application implements Observer{
 	                
 	                points.add(new MapPoint(y1,x1));
 		        }
-				System.out.println("MV 2 : " + mapPolygoneMarkerLayer);
 				this.mapView.removeLayer(mapPolygoneMarkerLayer);
 		        mapPolygoneMarkerLayer = new CustomPolygoneMarkerLayer(points, this.mapView);
 		        this.mapView.addLayer(mapPolygoneMarkerLayer);
