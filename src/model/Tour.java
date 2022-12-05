@@ -220,8 +220,7 @@ public class Tour extends Observable {
 		return closerIntersection;
 	}
 	
-	//TODO : voir avec Felicie pour décommenter
-	public void addDelivery(Intersection closerIntersection, LocalDate date, int timeWindow)
+	public void addDelivery(Intersection closerIntersection, LocalDate date, int timeWindow, Courier courier)
 	{
 		//StartDate = timeWindow la plus tôt d'une Delivery
 		if(this.startDate == null)
@@ -235,8 +234,8 @@ public class Tour extends Observable {
 				this.startDate = LocalDateTime.of(date, LocalTime.of(timeWindow,0));
 			}
 		}
-	    Delivery delivery = new Delivery("test", timeWindow, closerIntersection,null);
-	    deliveries.add(delivery);
+	    Delivery delivery = new Delivery("test", timeWindow, closerIntersection,startDate ,courier);
+	    unorderedDeliveries.add(delivery);
 		notifyObservers(delivery);
 	}	
 
