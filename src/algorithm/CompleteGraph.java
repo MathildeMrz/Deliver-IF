@@ -29,11 +29,11 @@ public class CompleteGraph implements Graph {
 		        if (i == j) cost[i][j] = -1;
 		        else {
 		        	Dijkstra djikstra= new Dijkstra(lePlan,this.Intersection.get(i)) ;
-		        	System.out.println("Debut Dijkstra");
+		        	//System.out.println("Debut Dijkstra");
 		        	djikstra.run();
-		        	System.out.println("Fin Dijkstra");
+		        	//System.out.println("Fin Dijkstra");
 		        	cost[i][j] = djikstra.getCoutIntersection(this.Intersection.get(j).getId());
-		        	System.out.println("cost[i][j] : "+cost[i][j]);
+		        	//System.out.println("cost[i][j] : "+cost[i][j]);
 		        	
 		        	/*enregistrer l'itineraire*/
 		        	path[i][j]=djikstra.getItinerary(this.Intersection.get(j).getId());
