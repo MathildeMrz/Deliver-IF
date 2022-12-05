@@ -202,7 +202,7 @@ public class Tour extends Observable {
 		return heightMap;
 	}
 	
-	public Intersection getCloserIntersection(float latitude, float longitude)
+	public Intersection getClosestIntersection(float latitude, float longitude)
 	{
 		float minimumDistance = Float.MAX_VALUE;
 		Intersection closerIntersection = null;
@@ -220,6 +220,7 @@ public class Tour extends Observable {
 		return closerIntersection;
 	}
 	
+	//TODO : voir avec Felicie pour décommenter
 	public void addDelivery(Intersection closerIntersection, LocalDate date, int timeWindow)
 	{
 		//StartDate = timeWindow la plus tôt d'une Delivery
@@ -234,14 +235,11 @@ public class Tour extends Observable {
 				this.startDate = LocalDateTime.of(date, LocalTime.of(timeWindow,0));
 			}
 		}
-		System.out.println("EEEEEEEEEEEEEEE");
 	    Delivery delivery = new Delivery("test", timeWindow, closerIntersection,null);
-	    System.out.println("DDDDDDDDDDDDDD");
 	    unorderedDeliveries.add(delivery);
-	    System.out.println("Avant notify");
 		notifyObservers(delivery);
-		System.out.println("FFFFFFFFFFFFFF");
 	}	
+
 	
 	public void addDeliveryToOrderedDeliveries(Intersection tourSteps)
 	{

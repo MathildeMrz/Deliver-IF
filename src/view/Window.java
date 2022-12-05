@@ -9,10 +9,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Optional;
 
-import controller.Controller;
+import com.gluonhq.attach.storage.StorageService;
+import com.gluonhq.attach.util.Services;
+import com.gluonhq.attach.util.impl.ServiceFactory;
+import com.gluonhq.maps.MapPoint;
+import com.gluonhq.maps.MapView;
+
+import controller.ControllerAddDelivery;
 import javafx.application.Application;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Courier;
@@ -23,7 +31,7 @@ import xml.XMLdeserializer;
 
 public class Window  extends Application  {
 	private Map map;
-	private Controller controller;
+	private ControllerAddDelivery controller;
 	private int width;
 	private int height;
 	private ListView<Courier> couriers;
@@ -32,8 +40,49 @@ public class Window  extends Application  {
 	private Tour tour;
 	
 	public static void main(String[] args) throws Exception {
-		Application.launch(args);
 		
+		StorageService storageService = new StorageService() {
+			@Override
+            public Optional<File> getPrivateStorage() {
+                // user home app config location (linux: /home/[yourname]/.gluonmaps)
+                return Optional.of(new File(System.getProperty("user.home")));
+            }
+
+            @Override
+            public Optional<File> getPublicStorage(String subdirectory) {
+                // this should work on desktop systems because home path is public
+                return getPrivateStorage();
+            }
+
+            @Override
+            public boolean isExternalStorageWritable() {
+                //noinspection ConstantConditions
+                return getPrivateStorage().get().canWrite();
+            }
+
+            @Override
+            public boolean isExternalStorageReadable() {
+                //noinspection ConstantConditions
+                return getPrivateStorage().get().canRead();
+            }
+		};
+		 ServiceFactory<StorageService> storageServiceFactory = new ServiceFactory<StorageService>() {
+
+	            @Override
+	            public Class<StorageService> getServiceType() {
+	                return StorageService.class;
+	            }
+
+	            @Override
+	            public Optional<StorageService> getInstance() {
+	                return Optional.of(storageService);
+	            }
+
+	        };
+	        // register service
+	        Services.registerServiceFactory(storageServiceFactory);       
+	        
+	        Application.launch(args);		
 	}
 	
 
@@ -41,14 +90,38 @@ public class Window  extends Application  {
 	public void start(Stage arg0) throws Exception {
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		this.width = (int)Screen.getPrimary().getBounds().getWidth();
-		//this.width = gd.getDisplayMode().getWidth();
-		//this.height = gd.getDisplayMode().getHeight();
 		this.height = (int)Screen.getPrimary().getBounds().getHeight();
 		this.width = (int)Screen.getPrimary().getVisualBounds().getWidth();
 		this.height = (int)Screen.getPrimary().getVisualBounds().getHeight();
 		this.couriers = initCouriers();
 
 		this.map = new Map();
+		
+		/*Deserialize XML file*/
+		XMLdeserializer.load(this.map);
+		
+		/* Définit la plate-forme pour éviter "javafx.platform is not defined" */
+		  System.setProperty("javafx.platform", "desktop");
+
+		  /*
+		   * Définit l'user agent pour éviter l'exception
+		   * "Server returned HTTP response code: 403"
+		   */
+		  System.setProperty("http.agent", "Gluon Mobile/1.0.3");
+
+		  /* Création de la carte Gluon JavaFX */
+		  MapView mapView = new MapView();
+
+		  double latAverage = (this.map.getLatitudeMin()+this.map.getLatitudeMax())/2;
+		  double longAverage = (this.map.getLongitudeMin()+this.map.getLongitudeMax())/2;
+		  /* Création du point avec latitude et longitude */
+		  MapPoint mapPoint = new MapPoint(latAverage, longAverage);
+
+		  /* Zoom de 14*/
+		  mapView.setZoom(14);
+
+		  /* Centre la carte sur le point */
+		  mapView.setCenter(mapPoint);
 		
 		this.tour = new Tour(map);
 		this.deliveries = initDeliveries();
@@ -58,9 +131,11 @@ public class Window  extends Application  {
 		this.mv.setHeight(this.height);
 		this.mv.setWidth(this.width);
 		this.mv.setMap(this.map);
-		this.mv.setTour(tour);
+		System.out.println("this.map "+this.map);
+		this.mv.setTour(this.tour);
 		System.out.println("Deliveries of window "+deliveries);
 		this.mv.setDeliveries(deliveries);
+		this.mv.setMapView(mapView);
 		this.mv.start(new Stage());	
 		
 	}

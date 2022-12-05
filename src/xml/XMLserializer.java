@@ -51,6 +51,17 @@ public class XMLserializer{// Singleton
         xformer.setOutputProperty(OutputKeys.INDENT, "yes");
         xformer.transform(source, result);
 	}
+	
+	public void save(Map plan) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException, ExceptionXML{
+		File xml = XMLfileOpener.getInstance().open(false);
+  		StreamResult result = new StreamResult(xml);
+       	document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+       	document.appendChild(createPlanElt(plan));
+        DOMSource source = new DOMSource(document);
+        Transformer xformer = TransformerFactory.newInstance().newTransformer();
+        xformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        xformer.transform(source, result);
+	}
 
 	private Element createPlanElt(Map plan) {
 		Element racine = document.createElement("map");
