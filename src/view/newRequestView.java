@@ -2,7 +2,6 @@ package view;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -10,7 +9,6 @@ import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 
-import algorithm.RunTSP;
 import controller.ControllerAddDelivery;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -24,18 +22,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import model.Courier;
 import model.CustomCircleMarkerLayer;
+import model.CustomPinLayer;
 import model.Delivery;
 import model.Intersection;
 import model.Map;
-import model.Segment;
 import model.Tour;
 import observer.Observable;
 import observer.Observer;
@@ -172,9 +166,11 @@ public class newRequestView extends Application implements Observer {
 					float latitude = (float) mp.getLatitude();
 					float longitude = (float) mp.getLongitude();
 					closestIntersection = tour.getClosestIntersection(latitude, longitude);
-//					MapPoint mapPoint = new MapPoint(latitude, longitude);     
-//			        newDelivery = new CustomCircleMarkerLayer(mapPoint, 7, javafx.scene.paint.Color.RED);
-//			        mapView.addLayer(newDelivery);
+					
+					MapPoint mapPointPin = new MapPoint(closestIntersection.getLatitude(), closestIntersection.getLongitude());
+					newDelivery = new CustomCircleMarkerLayer(mapPointPin, 4, javafx.scene.paint.Color.BLUE);
+					mapView.addLayer(newDelivery);
+					display();
 				}				
 				clicked = true;
 			}
@@ -201,6 +197,7 @@ public class newRequestView extends Application implements Observer {
 			@Override
 			public void handle(MouseEvent event) {
 				System.out.println("Validate");
+				mapView.removeLayer(newDelivery);
 				if(requestedX != 0.0f && requestedY != 0.0f)
 				{
 					controller.addDelivery(closestIntersection, requestedDate, requestedStartingTimeWindow);
@@ -235,6 +232,7 @@ public class newRequestView extends Application implements Observer {
 			public void handle(MouseEvent event) {
 				if (JOptionPane.showConfirmDialog(null, "Vos changements ne seront pas enregistrés", "Confirmation", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)
 				{
+					mapView.removeLayer(newDelivery);
 					Platform.runLater(new Runnable() {
 					       public void run() {             
 					           try {		

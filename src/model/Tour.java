@@ -247,11 +247,11 @@ public class Tour extends Observable {
 		notifyObservers();
 	}
 	
-	public void clearUnorderedDeliveries() {
+	public void clearDeliveries() {
 		this.deliveries.clear();
 	}
 	
-	public void clearOrderedDeliveries() {
+	public void clearTourSteps() {
 		this.tourSteps.clear();
 	}
 	
