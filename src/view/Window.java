@@ -89,8 +89,6 @@ public class Window  extends Application  {
 	@Override
 	public void start(Stage arg0) throws Exception {
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		this.width = (int)Screen.getPrimary().getBounds().getWidth();
-		this.height = (int)Screen.getPrimary().getBounds().getHeight();
 		this.width = (int)Screen.getPrimary().getVisualBounds().getWidth();
 		this.height = (int)Screen.getPrimary().getVisualBounds().getHeight();
 		this.couriers = initCouriers();

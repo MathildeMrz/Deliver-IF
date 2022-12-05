@@ -143,8 +143,8 @@ public class mapView extends Application implements Observer {
 
 		VBox vBoxMap = new VBox();
 		vBoxMap.setPadding(new Insets(20, 20, 20, 20));
-		vBoxMap.setMaxHeight(height - 40);
-		vBoxMap.prefWidthProperty().bind(hbox.widthProperty().multiply(0.60));
+		vBoxMap.setMaxHeight(this.height - 40);
+		vBoxMap.prefWidthProperty().bind(hbox.widthProperty().multiply(0.55));
 
 		if (this.map.getIsLoaded()) {
 			// display the map
