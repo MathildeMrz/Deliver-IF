@@ -97,9 +97,6 @@ public class Window  extends Application  {
 
 		this.map = new Map();
 		
-		/*Deserialize XML file*/
-		XMLdeserializer.load(this.map);
-		
 		/* Définit la plate-forme pour éviter "javafx.platform is not defined" */
 		  System.setProperty("javafx.platform", "desktop");
 
@@ -112,10 +109,11 @@ public class Window  extends Application  {
 		  /* Création de la carte Gluon JavaFX */
 		  MapView mapView = new MapView();
 
-		  double latAverage = (this.map.getLatitudeMin()+this.map.getLatitudeMax())/2;
-		  double longAverage = (this.map.getLongitudeMin()+this.map.getLongitudeMax())/2;
+		  double latAverage = 45;
+		  double longAverage = 2;
 		  /* Création du point avec latitude et longitude */
 		  MapPoint mapPoint = new MapPoint(latAverage, longAverage);
+		  
 
 		  /* Zoom de 14*/
 		  mapView.setZoom(14);

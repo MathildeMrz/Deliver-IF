@@ -43,5 +43,14 @@
 	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/javafx-sdk-19/lib/javafx.swing.jar"/>
 	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/javafx-sdk-19/lib/javafx.web.jar"/>
 	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/javafx-sdk-19/lib/javafx-swt.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/javafx-base-16.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/javafx-base-16-linux.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/javafx-controls-16.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/javafx-controls-16-linux.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/javafx-graphics-16.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/javafx-graphics-16-linux.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/maps-2.0.0-ea+6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/storage-4.0.11.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/util-4.0.11.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
