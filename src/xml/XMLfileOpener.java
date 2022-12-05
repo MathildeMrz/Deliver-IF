@@ -24,11 +24,8 @@ public class XMLfileOpener extends FileFilter {// Singleton
 // 		jFileChooserXML.setLayout();
 //        fileChooserXML.setFileFilter(this);
 //        fileChooserXML.setFileSelectionMode(FileChooser.);
-        if (read) {
-        	System.out.println("Avant ouverture");
+        if (read)
          	file = fileChooserXML.showOpenDialog(stage);
-         	System.out.println("après ouverture");
-        }
         else
          	file = fileChooserXML.showSaveDialog(stage);
         if (file == null) 

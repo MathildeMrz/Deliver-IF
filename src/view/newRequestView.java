@@ -62,6 +62,7 @@ public class newRequestView extends Application implements Observer {
 	private MapView mapView;
 	private MapLayer newDelivery;
 	ArrayList<CustomCircleMarkerLayer> mapLayerDelivery;
+	private MapLayer mapPolygoneMarkerLayer;
 	
 	public newRequestView()
 	{
@@ -195,61 +196,6 @@ public class newRequestView extends Application implements Observer {
 					   System.out.println("requestedStartingTimeWindow :"+newValue);
 					   requestedStartingTimeWindow = newValue;
 					}); 
-	
-			
-		buttonValidate.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				if(requestedX != 0.0f && requestedY != 0.0f)
-				{
-				    //LocalDate date = LocalDate.now();    
-					//TODO : rajouter la date
-					controller.addDelivery(closestIntersection, requestedDate ,requestedStartingTimeWindow);				
-					try 
-			 	   {		
-			     	   mapView mv = new mapView();
-			     	   mv.setController(controller);
-			     	   mv.setCouriers(couriers);
-			     	   mv.setHeight(height);
-			     	   mv.setWidth(width);
-			     	   mv.setMap(map);
-			     	   mv.setTour(tour); 
-			     	   mv.setDeliveries(deliveries);
-			     	   mv.setMapView(mapView);
-			     	   mv.start(stage);	 
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}			
-			}
-		});
-		
-		buttonChangePage.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				
-				Platform.runLater(new Runnable() {
-				       public void run() {             
-				           try {		
-				        	   mapView mv = new mapView();
-				        	   mv.setController(controller);
-				        	   mv.setCouriers(couriers);
-				        	   mv.setDeliveries(deliveries);
-				        	   mv.setHeight(height);
-				        	   mv.setWidth(width);
-				        	   mv.setMap(map);
-				        	   mv.setTour(tour);
-				        	   mv.start(stage);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-				       }
-				    });
-			}
-		});
-	
 			
 		buttonValidate.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
@@ -274,6 +220,7 @@ public class newRequestView extends Application implements Observer {
 			     	   mv.setTour(tour); 
 			     	   mv.setDeliveries(deliveries);
 			     	   mv.setMapView(mapView);
+			     	   mv.setMapPolygoneMarkerLayer(mapPolygoneMarkerLayer);
 			     	   mv.start(stage);	 
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -300,6 +247,8 @@ public class newRequestView extends Application implements Observer {
 					        	   mv.setWidth(width);
 					        	   mv.setMap(map);
 					        	   mv.setTour(tour);
+					        	   mv.setMapView(mapView);
+					        	   mv.setMapPolygoneMarkerLayer(mapPolygoneMarkerLayer);
 					        	   mv.start(stage);
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
@@ -396,6 +345,10 @@ public class newRequestView extends Application implements Observer {
 	
 	public void setStage(Stage stage) {
 		this.stage = stage;
+	}
+	
+	public void setMapPolygoneMarkerLayer(MapLayer layer) {
+		this.mapPolygoneMarkerLayer = layer;
 	}
 	
 	public Stage getStage() {

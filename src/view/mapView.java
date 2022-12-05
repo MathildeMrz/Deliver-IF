@@ -57,6 +57,7 @@ public class mapView extends Application implements Observer{
 	private Tour tour;
 	private int margin;
 	private MapView mapView;
+	private MapLayer mapPolygoneMarkerLayer;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -111,7 +112,7 @@ public class mapView extends Application implements Observer{
 		System.out.println("dans createMap : "+map);
 		this.margin = 45;
 	
-		//if(this.map.getIsLoaded()) {
+		if(this.map.getIsLoaded()) {
 			//Add warehouse       
 	        MapPoint mapPointWareHouse = new MapPoint(map.getWarehouse().getLatitude(), map.getWarehouse().getLongitude());     
 	        MapLayer mapLayerWareHouse = new CustomCircleMarkerLayer(mapPointWareHouse, 7, javafx.scene.paint.Color.RED);
@@ -139,44 +140,23 @@ public class mapView extends Application implements Observer{
 			{
 				TSP();
 				//TODO Voir avec Gloria si warehouse pas déjà ajoutée
-				tour.getTourSteps().add(this.map.getWarehouse());
-				double[] points = new double[(tour.getTourSteps().size())*2];
+				tour.getOrderedDeliveries().add(this.map.getWarehouse());
+				ArrayList<MapPoint> points = new ArrayList<MapPoint>();
 				
 				int cptDble = 0;
-				
-				for (int i =0; i<tour.getTourSteps().size(); i++) { 
-					
-					double mapWidth = this.mapView.getWidth();
-	        		double mapHeight = this.mapView.getHeight();
+				for (int i =0; i<tour.getOrderedDeliveries().size(); i++) { 
 	        		
-					double x1 = tour.getTourSteps().get(i).getLongitude();
-	        		double y1 = tour.getTourSteps().get(i).getLatitude();
-	        		
-	         		MapPoint min_lat_long = this.mapView.getMapPosition(0, mapHeight-1);
-	        		double min_long = min_lat_long.getLongitude();
-	        		double min_lat = min_lat_long.getLatitude();
-	        
-	        		MapPoint max_lat_long = this.mapView.getMapPosition(mapWidth-1, 0);
-	        		double max_long = max_lat_long.getLongitude();
-	        		double max_lat = max_lat_long.getLatitude();
-	        		
-	        		double pixel_per_long = (mapWidth / (max_long - min_long));
-	        		double pixel_per_lat = (mapHeight / (max_lat - min_lat));
-	        		
-	        		double x = (pixel_per_long * (x1- min_long));
-	        		double y = (pixel_per_lat * (max_lat-y1));
-	        			
-	                points[cptDble] = x;
-	                points[(cptDble+1)] = y;
+					double x1 = tour.getOrderedDeliveries().get(i).getLongitude();
+	        		double y1 = tour.getOrderedDeliveries().get(i).getLatitude();
 	                
-	                cptDble+=2;
-
-		        } 
-		        MapLayer mapPolygoneMarkerLayer = new CustomPolygoneMarkerLayer(points);
+	                points.add(new MapPoint(y1,x1));
+		        }
+				this.mapView.removeLayer(mapPolygoneMarkerLayer);
+		        mapPolygoneMarkerLayer = new CustomPolygoneMarkerLayer(points, this.mapView);
 		        this.mapView.addLayer(mapPolygoneMarkerLayer);
-			}		
+			}
 	   
-		//}
+		}
 		  display();
 	}
 
@@ -188,9 +168,14 @@ public class mapView extends Application implements Observer{
 		vBoxMap.setPadding(new Insets(20, 20, 20, 20)); 
 		vBoxMap.setMaxHeight(height - 40);
 		vBoxMap.prefWidthProperty().bind(hbox.widthProperty().multiply(0.60));
-
-		//display the map
-		vBoxMap.getChildren().add(this.mapView);
+		
+		if(this.map.getIsLoaded()) {
+			//display the map
+			vBoxMap.getChildren().add(this.mapView);
+		}
+		else {
+			vBoxMap.getChildren().add(new Label("Veuillez charger une carte"));
+		}
 		
 		//Modifications ajout tableau livraisons
 	    //TableView<Delivery> table = new TableView<Delivery>();
@@ -214,11 +199,6 @@ public class mapView extends Application implements Observer{
 		
 		vBoxiIntentedTours.getChildren().add(new Label("Deliveries of the day:"));
 	    vBoxiIntentedTours.getChildren().add(deliveries);
-		
-		Button buttonChangePage = new Button("New request");
-		Button button = new Button("TSP");
-		vBoxiIntentedTours.getChildren().add(buttonChangePage);
-		vBoxiIntentedTours.getChildren().add(button);
 
 	    // -> Test ajout colonne
 	    
@@ -229,37 +209,10 @@ public class mapView extends Application implements Observer{
 		this.stage.setScene(scene);
 		this.stage.show();
 		
-		buttonChangePage.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				
-				Platform.runLater(new Runnable() {
-				       public void run() { 
-				    	   try 
-				    	   {		
-				    		   newRequestView nr = new newRequestView();
-				        	   nr.setController(controller);
-				        	   nr.setCouriers(couriers);
-				        	   nr.setHeight(height);
-				        	   nr.setWidth(width);
-				        	   nr.setPlan(map);
-				        	   nr.setTour(tour);
-				        	   nr.setDeliveries(deliveries);
-				        	   nr.setMapView(mapView);			        	   
-				        	   nr.start(stage);
-				        	   
-				        	   nr.start(stage);	   
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}						
-				       }
-				    });
-				}
-			});
-		
 		//Ajout du bouton new request seulement si une map est chargée
-		/*if(this.map.getIsLoaded()) {			
+		if(this.map.getIsLoaded()) {
+			Button buttonChangePage = new Button("New request");
+			vBoxiIntentedTours.getChildren().add(buttonChangePage);
 			buttonChangePage.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -276,7 +229,8 @@ public class mapView extends Application implements Observer{
 				        	   nr.setPlan(map);
 				        	   nr.setTour(tour);
 				        	   nr.setDeliveries(deliveries);
-				        	   nr.setMapView(mapView);			        	   
+				        	   nr.setMapView(mapView);
+				        	   nr.setMapPolygoneMarkerLayer(mapPolygoneMarkerLayer);
 				        	   nr.start(stage);
 				        	   
 				        	   nr.start(stage);	   
@@ -291,7 +245,7 @@ public class mapView extends Application implements Observer{
 		}
 		
 		Button buttonLoadMap = new Button("Load a Map");
-		vBoxMap.getChildren().add(buttonLoadMap);
+		vBoxiIntentedTours.getChildren().add(buttonLoadMap);
 		
 		buttonLoadMap.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
@@ -304,6 +258,14 @@ public class mapView extends Application implements Observer{
 					tour.clearOrderedDeliveries();
 					tour.clearUnorderedDeliveries();
 					deliveries.getItems().clear();
+					
+					mapView = new MapView();
+					double latAverage = (map.getLatitudeMin()+map.getLatitudeMax())/2;
+					double longAverage = (map.getLongitudeMin()+map.getLongitudeMax())/2;
+					MapPoint mapPoint = new MapPoint(latAverage, longAverage);
+					mapView.setZoom(14);
+					mapView.setCenter(mapPoint);
+					
 					createMap(map);
 				} catch (ParserConfigurationException | SAXException | IOException | ExceptionXML e) {
 					// TODO Auto-generated catch block
@@ -313,7 +275,7 @@ public class mapView extends Application implements Observer{
 					e.printStackTrace();
 				}
 			}
-		});*/
+		});
 	}
 
 	public void TSP()
@@ -389,6 +351,10 @@ public class mapView extends Application implements Observer{
 
 	public void setMapView(MapView mapView) {
 		this.mapView = mapView;
+	}
+
+	public void setMapPolygoneMarkerLayer(MapLayer layer) {
+		this.mapPolygoneMarkerLayer = layer;
 	}
 
 	@Override
