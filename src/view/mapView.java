@@ -18,6 +18,7 @@ import controller.ControllerAddDelivery;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -54,8 +55,6 @@ public class mapView extends Application implements Observer{
 	private ListView<Delivery> deliveries;
 	private Stage stage;
 	private Tour tour;
-	private int screenWidth; 
-	private int screenHeight;
 	private int margin;
 	private MapView mapView;
 	
@@ -68,8 +67,8 @@ public class mapView extends Application implements Observer{
 		this.controller = new ControllerAddDelivery(this.stage, this.tour, this.couriers);
 
 		/*Resize the window*/
-		stage.setWidth(width/1.3);
-		stage.setHeight(height/1.4);
+		stage.setWidth(width);
+		stage.setHeight(height);
 		
 		System.out.println("this.map 2 : "+this.map);
 		createMap(this.map);
@@ -110,27 +109,24 @@ public class mapView extends Application implements Observer{
 	public void createMap(Map map) throws MalformedURLException
 	{
 		System.out.println("dans createMap : "+map);
-		this.screenWidth = (int)(width/(2));
-		this.screenHeight = (int)(width/(2 *map.getRatioLongOverLat()));
-		
 		this.margin = 45;
 	
 		//if(this.map.getIsLoaded()) {
 			//Add warehouse       
 	        MapPoint mapPointWareHouse = new MapPoint(map.getWarehouse().getLatitude(), map.getWarehouse().getLongitude());     
-	        MapLayer mapLayerWareHouse = new CustomCircleMarkerLayer(mapPointWareHouse, 10, javafx.scene.paint.Color.RED);
+	        MapLayer mapLayerWareHouse = new CustomCircleMarkerLayer(mapPointWareHouse, 7, javafx.scene.paint.Color.RED);
 	        this.mapView.addLayer(mapLayerWareHouse);
         
-	        //add intersections
-	        for (Intersection i : map.getNodes().values()) 
-	        {    
-				MapPoint mapDelivery = new MapPoint(i.getLatitude(), i.getLongitude());     
-		        MapLayer mapLayerDelivery = new CustomCircleMarkerLayer(mapDelivery, 2, javafx.scene.paint.Color.BLUEVIOLET);
-		        this.mapView.addLayer(mapLayerDelivery);
-	        }
+//	        //add intersections
+//	        for (Intersection i : map.getNodes().values()) 
+//	        {    
+//				MapPoint mapDelivery = new MapPoint(i.getLatitude(), i.getLongitude());     
+//		        MapLayer mapLayerDelivery = new CustomCircleMarkerLayer(mapDelivery, 2, javafx.scene.paint.Color.BLUEVIOLET);
+//		        this.mapView.addLayer(mapLayerDelivery);
+//	        }
 	        
 	        //add deliveries
-	        for(Delivery d : tour.getUnorderedDeliveries())
+	        for(Delivery d : tour.getDeliveries())
 		    {     
 	        	float latDestination = d.getDestination().getLatitude();
 	        	float longDestination = d.getDestination().getLongitude();   
@@ -143,17 +139,18 @@ public class mapView extends Application implements Observer{
 			{
 				TSP();
 				//TODO Voir avec Gloria si warehouse pas déjà ajoutée
-				tour.getOrderedDeliveries().add(this.map.getWarehouse());
-				double[] points = new double[(tour.getOrderedDeliveries().size())*2];
+				tour.getTourSteps().add(this.map.getWarehouse());
+				double[] points = new double[(tour.getTourSteps().size())*2];
 				
 				int cptDble = 0;
-				for (int i =0; i<tour.getOrderedDeliveries().size(); i++) { 
-	        		
-					double x1 = tour.getOrderedDeliveries().get(i).getLongitude();
-	        		double y1 = tour.getOrderedDeliveries().get(i).getLatitude();
-	        	            		
-	        		double mapWidth = this.mapView.getWidth();
+				
+				for (int i =0; i<tour.getTourSteps().size(); i++) { 
+					
+					double mapWidth = this.mapView.getWidth();
 	        		double mapHeight = this.mapView.getHeight();
+	        		
+					double x1 = tour.getTourSteps().get(i).getLongitude();
+	        		double y1 = tour.getTourSteps().get(i).getLatitude();
 	        		
 	         		MapPoint min_lat_long = this.mapView.getMapPosition(0, mapHeight-1);
 	        		double min_long = min_lat_long.getLongitude();
@@ -186,10 +183,10 @@ public class mapView extends Application implements Observer{
 	public void display() {
 		
 		HBox hbox = new HBox();
-		hbox.setMinWidth(width / 2);
-		hbox.setMinHeight(height / 3);
 		
 		VBox vBoxMap = new VBox();
+		vBoxMap.setPadding(new Insets(20, 20, 20, 20)); 
+		vBoxMap.setMaxHeight(height - 40);
 		vBoxMap.prefWidthProperty().bind(hbox.widthProperty().multiply(0.60));
 
 		//display the map
@@ -307,7 +304,6 @@ public class mapView extends Application implements Observer{
 					tour.clearOrderedDeliveries();
 					tour.clearUnorderedDeliveries();
 					deliveries.getItems().clear();
-					map.setRatio();
 					createMap(map);
 				} catch (ParserConfigurationException | SAXException | IOException | ExceptionXML e) {
 					// TODO Auto-generated catch block
@@ -324,7 +320,7 @@ public class mapView extends Application implements Observer{
 	{
 		List<Intersection> sommets = new ArrayList<Intersection>();
 		sommets.add(map.getWarehouse());
-		for(Delivery d : tour.getUnorderedDeliveries()) {
+		for(Delivery d : tour.getDeliveries()) {
 			sommets.add(d.getDestination());
 		}
 		System.out.println("Debut TSP");

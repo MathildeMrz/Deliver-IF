@@ -8,26 +8,22 @@ import observer.Observable;
 public class Map extends Observable {
 	private HashMap<Long, Intersection> nodes;
 	private ArrayList<Intersection> destinations;
-	//private ArrayList<Tour> tours;
 	private Intersection warehouse;
 	private boolean isLoaded;
 	private float latitudeMin;
 	private float latitudeMax;
 	private float longitudeMin;
 	private float longitudeMax;
-	private float ratioLongOverLat;
 	
 	public Map() {
 		this.nodes  = new HashMap<Long,Intersection>();
 		this.destinations  = new ArrayList<Intersection>();
-		//this.tours = new ArrayList<Tour>();
 		this.warehouse = null;
 		this.isLoaded = false;
 		latitudeMin = Float.MAX_VALUE;
 		latitudeMax = 0;
 		longitudeMin = Float.MAX_VALUE;
 		longitudeMax = 0;
-		ratioLongOverLat = (float) 1.5;
 	}
 	
 	public void addWarehouse(Long intersectionID) {
@@ -107,13 +103,5 @@ public class Map extends Observable {
 
 	public void setMapLoaded() {
 		this.isLoaded = true;
-	}
-	
-	public void setRatio() {
-		this.ratioLongOverLat = (this.longitudeMax-this.longitudeMin) / (this.latitudeMax - this.latitudeMin);
-	}
-	
-	public float getRatioLongOverLat() {
-		return ratioLongOverLat;
 	}
 }

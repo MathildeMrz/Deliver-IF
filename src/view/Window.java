@@ -145,7 +145,7 @@ public class Window  extends Application  {
 		//ArrayList<Tour> tours = plan.getTours();
 		//for(Tour t : )
 		this.deliveries = new ListView<Delivery>();
-		for(Delivery d : tour.getUnorderedDeliveries())
+		for(Delivery d : tour.getDeliveries())
 		{
 			deliveries.getItems().add(d);
 		}
