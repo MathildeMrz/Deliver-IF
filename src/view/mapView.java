@@ -58,6 +58,7 @@ public class mapView extends Application implements Observer{
 	private int screenHeight;
 	private int margin;
 	private MapView mapView;
+	private MapLayer mapPolygoneMarkerLayer;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -70,6 +71,7 @@ public class mapView extends Application implements Observer{
 		/*Resize the window*/
 		stage.setWidth(width/1.3);
 		stage.setHeight(height/1.4);
+		System.out.println("MV 1 : " + mapPolygoneMarkerLayer);
 		
 		System.out.println("this.map 2 : "+this.map);
 		createMap(this.map);
@@ -153,10 +155,12 @@ public class mapView extends Application implements Observer{
 	        		double y1 = tour.getOrderedDeliveries().get(i).getLatitude();
 	                
 	                points.add(new MapPoint(y1,x1));
-		        } 
-		        MapLayer mapPolygoneMarkerLayer = new CustomPolygoneMarkerLayer(points, this.mapView);
+		        }
+				System.out.println("MV 2 : " + mapPolygoneMarkerLayer);
+				this.mapView.removeLayer(mapPolygoneMarkerLayer);
+		        mapPolygoneMarkerLayer = new CustomPolygoneMarkerLayer(points, this.mapView);
 		        this.mapView.addLayer(mapPolygoneMarkerLayer);
-			}		
+			}
 	   
 		}
 		  display();
@@ -231,7 +235,8 @@ public class mapView extends Application implements Observer{
 				        	   nr.setPlan(map);
 				        	   nr.setTour(tour);
 				        	   nr.setDeliveries(deliveries);
-				        	   nr.setMapView(mapView);			        	   
+				        	   nr.setMapView(mapView);
+				        	   nr.setMapPolygoneMarkerLayer(mapPolygoneMarkerLayer);
 				        	   nr.start(stage);
 				        	   
 				        	   nr.start(stage);	   
@@ -353,6 +358,10 @@ public class mapView extends Application implements Observer{
 
 	public void setMapView(MapView mapView) {
 		this.mapView = mapView;
+	}
+
+	public void setMapPolygoneMarkerLayer(MapLayer layer) {
+		this.mapPolygoneMarkerLayer = layer;
 	}
 
 	@Override

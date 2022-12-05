@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 
@@ -58,6 +59,7 @@ public class newRequestView extends Application implements Observer {
 	private Intersection closestIntersection;
 	private final int noOfDaysToAdd = 2;
 	private MapView mapView;
+	private MapLayer mapPolygoneMarkerLayer;
 	
 	public newRequestView()
 	{
@@ -72,6 +74,7 @@ public class newRequestView extends Application implements Observer {
 		display();
 		this.closestIntersection = new Intersection();
 		this.stage.show();
+		System.out.println("NR : " + mapPolygoneMarkerLayer);
 	}
 	
 	public void display() {
@@ -201,6 +204,7 @@ public class newRequestView extends Application implements Observer {
 			     	   mv.setTour(tour); 
 			     	   mv.setDeliveries(deliveries);
 			     	   mv.setMapView(mapView);
+			     	   mv.setMapPolygoneMarkerLayer(mapPolygoneMarkerLayer);
 			     	   mv.start(stage);	 
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -259,6 +263,7 @@ public class newRequestView extends Application implements Observer {
 			     	   mv.setTour(tour); 
 			     	   mv.setDeliveries(deliveries);
 			     	   mv.setMapView(mapView);
+			     	   mv.setMapPolygoneMarkerLayer(mapPolygoneMarkerLayer);
 			     	   mv.start(stage);	 
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -357,6 +362,10 @@ public class newRequestView extends Application implements Observer {
 	
 	public void setStage(Stage stage) {
 		this.stage = stage;
+	}
+	
+	public void setMapPolygoneMarkerLayer(MapLayer layer) {
+		this.mapPolygoneMarkerLayer = layer;
 	}
 	
 	public Stage getStage() {
