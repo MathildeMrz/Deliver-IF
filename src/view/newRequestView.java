@@ -139,11 +139,17 @@ public class newRequestView extends Application implements Observer {
 				+ "    -fx-border-color: #e6bf4b;\r\n"
 				+ "    -fx-border-radius: 3px;\r\n"
 				+ "	   -fx-background-color: #ffffff; ");
-	
+		
+		Button buttonChangePoint = new Button("Changer le point de livraison");
+		buttonChangePoint.setStyle("-fx-text-fill: #000000;\r\n"
+				+ "    -fx-border-color: #e6bf4b;\r\n"
+				+ "    -fx-border-radius: 3px;\r\n"
+				+ "	   -fx-background-color: #ffffff; ");
 		
 		vBoxCouriers.getChildren().add(buttonValidate);		
 		vBoxCouriers.getChildren().add(buttonChangePage);
 		vBoxCouriers.getChildren().add(buttonSeeIntersections);
+		vBoxCouriers.getChildren().add(buttonChangePoint);
 		
 		/*vBoxMap*/		
 		VBox vBoxMap = new VBox();
@@ -201,7 +207,14 @@ public class newRequestView extends Application implements Observer {
 					   requestedStartingTimeWindow = newValue;
 					}); 
 	
-			
+		
+		buttonChangePoint.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				clicked = false;
+				mapView.removeLayer(newDelivery);
+			}
+		});
 		buttonValidate.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
