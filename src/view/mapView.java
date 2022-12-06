@@ -144,6 +144,7 @@ public class mapView extends Application implements Observer {
 		VBox vBoxMap = new VBox();
 		vBoxMap.setPadding(new Insets(20, 20, 20, 20));
 		vBoxMap.setMaxHeight(this.height - 40);
+		vBoxMap.setMaxWidth(this.width / 1.6);
 		vBoxMap.prefWidthProperty().bind(hbox.widthProperty().multiply(0.55));
 
 		if (this.map.getIsLoaded()) {
@@ -152,7 +153,6 @@ public class mapView extends Application implements Observer {
 		} else {
 			vBoxMap.getChildren().add(new Label("Veuillez charger une carte"));
 		}
-
 		// Modifications ajout tableau livraisons
 		// TableView<Delivery> table = new TableView<Delivery>();
 		// Create column UserName (Data type of String).

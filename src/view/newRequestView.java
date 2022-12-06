@@ -148,7 +148,8 @@ public class newRequestView extends Application implements Observer {
 		/*vBoxMap*/		
 		VBox vBoxMap = new VBox();
 		vBoxMap.setPadding(new Insets(20, 20, 20, 20));
-		vBoxMap.setMaxHeight(height - 40);
+		vBoxMap.setMaxHeight(this.height - 40);
+		vBoxMap.setMaxWidth(this.width / 1.6);
 		vBoxMap.prefWidthProperty().bind(hbox.widthProperty().multiply(0.60));
 	
 		vBoxMap.getChildren().add(new Label("Localisation (select the delivery's destination by clicking on the map):"));
