@@ -193,11 +193,11 @@ public class mapView extends Application implements Observer {
 		Long id6=Long.parseLong("26575616");
 		Intersection inter6= map.getNodes().get(id6);
 		
-		deliveries1.add(new Delivery("Livraison", 8, inter2, LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 45)), courier1));
-		deliveries1.add(new Delivery("Livraison", 8, inter3, LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 22)), courier1));
-		deliveries1.add(new Delivery("Livraison", 9, inter4, LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 15)), courier1));
-		deliveries2.add(new Delivery("Livraison", 8, inter5, LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 38)), courier2));
-		deliveries2.add(new Delivery("Livraison", 10, inter5, LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 18)), courier2));
+		deliveries1.add(new Delivery("Livraison", 8, inter2, LocalTime.of(8, 45), courier1));
+		deliveries1.add(new Delivery("Livraison", 8, inter3, LocalTime.of(9, 22), courier1));
+		deliveries1.add(new Delivery("Livraison", 9, inter4, LocalTime.of(8, 15), courier1));
+		deliveries2.add(new Delivery("Livraison", 8, inter5, LocalTime.of(8, 38), courier2));
+		deliveries2.add(new Delivery("Livraison", 10, inter5, LocalTime.of(10, 18), courier2));
 		
 		Tour tour1 = new Tour(deliveries1,LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 0)),LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 55)),courier1,map);
 		Tour tour2 = new Tour(deliveries2,LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 0)),LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 45)),courier2,map);
