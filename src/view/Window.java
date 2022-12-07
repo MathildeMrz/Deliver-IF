@@ -108,6 +108,7 @@ public class Window  extends Application  {
 		  mapView.setCenter(mapPoint);
 		
 		this.mv = new mapView();
+		this.mv.initMapPolygoneMarkerLayers();
 		this.mv.setListViewCouriers(listViewCouriers);
 		this.mv.setController(this.controller);
 		this.mv.setHeight(this.height);

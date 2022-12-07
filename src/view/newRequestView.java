@@ -50,8 +50,8 @@ public class newRequestView extends Application implements Observer {
 	private final int noOfDaysToAdd = 2;
 	private MapView mapView;
 	private MapLayer newDelivery;
-	ArrayList<CustomCircleMarkerLayer> mapLayerDelivery;
-	private MapLayer mapPolygoneMarkerLayer;
+	private ArrayList<CustomCircleMarkerLayer> mapLayerDelivery;
+	private ArrayList<MapLayer> mapPolygoneMarkerLayers;
 	
 	public newRequestView()
 	{
@@ -68,7 +68,6 @@ public class newRequestView extends Application implements Observer {
 		this.closestIntersection = new Intersection();
 		mapLayerDelivery = this.getMapLayerDelivery();
 		this.stage.show();
-		System.out.println("NR : " + mapPolygoneMarkerLayer);
 	}
 	
 	public void display() {
@@ -230,7 +229,7 @@ public class newRequestView extends Application implements Observer {
 			     	   mv.setWidth(width);
 			     	   mv.setMap(map);
 			     	   mv.setMapView(mapView);
-			     	   mv.setMapPolygoneMarkerLayer(mapPolygoneMarkerLayer);
+			     	   mv.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
 			     	   mv.start(stage);	 
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -261,7 +260,7 @@ public class newRequestView extends Application implements Observer {
 					        	   mv.setWidth(width);
 					        	   mv.setMap(map);
 					        	   mv.setMapView(mapView);
-					        	   mv.setMapPolygoneMarkerLayer(mapPolygoneMarkerLayer);
+					        	   mv.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
 					        	   mv.start(stage);
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
@@ -352,8 +351,8 @@ public class newRequestView extends Application implements Observer {
 		this.stage = stage;
 	}
 	
-	public void setMapPolygoneMarkerLayer(MapLayer layer) {
-		this.mapPolygoneMarkerLayer = layer;
+	public void setMapPolygoneMarkerLayers(ArrayList<MapLayer> layer) {
+		this.mapPolygoneMarkerLayers = layer;
 	}
 	
 	public Stage getStage() {

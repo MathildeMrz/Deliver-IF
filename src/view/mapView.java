@@ -52,7 +52,7 @@ public class mapView extends Application implements Observer {
 	private ListView<Courier> listViewCouriers;
 	private Stage stage;
 	private MapView mapView;
-	private MapLayer mapPolygoneMarkerLayer;
+	private ArrayList<MapLayer> mapPolygoneMarkerLayers;
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -91,9 +91,13 @@ public class mapView extends Application implements Observer {
 					this.mapView.addLayer(mapLayerPin);
 				}
 			}
-
+			
+			//
 			for (Courier c : this.map.getCouriers()) {
 				Tour tour = c.getTour();
+				for(MapLayer layer : this.mapPolygoneMarkerLayers) {
+					this.mapView.removeLayer(layer);
+				}
 				if (tour.getDeliveries().size() != 0) {
 					TSP(tour);
 					// TODO Voir avec Gloria si warehouse pas déjà ajoutée
@@ -105,9 +109,9 @@ public class mapView extends Application implements Observer {
 						double y1 = tour.getTourSteps().get(i).getLatitude();
 						points.add(new MapPoint(y1, x1));
 					}
-					this.mapView.removeLayer(mapPolygoneMarkerLayer);
-					mapPolygoneMarkerLayer = new CustomPolygoneMarkerLayer(points, this.mapView, Color.BLUE, 5);
-					this.mapView.addLayer(mapPolygoneMarkerLayer);
+					MapLayer layer = new CustomPolygoneMarkerLayer(points, this.mapView, Color.BLUE, 5);
+					mapPolygoneMarkerLayers.add(layer);
+					this.mapView.addLayer(layer);
 				}
 			}
 			
@@ -220,7 +224,7 @@ public class mapView extends Application implements Observer {
 								nr.setWidth(width);
 								nr.setMap(map);
 								nr.setMapView(mapView);
-								nr.setMapPolygoneMarkerLayer(mapPolygoneMarkerLayer);
+								nr.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
 								nr.start(stage);
 
 								nr.start(stage);
@@ -337,8 +341,12 @@ public class mapView extends Application implements Observer {
 		this.mapView = mapView;
 	}
 
-	public void setMapPolygoneMarkerLayer(MapLayer layer) {
-		this.mapPolygoneMarkerLayer = layer;
+	public void setMapPolygoneMarkerLayers(ArrayList<MapLayer> layer) {
+		this.mapPolygoneMarkerLayers = layer;
+	}
+	
+	public void initMapPolygoneMarkerLayers() {
+		this.mapPolygoneMarkerLayers = new ArrayList<MapLayer>();
 	}
 
 	@Override

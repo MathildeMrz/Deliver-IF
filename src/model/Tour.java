@@ -16,7 +16,7 @@ public class Tour extends Observable {
 	private LocalDateTime startDate;
 	private LocalDateTime endDate;
 	private ArrayList<Intersection> tourSteps;
-	private LocalDateTime [] tourTimes;
+	private LocalTime [] tourTimes;
 	
 	public Tour()
 	{
@@ -31,7 +31,7 @@ public class Tour extends Observable {
 	public void initArrivals()
 	{
 		//this.tourTimes=new LocalDateTime [this.tourSteps.size()];
-		this.tourTimes=new LocalTime [this.deliveries.size()+2];
+		this.tourTimes= new LocalTime [this.deliveries.size()+2];
 		tourTimes[0]=this.startDate.toLocalTime();
 	}
 	
@@ -159,7 +159,7 @@ public class Tour extends Observable {
 			}
 		}
 	    LocalTime startDelivery = startDate.toLocalTime();
-		Delivery delivery = new Delivery("test", timeWindow, closerIntersection,startDate);
+		Delivery delivery = new Delivery("test", timeWindow, closerIntersection, startDelivery);
 	    deliveries.add(delivery);
 		notifyObservers(delivery);
 	}	

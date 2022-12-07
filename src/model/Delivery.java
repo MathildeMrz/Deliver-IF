@@ -1,6 +1,5 @@
 package model;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -11,10 +10,10 @@ public class Delivery extends Observable {
 	private int id;
 	private int startTime;
 	private Intersection destination;
-	private LocalDateTime arrival;
+	private LocalTime arrival;
 	private LocalTime deliveryTime; //Real time of the delivery
 	
-	public Delivery(String name, int startTime, Intersection destination, LocalDateTime arrival)
+	public Delivery(String name, int startTime, Intersection destination, LocalTime arrival)
 	{
 		this.id = ID_FACTORY.getAndIncrement();
 		this.startTime = startTime;
