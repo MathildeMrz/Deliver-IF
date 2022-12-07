@@ -167,38 +167,6 @@ public class mapView extends Application implements Observer {
 
 		vBoxiIntentedTours.getChildren().add(new Label("Deliveries of the day:"));
 		
-		//TEST : CREATE THE COURIERS + TOURS + DELIVERIES 
-//		Courier courier1 = new Courier("Marilou");
-//		Courier courier2 = new Courier("Félicie");
-//		Courier courier3 = new Courier("Fatma");
-//		
-//		ArrayList<Delivery> deliveries1 = new ArrayList<>();
-//		ArrayList<Delivery> deliveries2 = new ArrayList<>();
-//		ArrayList<Delivery> deliveries3 = new ArrayList<>();
-//		
-//		Long id2=Long.parseLong("1850080438");
-//		Intersection inter2= map.getNodes().get(id2);
-//		Long id3=Long.parseLong("25319182");
-//		Intersection inter3= map.getNodes().get(id3);
-//		Long id4=Long.parseLong("1042749162");
-//		Intersection inter4= map.getNodes().get(id4);
-//		Long id5=Long.parseLong("21703596");
-//		Intersection inter5= map.getNodes().get(id5);
-//		Long id6=Long.parseLong("26575616");
-//		Intersection inter6= map.getNodes().get(id6);
-//		
-//		deliveries1.add(new Delivery("Livraison", 8, inter2, LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 45)), courier1));
-//		deliveries1.add(new Delivery("Livraison", 8, inter3, LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 22)), courier1));
-//		deliveries1.add(new Delivery("Livraison", 9, inter4, LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 15)), courier1));
-//		deliveries2.add(new Delivery("Livraison", 8, inter5, LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 38)), courier2));
-//		deliveries2.add(new Delivery("Livraison", 10, inter5, LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 18)), courier2));
-//		
-//		Tour tour1 = new Tour(deliveries1,LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 0)),LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 55)),courier1,map);
-//		Tour tour2 = new Tour(deliveries2,LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 0)),LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 45)),courier2,map);
-//		Tour tour3 = new Tour(deliveries3,LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 0)),LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 0)),courier3,map);
-//		tours.add(tour1);
-//		tours.add(tour2);
-//		tours.add(tour3);
 		//TREEVIEW OF THE DELIVERIES FOR EACH COURIER 
 		// Create the TreeView
 		TreeView treeView = new TreeView();

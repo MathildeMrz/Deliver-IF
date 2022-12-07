@@ -23,14 +23,16 @@ public class Tour extends Observable {
 		this.id = ID_FACTORY.getAndIncrement();
 		deliveries = new ArrayList<Delivery>();
 		this.tourSteps = new ArrayList<Intersection>();
+		this.startDate = LocalDateTime.now();
+		this.endDate = LocalDateTime.now();
 	}
 	
 	//NEW : ADD TIME OF ARRIVALS TO DELIVERY POINTS
 	public void initArrivals()
 	{
 		//this.tourTimes=new LocalDateTime [this.tourSteps.size()];
-		this.tourTimes=new LocalDateTime [this.deliveries.size()+2];
-		tourTimes[0]=this.startDate;
+		this.tourTimes=new LocalTime [this.deliveries.size()+2];
+		tourTimes[0]=this.startDate.toLocalTime();
 	}
 	
 	
@@ -49,12 +51,13 @@ public class Tour extends Observable {
 			this.tourTimes[orderOfArrival]=this.tourTimes[orderOfArrival-1].plusMinutes((long)(minutes+1.0+5.0));
 		}
 		//display
-		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");  
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm");  
 		String formatDateTime = this.tourTimes[orderOfArrival].format(format);   
 		System.out.println("After Formatting: " + formatDateTime );
 		if(orderOfArrival == (this.tourTimes.length-1))
 		{
-			this.endDate = this.tourTimes[orderOfArrival];
+			//this.endDate = this.tourTimes[orderOfArrival];
+			this.endDate = LocalDateTime.of(this.endDate.toLocalDate(), this.tourTimes[orderOfArrival]);
 		}
 		//Association of the arrival time and the delivery corresponding 
 		int sizeSteps = this.deliveries.size();
@@ -65,6 +68,16 @@ public class Tour extends Observable {
 			if((this.deliveries.get(i).getDestination().getId()) == deliveryPt.getId())
 			{
 				this.deliveries.get(i).setArrival(this.tourTimes[orderOfArrival]);
+				int timeWindow = this.deliveries.get(i).getStartTime();
+				if(timeWindow > (this.tourTimes[orderOfArrival].getHour()))
+				{
+					this.deliveries.get(i).setDeliveryTime(LocalTime.of(timeWindow, 0));
+				}
+				else
+				{
+					this.deliveries.get(i).setDeliveryTime(this.tourTimes[orderOfArrival]);
+				}
+				this.tourTimes[orderOfArrival] = this.deliveries.get(i).getDeliveryTime();
 				System.out.println("New status of delivery : "+this.deliveries.get(i).toString());
 			}
 		}
@@ -145,7 +158,8 @@ public class Tour extends Observable {
 				this.startDate = LocalDateTime.of(date, LocalTime.of(timeWindow,0));
 			}
 		}
-	    Delivery delivery = new Delivery("test", timeWindow, closerIntersection,startDate);
+	    LocalTime startDelivery = startDate.toLocalTime();
+		Delivery delivery = new Delivery("test", timeWindow, closerIntersection,startDate);
 	    deliveries.add(delivery);
 		notifyObservers(delivery);
 	}	
