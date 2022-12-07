@@ -2,22 +2,20 @@ package controller;
 
 import java.time.LocalDate;
 
-import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 import model.Courier;
 import model.Intersection;
-import model.Tour;
+import model.Map;
 
 public class ControllerAddDelivery {
-	private Tour tour;	
+	private Map map;	
 
-	
-	public ControllerAddDelivery(Stage stage, Tour tour, ListView<Courier> couriers)
+	public ControllerAddDelivery(Stage stage, Map map)
 	{
-		this.tour= tour;
+		this.map= map;
 	}
 
 	public void addDelivery(Intersection closerIntersection, LocalDate date, int timeWindow, Courier courier) {
-		tour.addDelivery(closerIntersection, date, timeWindow, courier);
+		courier.getTour().addDelivery(closerIntersection, date, timeWindow);
 	}
 }

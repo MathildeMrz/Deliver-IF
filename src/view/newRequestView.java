@@ -26,27 +26,21 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Courier;
 import model.CustomCircleMarkerLayer;
-import model.CustomPinLayer;
-import model.Delivery;
 import model.Intersection;
 import model.Map;
-import model.Tour;
 import observer.Observable;
 import observer.Observer;
 
 public class newRequestView extends Application implements Observer {
 
 	private Map map;
-	private Tour tour;
 	private ControllerAddDelivery controller;
 	private int width;
 	private int height;
 	private ListView<Courier> couriers;
-	private ListView<Delivery> deliveries;
 	private Stage stage;
 	private boolean clicked;
 	private boolean seeIntersection;
-	private int margin;
 	private float requestedX;
 	private float requestedY;
 	private LocalDate requestedDate;
@@ -78,7 +72,6 @@ public class newRequestView extends Application implements Observer {
 	}
 	
 	public void display() {
-		this.margin = 50;
 		
 		HBox hbox = new HBox();
 		
@@ -95,9 +88,9 @@ public class newRequestView extends Application implements Observer {
 		vBoxCouriers.getChildren().add(new Label("Select a courier:"));		
 		vBoxCouriers.getChildren().add(couriers);
 		couriers.getSelectionModel().select(0);
-		requestedCourier = couriers.getItems().get(0);		
+		requestedCourier = couriers.getItems().get(0);	
 		couriers.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-			   System.out.println("requestedCourier :"+requestedCourier);
+			   System.out.println("requestedCourier :"+newValue);
 			   requestedCourier = newValue;
 			});
 		
@@ -180,7 +173,7 @@ public class newRequestView extends Application implements Observer {
 					MapPoint mp = mapView.getMapPosition(requestedX, requestedY);
 					float latitude = (float) mp.getLatitude();
 					float longitude = (float) mp.getLongitude();
-					closestIntersection = tour.getClosestIntersection(latitude, longitude);
+					closestIntersection = map.getClosestIntersection(latitude, longitude);
 					
 					MapPoint mapPointPin = new MapPoint(closestIntersection.getLatitude(), closestIntersection.getLongitude());
 					newDelivery = new CustomCircleMarkerLayer(mapPointPin, 6, javafx.scene.paint.Color.BLUE);
@@ -215,13 +208,14 @@ public class newRequestView extends Application implements Observer {
 				mapView.removeLayer(newDelivery);
 			}
 		});
+		
 		buttonValidate.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				System.out.println("Validate");
 				mapView.removeLayer(newDelivery);
 				for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) 
-		        {   
+		        {
 					getMapView().removeLayer(customCircleMarkerLayer);
 		        }
 				if(requestedX != 0.0f && requestedY != 0.0f)
@@ -231,12 +225,10 @@ public class newRequestView extends Application implements Observer {
 			 	   {		
 			     	   mapView mv = new mapView();
 			     	   mv.setController(controller);
-			     	   mv.setCouriers(couriers);
+			     	   mv.setListViewCouriers(couriers);
 			     	   mv.setHeight(height);
 			     	   mv.setWidth(width);
 			     	   mv.setMap(map);
-			     	   mv.setTour(tour); 
-			     	   mv.setDeliveries(deliveries);
 			     	   mv.setMapView(mapView);
 			     	   mv.setMapPolygoneMarkerLayer(mapPolygoneMarkerLayer);
 			     	   mv.start(stage);	 
@@ -264,13 +256,10 @@ public class newRequestView extends Application implements Observer {
 					           try {		
 					        	   mapView mv = new mapView();
 					        	   mv.setController(controller);
-					        	   mv.setCouriers(couriers);
-					        	   mv.setDeliveries(deliveries);
-					        	   mv.setMapView(mapView);
+					        	   mv.setListViewCouriers(couriers);
 					        	   mv.setHeight(height);
 					        	   mv.setWidth(width);
 					        	   mv.setMap(map);
-					        	   mv.setTour(tour);
 					        	   mv.setMapView(mapView);
 					        	   mv.setMapPolygoneMarkerLayer(mapPolygoneMarkerLayer);
 					        	   mv.start(stage);
@@ -309,7 +298,7 @@ public class newRequestView extends Application implements Observer {
 	public void update(Observable observed, Object arg) {
 	}
 
-	public Map getPlan() {
+	public Map getMap() {
 		return map;
 	}
 	
@@ -323,7 +312,7 @@ public class newRequestView extends Application implements Observer {
 		return mapLayerDelivery;
 	}
 
-	public void setPlan(Map map) {
+	public void setMap(Map map) {
 		this.map = map;
 	}
 	
@@ -351,20 +340,12 @@ public class newRequestView extends Application implements Observer {
 		this.height = height;
 	}
 	
-	public ListView<Courier> getCouriers() {
+	public ListView<Courier> getListViewCouriers() {
 		return couriers;
 	}
 	
-	public void setCouriers(ListView<Courier> couriers) {
+	public void setListViewCouriers(ListView<Courier> couriers) {
 		this.couriers = couriers;
-	}
-	
-	public void setDeliveries(ListView<Delivery> deliveries) {
-		this.deliveries = deliveries;
-	}
-		
-	public void setTour(Tour tour) {
-		this.tour = tour;
 	}
 	
 	public void setStage(Stage stage) {

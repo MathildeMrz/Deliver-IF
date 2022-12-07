@@ -1,7 +1,5 @@
 package model;
 
-
-import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import com.gluonhq.maps.MapLayer;

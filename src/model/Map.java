@@ -9,6 +9,7 @@ public class Map extends Observable {
 	private HashMap<Long, Intersection> nodes;
 	private ArrayList<Intersection> destinations;
 	private Intersection warehouse;
+	private ArrayList<Courier> couriers;
 	private boolean isLoaded;
 	private float latitudeMin;
 	private float latitudeMax;
@@ -18,6 +19,7 @@ public class Map extends Observable {
 	public Map() {
 		this.nodes  = new HashMap<Long,Intersection>();
 		this.destinations  = new ArrayList<Intersection>();
+		this.couriers = new ArrayList<Courier>();
 		this.warehouse = null;
 		this.isLoaded = false;
 		latitudeMin = Float.MAX_VALUE;
@@ -31,7 +33,6 @@ public class Map extends Observable {
 	}
 	
 	public void addNode(Intersection node) {
-		//this.nodes.add(node);
 		nodes.put(node.getId(), node);
 	}
 
@@ -43,9 +44,17 @@ public class Map extends Observable {
 		return destinations;
 	}
 	
-	/*public ArrayList<Tour> getTours() {
-		return tours;
-	}*/
+	public ArrayList<Courier> getCouriers() {
+		return couriers;
+	}
+	
+	public void setCouriers(ArrayList<Courier> couriers) {
+		this.couriers = couriers;
+	}
+	
+	public void addCourier(Courier courier) {
+		this.couriers.add(courier);
+	}
 
 	public Intersection getWarehouse() {
 		return warehouse;
@@ -103,5 +112,23 @@ public class Map extends Observable {
 
 	public void setMapLoaded() {
 		this.isLoaded = true;
+	}
+	
+	public Intersection getClosestIntersection(float latitude, float longitude)
+	{
+		float minimumDistance = Float.MAX_VALUE;
+		Intersection closerIntersection = null;
+		for(Intersection i : this.nodes.values())
+	     {
+			 float dist = (float) Math.sqrt((i.getLatitude() - latitude) * (i.getLatitude() - latitude) + (i.getLongitude() - longitude) * (i.getLongitude() - longitude));
+	    	 
+	    	 if(dist < minimumDistance)
+	    	 {
+	    		 minimumDistance = dist;
+	    		 closerIntersection = i;
+	    		 System.out.println("closerIntersection changes");
+	    	 }
+	     }
+		return closerIntersection;
 	}
 }

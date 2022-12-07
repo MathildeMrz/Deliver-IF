@@ -1,10 +1,7 @@
 package model;
 
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -20,32 +17,10 @@ public class Tour extends Observable {
 	private LocalDateTime endDate;
 	private ArrayList<Intersection> tourSteps;
 	private LocalDateTime [] tourTimes;
-	private Courier courier;
-	private Map map;
-	private float widthMap;
-	private float heightMap;
 	
-	public Tour(ArrayList<Delivery> steps, LocalDateTime startDate, LocalDateTime endDate, Courier courier, Map map)
+	public Tour()
 	{
 		this.id = ID_FACTORY.getAndIncrement();
-		//steps = new ArrayList<Delivery>();
-		this.deliveries = steps;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.tourSteps = new ArrayList<Intersection>();
-		this.courier = courier;
-		this.map = map;
-		this.widthMap = map.getLongitudeMax() - map.getLongitudeMin();
-		this.heightMap = map.getLatitudeMax() - map.getLatitudeMin();	
-		
-	}
-	
-	public Tour(Map map)
-	{
-		this.id = ID_FACTORY.getAndIncrement();
-		this.map = map;
-		this.widthMap = map.getLongitudeMax() - map.getLongitudeMin();
-		this.heightMap = map.getLatitudeMax() - map.getLatitudeMin();	
 		deliveries = new ArrayList<Delivery>();
 		this.tourSteps = new ArrayList<Intersection>();
 	}
@@ -134,18 +109,6 @@ public class Tour extends Observable {
 		this.tourSteps = tourSteps;
 	}
 
-	public void setCourier(Courier courier) {
-		this.courier = courier;
-	}
-
-	public void setWidthMap(float widthMap) {
-		this.widthMap = widthMap;
-	}
-
-	public void setHeightMap(float heightMap) {
-		this.heightMap = heightMap;
-	}
-
 	public ArrayList<Delivery> getDeliveries() {
 		return deliveries;
 	}
@@ -162,66 +125,13 @@ public class Tour extends Observable {
 		return tourSteps;
 	}
 
-	public Courier getCourier() {
-		return courier;
-	}
-
 	@Override
 	public String toString() {
 		return "Tour [id=" + id + ", steps=" + deliveries + ", startDate=" + startDate + ", endDate=" + endDate
-				+ ", intersections=" + tourSteps + ", courier=" + courier + "]";
+				+ ", intersections=" + tourSteps + "]";
 	}
 	
-	public void calculateWidthHeightMap() {
-		this.widthMap = map.getLongitudeMax() - map.getLongitudeMin();
-		this.heightMap = map.getLatitudeMax() - map.getLatitudeMin();
-	}
-	
-	public float getFactorLongitudeToX(float longitude) {
-		return (longitude - map.getLongitudeMin()) / this.widthMap;		
-	}
-	
-	public float getFactorLatitudeToY(float latitude) {
-		return (latitude - map.getLatitudeMin()) / this.heightMap; 
-	}
-	
-	public float getFactorXToLongitude(float x) {
-		return (x * this.widthMap) + map.getLongitudeMin(); 
-	}
-	
-	
-	public float getFactorYToLatitude(float y) {
-		return (y * this.heightMap) + map.getLatitudeMin();  
-	}
-
-	
-	public float getWidthMap() {
-		return widthMap;
-	}
-
-	public float getHeightMap() {
-		return heightMap;
-	}
-	
-	public Intersection getClosestIntersection(float latitude, float longitude)
-	{
-		float minimumDistance = Float.MAX_VALUE;
-		Intersection closerIntersection = null;
-		for(Intersection i : map.getNodes().values())
-	     {
-			 float dist = (float) Math.sqrt((i.getLatitude() - latitude) * (i.getLatitude() - latitude) + (i.getLongitude() - longitude) * (i.getLongitude() - longitude));
-	    	 
-	    	 if(dist < minimumDistance)
-	    	 {
-	    		 minimumDistance = dist;
-	    		 closerIntersection = i;
-	    		 System.out.println("closerIntersection changes");
-	    	 }
-	     }
-		return closerIntersection;
-	}
-	
-	public void addDelivery(Intersection closerIntersection, LocalDate date, int timeWindow, Courier courier)
+	public void addDelivery(Intersection closerIntersection, LocalDate date, int timeWindow)
 	{
 		//StartDate = timeWindow la plus tôt d'une Delivery
 		if(this.startDate == null)
@@ -235,7 +145,7 @@ public class Tour extends Observable {
 				this.startDate = LocalDateTime.of(date, LocalTime.of(timeWindow,0));
 			}
 		}
-	    Delivery delivery = new Delivery("test", timeWindow, closerIntersection,startDate ,courier);
+	    Delivery delivery = new Delivery("test", timeWindow, closerIntersection,startDate);
 	    deliveries.add(delivery);
 		notifyObservers(delivery);
 	}	

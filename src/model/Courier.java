@@ -10,12 +10,14 @@ public class Courier extends Observable {
 	private int id;
 	private String name;
 	private double speed;
+	private Tour tour;
 	
 	public Courier(String name)
 	{
 		this.id = ID_FACTORY.getAndIncrement();
 		this.name = name;
 		this.speed = SPEED_COURIER;
+		this.tour = new Tour();
 	}
 	
 	@Override
@@ -34,6 +36,13 @@ public class Courier extends Observable {
 	public int getId() {
 		return id;
 	}
-	
+
+	public Tour getTour() {
+		return tour;
+	}
+
+	public void setTour(Tour tour) {
+		this.tour = tour;
+	}
 	
 }
