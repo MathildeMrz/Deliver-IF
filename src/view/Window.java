@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import com.gluonhq.attach.storage.StorageService;
@@ -37,6 +38,7 @@ public class Window  extends Application  {
 	private ListView<Courier> couriers;
 	private ListView<Delivery> deliveries;
 	private mapView mv;
+	private newRequestView nr;
 	private Tour tour;
 	
 	public static void main(String[] args) throws Exception {
@@ -94,6 +96,7 @@ public class Window  extends Application  {
 		this.couriers = initCouriers();
 
 		this.map = new Map();
+		this.map.setMapDate(LocalDate.now());
 		
 		/* Définit la plate-forme pour éviter "javafx.platform is not defined" */
 		  System.setProperty("javafx.platform", "desktop");
@@ -132,7 +135,14 @@ public class Window  extends Application  {
 		System.out.println("Deliveries of window "+deliveries);
 		this.mv.setDeliveries(deliveries);
 		this.mv.setMapView(mapView);
+		this.mv.setNr(nr);
+		
+		this.nr = new newRequestView();
+		this.nr.setOurMapView(mv);
+		this.mv.setNr(nr);
 		this.mv.start(new Stage());	
+
+		
 		
 	}
 	

@@ -59,6 +59,16 @@ public class mapView extends Application implements Observer {
 	private Tour tour;
 	private MapView mapView;
 	private MapLayer mapPolygoneMarkerLayer;
+	private newRequestView nr;
+	
+
+	public newRequestView getNr() {
+		return nr;
+	}
+
+	public void setNr(newRequestView nr) {
+		this.nr = nr;
+	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -251,7 +261,6 @@ public class mapView extends Application implements Observer {
 					Platform.runLater(new Runnable() {
 						public void run() {
 							try {
-								newRequestView nr = new newRequestView();
 								nr.setController(controller);
 								nr.setCouriers(couriers);
 								nr.setHeight(height);
