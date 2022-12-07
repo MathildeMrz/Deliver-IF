@@ -18,14 +18,21 @@ public class CustomPinLayer extends MapLayer{
 	  * @param mapPoint le point (latitude et longitude) où afficher l'épingle
 	  * @see com.gluonhq.maps.MapPoint
 	  */
-	 public CustomPinLayer(MapPoint mapPoint) throws MalformedURLException {
+	 public CustomPinLayer(MapPoint mapPoint, boolean isRed) throws MalformedURLException {
 		  this.mapPoint = mapPoint;
 		
 		  /* Ajoute l'épingle au MapLayer */
-		  InputStream input = this.getClass().getResourceAsStream("/Resources/map-pin.png");
+		  InputStream input = this.getClass().getResourceAsStream("/Resources/map-pin-black.png");
+		  if(isRed) {
+			  input = this.getClass().getResourceAsStream("/Resources/map-pin-red.png");
+		  }
 		  Image image = new Image(input, PIN_WIDTH, PIN_HEIGHT, false, false);
 		  this.mapPinImageView = new ImageView(image);
 		  this.getChildren().add(this.mapPinImageView);
+	 }
+	 
+	 public MapPoint getMapPoint() {
+		 return this.mapPoint;
 	 }
 
 	 /* La fonction est appelée à chaque rafraichissement de la carte */

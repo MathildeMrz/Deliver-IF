@@ -3,6 +3,7 @@ package view;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -53,6 +54,9 @@ public class mapView extends Application implements Observer {
 	private Stage stage;
 	private MapView mapView;
 	private ArrayList<MapLayer> mapPolygoneMarkerLayers;
+	private HashMap<Integer, MapLayer> pinLayers;
+	private Delivery lastSelectedDelivery;
+	private MapLayer lastSelectedDeliveryLayer;
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -68,6 +72,9 @@ public class mapView extends Application implements Observer {
 		/* Resize the window */
 		stage.setWidth(width);
 		stage.setHeight(height);
+		this.pinLayers = new HashMap<Integer, MapLayer>();
+		this.lastSelectedDelivery = null;
+		this.lastSelectedDeliveryLayer = null;
 
 		createMap(this.map);
 	}
@@ -87,8 +94,9 @@ public class mapView extends Application implements Observer {
 					float latDestination = d.getDestination().getLatitude();
 					float longDestination = d.getDestination().getLongitude();
 					MapPoint mapPointPin = new MapPoint(latDestination, longDestination);
-					MapLayer mapLayerPin = new CustomPinLayer(mapPointPin);
-					this.mapView.addLayer(mapLayerPin);
+					MapLayer pinLayer = new CustomPinLayer(mapPointPin, false);
+					this.pinLayers.put(d.getId(), pinLayer);
+					this.mapView.addLayer(pinLayer);
 				}
 			}
 			
@@ -174,6 +182,7 @@ public class mapView extends Application implements Observer {
 		
 		//TREEVIEW OF THE DELIVERIES FOR EACH COURIER 
 		// Create the TreeView
+		HashMap<TreeItem, Delivery> treeItemToDelivery = new HashMap<TreeItem, Delivery>();
 		TreeView treeView = new TreeView();
 		// Create the Root TreeItem
 		TreeItem rootItem = new TreeItem("Deliveries");
@@ -186,6 +195,7 @@ public class mapView extends Application implements Observer {
 			ArrayList<Delivery> tourDeliveries = c.getTour().getDeliveries();
 			tourDeliveries.forEach((d)->{
 				TreeItem deliveryItem = new TreeItem(d.toString());
+				treeItemToDelivery.put(deliveryItem, d);
 				deliveryItems.add(deliveryItem);
 			});
 			courierItem.getChildren().addAll(deliveryItems);
@@ -241,7 +251,7 @@ public class mapView extends Application implements Observer {
 
 		Button buttonLoadMap = new Button("Load a Map");
 		vBoxiIntentedTours.getChildren().add(buttonLoadMap);
-
+		
 		buttonLoadMap.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -272,7 +282,42 @@ public class mapView extends Application implements Observer {
 				}
 			}
 		});
+		
+		treeView.setOnMouseClicked(new EventHandler<MouseEvent>(){
+			@Override
+			public void handle(MouseEvent event) {
+				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
+				if(lastSelectedDelivery != null) {
+					MapPoint position = ((CustomPinLayer)lastSelectedDeliveryLayer).getMapPoint();
+					mapView.removeLayer(lastSelectedDeliveryLayer);
+					try {
+						MapLayer blackPin = new CustomPinLayer(position, false);
+						pinLayers.put(lastSelectedDelivery.getId(), blackPin);
+						mapView.addLayer(blackPin);
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				if(selectedDelivery != null) {
+					MapLayer layer = pinLayers.get(selectedDelivery.getId());
+					MapPoint position = ((CustomPinLayer)layer).getMapPoint();
+					mapView.removeLayer(layer);
+					try {
+						lastSelectedDeliveryLayer = new CustomPinLayer(position, true);
+						mapView.addLayer(lastSelectedDeliveryLayer);
+						lastSelectedDelivery = selectedDelivery;
+						pinLayers.remove(selectedDelivery.getId());
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		});
 	}
+	
+	
 
 	public void TSP(Tour tour) {
 		List<Intersection> sommets = new ArrayList<Intersection>();
