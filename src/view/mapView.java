@@ -278,7 +278,7 @@ public class mapView extends Application implements Observer {
 		// Create the TreeView
 		TreeView treeView = new TreeView();
 		// Create the Root TreeItem
-		TreeItem rootItem = new TreeItem("Deliveries");
+		TreeItem rootItem = new TreeItem("Deliveries for each couriers");
 		//ArrayList of TreeItem Couriers
 		ArrayList<TreeItem> courierItems = new ArrayList<TreeItem>();
 		//Parcours de chaque tournée
@@ -294,10 +294,10 @@ public class mapView extends Application implements Observer {
 			Collections.sort(tourDeliveries, Comparator.comparing(a -> a.getDeliveryTime()));
 			Collections.sort(tourDeliveries, Comparator.comparing(a -> a.getStartTime()));
 			//TreeItem pour chaque TimeWindow
-			TreeItem timeWindow8 = new TreeItem("8");
-			TreeItem timeWindow9 = new TreeItem("9");
-			TreeItem timeWindow10 = new TreeItem("10");
-			TreeItem timeWindow11 = new TreeItem("11");
+			TreeItem timeWindow8 = new TreeItem("8h à 9h");
+			TreeItem timeWindow9 = new TreeItem("9h à 10h");
+			TreeItem timeWindow10 = new TreeItem("10h à 11h");
+			TreeItem timeWindow11 = new TreeItem("11h à 12h");
 			//ArrayList de TreeItem pour les livraisons des timeWindow
 			ArrayList<TreeItem> deliveries8 = new ArrayList<TreeItem>();
 			ArrayList<TreeItem> deliveries9 = new ArrayList<TreeItem>();
