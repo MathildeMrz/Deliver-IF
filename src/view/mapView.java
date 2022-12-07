@@ -54,35 +54,27 @@ public class mapView extends Application implements Observer {
 	private ControllerAddDelivery controller;
 	private int width;
 	private int height;
-	private ListView<Courier> couriers;
-	private ListView<Delivery> deliveries;
-	private ArrayList<Tour> tours = new ArrayList<>();
+	private ListView<Courier> listViewCouriers;
 	private Stage stage;
-	private Tour tour;
 	private MapView mapView;
-	private MapLayer mapPolygoneMarkerLayer;
+	private ArrayList<MapLayer> mapPolygoneMarkerLayers;
 
 	@Override
 	public void start(Stage stage) throws Exception {
 
 		/* Init attributes */
 		this.stage = stage;
-		this.tour.addObserver(this);
-		this.controller = new ControllerAddDelivery(this.stage, this.tour, this.couriers);
+		for(Courier c : this.map.getCouriers())
+		{
+			c.getTour().addObserver(this);
+		}
+		this.controller = new ControllerAddDelivery(this.stage, this.map);
 
 		/* Resize the window */
 		stage.setWidth(width);
 		stage.setHeight(height);
 
 		createMap(this.map);
-	}
-
-	public ListView<Delivery> getDeliveries() {
-		return deliveries;
-	}
-
-	public void setDeliveries(ListView<Delivery> deliveries) {
-		this.deliveries = deliveries;
 	}
 
 	public void createMap(Map map) throws MalformedURLException {
@@ -95,28 +87,38 @@ public class mapView extends Application implements Observer {
 			this.mapView.addLayer(mapLayerWareHouse);
 
 			// add deliveries
-			for (Delivery d : tour.getDeliveries()) {
-				float latDestination = d.getDestination().getLatitude();
-				float longDestination = d.getDestination().getLongitude();
-				MapPoint mapPointPin = new MapPoint(latDestination, longDestination);
-				MapLayer mapLayerPin = new CustomPinLayer(mapPointPin);
-				this.mapView.addLayer(mapLayerPin);
-			}
-
-			if (this.deliveries.getItems().size() != 0) {
-				TSP();
-				// TODO Voir avec Gloria si warehouse pas déjà ajoutée
-				tour.getTourSteps().add(this.map.getWarehouse());
-				ArrayList<MapPoint> points = new ArrayList<MapPoint>();
-
-				for (int i = 0; i < tour.getTourSteps().size(); i++) {
-					double x1 = tour.getTourSteps().get(i).getLongitude();
-					double y1 = tour.getTourSteps().get(i).getLatitude();
-					points.add(new MapPoint(y1, x1));
+			for (Courier c : this.map.getCouriers()) {
+				for (Delivery d : c.getTour().getDeliveries()) {
+					float latDestination = d.getDestination().getLatitude();
+					float longDestination = d.getDestination().getLongitude();
+					MapPoint mapPointPin = new MapPoint(latDestination, longDestination);
+					MapLayer mapLayerPin = new CustomPinLayer(mapPointPin);
+					this.mapView.addLayer(mapLayerPin);
 				}
-				this.mapView.removeLayer(mapPolygoneMarkerLayer);
-				mapPolygoneMarkerLayer = new CustomPolygoneMarkerLayer(points, this.mapView, Color.BLUE, 5);
-				this.mapView.addLayer(mapPolygoneMarkerLayer);
+			}
+			
+			//
+			for(MapLayer layer : this.mapPolygoneMarkerLayers) {
+				this.mapView.removeLayer(layer);
+			}
+			this.mapPolygoneMarkerLayers.clear();
+			for (Courier c : this.map.getCouriers()) {
+				Tour tour = c.getTour();
+				if (tour.getDeliveries().size() != 0) {
+					TSP(tour);
+					// TODO Voir avec Gloria si warehouse pas déjà ajoutée
+					//tour.getTourSteps().add(this.map.getWarehouse());
+					ArrayList<MapPoint> points = new ArrayList<MapPoint>();
+	
+					for (int i = 0; i < tour.getTourSteps().size(); i++) {
+						double x1 = tour.getTourSteps().get(i).getLongitude();
+						double y1 = tour.getTourSteps().get(i).getLatitude();
+						points.add(new MapPoint(y1, x1));
+					}
+					MapLayer layer = new CustomPolygoneMarkerLayer(points, this.mapView, c.getColor(), 5);
+					mapPolygoneMarkerLayers.add(layer);
+					this.mapView.addLayer(layer);
+				}
 			}
 			
 			//add mapBorders
@@ -181,7 +183,7 @@ public class mapView extends Application implements Observer {
 		vBoxiIntentedTours.getChildren().add(new Label("Deliveries of the day:"));
 		
 		//TEST : CREATE THE COURIERS + TOURS + DELIVERIES 
-		Courier courier1 = new Courier("Marilou");
+		/*Courier courier1 = new Courier("Marilou");
 		Courier courier2 = new Courier("Félicie");
 		Courier courier3 = new Courier("Fatma");
 		
@@ -200,15 +202,15 @@ public class mapView extends Application implements Observer {
 		Long id6=Long.parseLong("26575616");
 		Intersection inter6= map.getNodes().get(id6);
 		
-		deliveries1.add(new Delivery("Livraison", 8, inter2, LocalTime.of(8, 45), courier1));
-		deliveries1.add(new Delivery("Livraison", 9, inter3, LocalTime.of(9, 22), courier1));
-		deliveries1.add(new Delivery("Livraison", 8, inter4, LocalTime.of(8, 15), courier1));
-		deliveries2.add(new Delivery("Livraison", 8, inter5, LocalTime.of(8, 38), courier2));
-		deliveries2.add(new Delivery("Livraison", 10, inter5, LocalTime.of(10, 18), courier2));
+		deliveries1.add(new Delivery("Livraison", 8, inter2, LocalTime.of(8, 45)));
+		deliveries1.add(new Delivery("Livraison", 9, inter3, LocalTime.of(9, 22)));
+		deliveries1.add(new Delivery("Livraison", 8, inter4, LocalTime.of(8, 15)));
+		deliveries2.add(new Delivery("Livraison", 8, inter5, LocalTime.of(8, 38)));
+		deliveries2.add(new Delivery("Livraison", 10, inter5, LocalTime.of(10, 18)));
 		
-		Tour tour1 = new Tour(deliveries1,LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 0)),LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 55)),courier1,map);
-		Tour tour2 = new Tour(deliveries2,LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 0)),LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 45)),courier2,map);
-		Tour tour3 = new Tour(deliveries3,LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 0)),LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 0)),courier3,map);
+		Tour tour1 = new Tour();
+		Tour tour2 = new Tour();
+		Tour tour3 = new Tour();
 		tours.add(tour1);
 		tours.add(tour2);
 		tours.add(tour3);
@@ -277,7 +279,7 @@ public class mapView extends Application implements Observer {
 		// Set the Root Node
 		treeView.setRoot(rootItem);
 		
-		vBoxiIntentedTours.getChildren().add(treeView);
+		vBoxiIntentedTours.getChildren().add(treeView);*/
 
 		// -> Test ajout colonne
 
@@ -301,14 +303,12 @@ public class mapView extends Application implements Observer {
 							try {
 								newRequestView nr = new newRequestView();
 								nr.setController(controller);
-								nr.setCouriers(couriers);
+								nr.setListViewCouriers(listViewCouriers);
 								nr.setHeight(height);
 								nr.setWidth(width);
-								nr.setPlan(map);
-								nr.setTour(tour);
-								nr.setDeliveries(deliveries);
+								nr.setMap(map);
 								nr.setMapView(mapView);
-								nr.setMapPolygoneMarkerLayer(mapPolygoneMarkerLayer);
+								nr.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
 								nr.start(stage);
 
 								nr.start(stage);
@@ -332,10 +332,11 @@ public class mapView extends Application implements Observer {
 					map.resetMap();
 					XMLdeserializer.load(map, stage);
 					map.setMapLoaded();
-					tour.calculateWidthHeightMap();
-					tour.clearTourSteps();
-					tour.clearDeliveries();
-					deliveries.getItems().clear();
+					for(Courier c : map.getCouriers()) {
+						c.getTour().clearTourSteps();
+						c.getTour().clearDeliveries();
+						c.getTour().getDeliveries().clear();
+					}
 
 					mapView = new MapView();
 					double latAverage = (map.getLatitudeMin() + map.getLatitudeMax()) / 2;
@@ -356,7 +357,7 @@ public class mapView extends Application implements Observer {
 		});
 	}
 
-	public void TSP() {
+	public void TSP(Tour tour) {
 		List<Intersection> sommets = new ArrayList<Intersection>();
 		sommets.add(map.getWarehouse());
 		for (Delivery d : tour.getDeliveries()) {
@@ -400,12 +401,12 @@ public class mapView extends Application implements Observer {
 		this.height = height;
 	}
 
-	public ListView<Courier> getCouriers() {
-		return couriers;
+	public ListView<Courier> getListViewCouriers() {
+		return listViewCouriers;
 	}
 
-	public void setCouriers(ListView<Courier> couriers) {
-		this.couriers = couriers;
+	public void setListViewCouriers(ListView<Courier> couriers) {
+		this.listViewCouriers = couriers;
 	}
 
 	public Stage getStage() {
@@ -416,10 +417,6 @@ public class mapView extends Application implements Observer {
 		this.stage = stage;
 	}
 
-	public void setTour(Tour tour) {
-		this.tour = tour;
-	}
-
 	public MapView getMapView() {
 		return mapView;
 	}
@@ -428,15 +425,19 @@ public class mapView extends Application implements Observer {
 		this.mapView = mapView;
 	}
 
-	public void setMapPolygoneMarkerLayer(MapLayer layer) {
-		this.mapPolygoneMarkerLayer = layer;
+	public void setMapPolygoneMarkerLayers(ArrayList<MapLayer> layer) {
+		this.mapPolygoneMarkerLayers = layer;
+	}
+	
+	public void initMapPolygoneMarkerLayers() {
+		this.mapPolygoneMarkerLayers = new ArrayList<MapLayer>();
 	}
 
 	@Override
 	public void update(Observable observed, Object arg) {
 		// TODO Auto-generated method stub
 		if (arg instanceof Delivery) {
-			deliveries.getItems().add((Delivery) arg);
+//			deliveries.getItems().add((Delivery) arg);
 		}
 	}
 

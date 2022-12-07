@@ -1,9 +1,5 @@
 package view;
 
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.desktop.ScreenSleepEvent;
-import java.awt.geom.Rectangle2D;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,24 +16,18 @@ import com.gluonhq.maps.MapView;
 import controller.ControllerAddDelivery;
 import javafx.application.Application;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Courier;
-import model.Delivery;
 import model.Map;
-import model.Tour;
-import xml.XMLdeserializer;
 
 public class Window  extends Application  {
 	private Map map;
 	private ControllerAddDelivery controller;
 	private int width;
 	private int height;
-	private ListView<Courier> couriers;
-	private ListView<Delivery> deliveries;
+	private ListView<Courier> listViewCouriers;
 	private mapView mv;
-	private Tour tour;
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -88,12 +78,10 @@ public class Window  extends Application  {
 
 	@Override
 	public void start(Stage arg0) throws Exception {
-		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		this.width = (int)Screen.getPrimary().getVisualBounds().getWidth();
 		this.height = (int)Screen.getPrimary().getVisualBounds().getHeight();
-		this.couriers = initCouriers();
-
 		this.map = new Map();
+		this.listViewCouriers = initCouriers();
 		
 		/* Définit la plate-forme pour éviter "javafx.platform is not defined" */
 		  System.setProperty("javafx.platform", "desktop");
@@ -119,40 +107,23 @@ public class Window  extends Application  {
 		  /* Centre la carte sur le point */
 		  mapView.setCenter(mapPoint);
 		
-		this.tour = new Tour(map);
-		this.deliveries = initDeliveries();
 		this.mv = new mapView();
+		this.mv.initMapPolygoneMarkerLayers();
+		this.mv.setListViewCouriers(listViewCouriers);
 		this.mv.setController(this.controller);
-		this.mv.setCouriers(this.couriers);
 		this.mv.setHeight(this.height);
 		this.mv.setWidth(this.width);
 		this.mv.setMap(this.map);
 		System.out.println("this.map "+this.map);
-		this.mv.setTour(this.tour);
-		System.out.println("Deliveries of window "+deliveries);
-		this.mv.setDeliveries(deliveries);
 		this.mv.setMapView(mapView);
 		this.mv.start(new Stage());	
-		
-	}
-	
-	public ListView<Delivery> initDeliveries()
-	{
-		//ArrayList<Tour> tours = plan.getTours();
-		//for(Tour t : )
-		this.deliveries = new ListView<Delivery>();
-		for(Delivery d : tour.getDeliveries())
-		{
-			deliveries.getItems().add(d);
-		}
-		return deliveries;
 		
 	}
 
 	public ListView<Courier> initCouriers() {
 
 		File file = new File("./saveCouriers.txt");
-		this.couriers = new ListView<Courier>();
+		this.listViewCouriers = new ListView<Courier>();
 
 		if (file.exists()) {
 			// Creating an object of BufferedReader class
@@ -167,7 +138,9 @@ public class Window  extends Application  {
 					while ((st = br.readLine()) != null) {
 						//String[] arrSplit_2 = st.split(";");
 						//couriers.getItems().add(new Courier(arrSplit_2[0], Double.parseDouble(arrSplit_2[1])));
-						couriers.getItems().add(new Courier(st));
+						Courier courier = new Courier(st);
+						listViewCouriers.getItems().add(courier);
+						this.map.addCourier(courier);
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -179,7 +152,7 @@ public class Window  extends Application  {
 		} else {
 			System.out.println(file.getPath() + " does not exist");
 		}
-		return couriers;
+		return listViewCouriers;
 	}
 
 	
