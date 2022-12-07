@@ -213,7 +213,7 @@ public class mapView extends Application implements Observer {
 		Tour tour3 = new Tour();
 		tours.add(tour1);
 		tours.add(tour2);
-		tours.add(tour3);
+		tours.add(tour3);*/
 		//TREEVIEW OF THE DELIVERIES FOR EACH COURIER 
 		// Create the TreeView
 		TreeView treeView = new TreeView();
@@ -222,13 +222,15 @@ public class mapView extends Application implements Observer {
 		//ArrayList of TreeItem Couriers
 		ArrayList<TreeItem> courierItems = new ArrayList<TreeItem>();
 		//Parcours de chaque tournée
-		tours.forEach((t)->{
+		
+		for(Courier c : listViewCouriers.getItems())
+		{
 			//Nom du courier de la tournée
-			TreeItem courierItem = new TreeItem(t.getCourier().getName());
+			TreeItem courierItem = new TreeItem(c.getName());
 			//ArrayList of TreeItem TimeWindows 
 			ArrayList<TreeItem> timeWindows = new ArrayList<TreeItem>();
 			//Liste des livraisons de la tournée +Tri de la liste 
-			ArrayList<Delivery> tourDeliveries = t.getDeliveries();
+			ArrayList<Delivery> tourDeliveries = c.getTour().getDeliveries();
 			Collections.sort(tourDeliveries, Comparator.comparing(a -> a.getDeliveryTime()));
 			Collections.sort(tourDeliveries, Comparator.comparing(a -> a.getStartTime()));
 			//TreeItem pour chaque TimeWindow
@@ -273,13 +275,13 @@ public class mapView extends Application implements Observer {
 			
 			courierItem.getChildren().addAll(timeWindows);
 			courierItems.add(courierItem);
-		});
+		}
 		// Add children to the root
 		rootItem.getChildren().addAll(courierItems);
 		// Set the Root Node
 		treeView.setRoot(rootItem);
 		
-		vBoxiIntentedTours.getChildren().add(treeView);*/
+		vBoxiIntentedTours.getChildren().add(treeView);
 
 		// -> Test ajout colonne
 

@@ -57,7 +57,7 @@ public class Tour extends Observable {
 		if(orderOfArrival == (this.tourTimes.length-1))
 		{
 			//this.endDate = this.tourTimes[orderOfArrival];
-			this.endDate = LocalDateTime.of(this.endDate.toLocalDate(), this.tourTimes[orderOfArrival]);
+		
 		}
 		//Association of the arrival time and the delivery corresponding 
 		int sizeSteps = this.deliveries.size();
