@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -14,7 +15,17 @@ public class Map extends Observable {
 	private float latitudeMin;
 	private float latitudeMax;
 	private float longitudeMin;
-	private float longitudeMax;
+	private float longitudeMax;	
+	private LocalDate mapDate;
+
+	
+	public LocalDate getMapDate() {
+		return mapDate;
+	}
+
+	public void setMapDate(LocalDate mapDate) {
+		this.mapDate = mapDate;
+	}
 	
 	public Map() {
 		this.nodes  = new HashMap<Long,Intersection>();

@@ -25,6 +25,7 @@ public class Tour extends Observable {
 		this.tourSteps = new ArrayList<Intersection>();
 		this.startDate = LocalDateTime.now();
 		this.endDate = LocalDateTime.now();
+		this.tourTimes = new LocalTime[this.deliveries.size()];
 	}
 	
 	//NEW : ADD TIME OF ARRIVALS TO DELIVERY POINTS
@@ -178,5 +179,20 @@ public class Tour extends Observable {
 	public void clearTourSteps() {
 		this.tourSteps.clear();
 	}
-	
+
+	public LocalTime[] getTourTimes() {
+		return tourTimes;
+	}
+
+	public void setTourTimes(LocalTime[] tourTimes) {
+		this.tourTimes = tourTimes;
+	}
+
+	public static AtomicInteger getIdFactory() {
+		return ID_FACTORY;
+	}
+
+	public void setDeliveries(ArrayList<Delivery> deliveries) {
+		this.deliveries = deliveries;
+	}
 }

@@ -1,19 +1,32 @@
 package view;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
@@ -25,7 +38,10 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TreeItem;
@@ -35,6 +51,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import model.Courier;
 import model.CustomCircleMarkerLayer;
 import model.CustomPinLayer;
@@ -42,6 +59,7 @@ import model.CustomPolygoneMarkerLayer;
 import model.Delivery;
 import model.Intersection;
 import model.Map;
+import model.Segment;
 import model.Tour;
 import observer.Observable;
 import observer.Observer;
@@ -58,6 +76,15 @@ public class mapView extends Application implements Observer {
 	private Stage stage;
 	private MapView mapView;
 	private ArrayList<MapLayer> mapPolygoneMarkerLayers;
+	private newRequestView nr;
+	
+	public newRequestView getNr() {
+		return nr;
+	}
+
+	public void setNr(newRequestView nr) {
+		this.nr = nr;
+	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -75,6 +102,39 @@ public class mapView extends Application implements Observer {
 		stage.setHeight(height);
 
 		createMap(this.map);
+		
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+		    @Override
+		    public void handle(WindowEvent e) {
+		    	Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		    	alert.setTitle("Changements non enregistrés");
+		    	alert.setContentText("Voulez-vous sauvegarder vos changements?");
+		    	 alert.getButtonTypes().clear();
+		    	 alert.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
+		    	Button noButton = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
+		    	Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
+		    	noButton.setDefaultButton(true);
+		    	 yesButton.setDefaultButton(false);
+		    	Optional<ButtonType> result = alert.showAndWait();
+		    	if(result.isPresent() && result.get() == ButtonType.YES)
+		    	{
+		    		System.out.println("YES!!!!!");
+    	        	saveCouriers();
+    	        	Platform.exit();
+    			    System.exit(0);
+		    	}
+		    	else if(result.isPresent() && result.get() == ButtonType.NO)
+		    	{
+		    		System.out.println("NO!!!!!");
+    	        	Platform.exit();
+    			    System.exit(0);
+		    	}
+		    	else
+		    	{
+		    		System.out.println("Come back to the page");
+		    	}
+		    }
+		  });
 	}
 
 	public void createMap(Map map) throws MalformedURLException {
@@ -303,7 +363,6 @@ public class mapView extends Application implements Observer {
 					Platform.runLater(new Runnable() {
 						public void run() {
 							try {
-								newRequestView nr = new newRequestView();
 								nr.setController(controller);
 								nr.setListViewCouriers(listViewCouriers);
 								nr.setHeight(height);
@@ -441,6 +500,110 @@ public class mapView extends Application implements Observer {
 		if (arg instanceof Delivery) {
 //			deliveries.getItems().add((Delivery) arg);
 		}
+	}
+	
+	protected void saveCouriers() {
+		LocalDate date = this.map.getMapDate();
+		String path = "loadedDeliveries/"+date+".json";
+		/*ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String listeCouriersJson = "";
+		try {
+			listeCouriersJson = ow.writeValueAsString(this.map.getCouriers());
+		} catch (JsonProcessingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		System.out.println(listeCouriersJson);*/	
+		
+		JSONArray listeCouriersJson = new JSONArray();
+		
+        for(Courier courier : this.map.getCouriers()) {
+            JSONObject courierJson = new JSONObject();
+            courierJson.put("id", courier.getId());
+            courierJson.put("name", courier.getName());
+            courierJson.put("speed", courier.getSpeed());
+            JSONObject tourJson = new JSONObject();
+            Tour tournée = courier.getTour();
+            tourJson.put("id", tournée.getId());
+            tourJson.put("startDate", tournée.getStartDate());
+            tourJson.put("endDate", tournée.getEndDate());
+            //Array tourSteps
+            JSONArray tourStepsJson = new JSONArray();
+            for(Intersection tourStep : tournée.getTourSteps()) {
+              JSONObject tourStepJson = new JSONObject();
+              tourStepJson.put("id", tourStep.getId());
+              tourStepJson.put("latitude", tourStep.getLatitude());
+              tourStepJson.put("longitude", tourStep.getLongitude());
+              tourStepsJson.put(tourStepJson);
+              //tourStepsJson.add(tourStepJson);
+            }
+            Tour tour = courier.getTour();
+            tourJson.put("tourSteps", tourStepsJson);
+            //Array tourTimes
+            JSONArray tourTimesJson = new JSONArray();
+            for(LocalTime tourTime : tour.getTourTimes()) {
+            	JSONObject tourTimeJson = new JSONObject();
+            	tourTimeJson.put("time", tourTime.toString());
+                //tourTimesJson.add(tourTimeJson);
+            	tourTimesJson.put(tourTimeJson);
+            }
+            tourJson.put("tourTimes", tourTimesJson);
+            //Array deliveries
+    		JSONArray deliveriesJson = new JSONArray();
+    		
+    		for(Delivery delivery : tour.getDeliveries()) {
+               JSONObject deliveryJson = new JSONObject();
+               deliveryJson.put("id", delivery.getId());
+               deliveryJson.put("startTime", delivery.getStartTime());
+               deliveryJson.put("arrival", delivery.getArrival());
+               deliveryJson.put("deliveryTime", delivery.getDeliveryTime());
+               
+               JSONObject intersectionJson = new JSONObject();
+               Intersection intersection = delivery.getDestination();
+               intersectionJson.put("id", intersection.getId());
+               intersectionJson.put("latitude", intersection.getLatitude());
+               intersectionJson.put("longitude", intersection.getLongitude());
+               
+               //array outsections
+       		   JSONArray outsectionsJson = new JSONArray();
+       		   for(Segment segment : intersection.getOutSections()) {
+       			   JSONObject segmentJson = new JSONObject();
+       			   JSONObject segmentIntersectionJson = new JSONObject();
+       			   Intersection segmentIntersection = segment.getDestination();
+       			   segmentIntersectionJson.put("id", segmentIntersection.getId());
+       			   segmentIntersectionJson.put("latitude", segmentIntersection.getLatitude());
+       			   segmentIntersectionJson.put("longitude", segmentIntersection.getLongitude());
+       			   segmentJson.put("length", segment.getLength());
+       			   segmentJson.put("name", segment.getName());
+       			   segmentJson.put("destinations", segmentIntersectionJson);
+       			   //outsectionsJson.add(segmentJson);
+       			   outsectionsJson.put(segmentJson);
+       		   }
+       		   intersectionJson.put("outsections", outsectionsJson);
+       		   deliveryJson.put("destination", intersectionJson);
+       		   //deliveriesJson.add(deliveryJson);
+       		   deliveriesJson.put(deliveryJson);
+    		}
+    		tourJson.put("deliveries", deliveriesJson);
+    		courierJson.put("tour", tourJson);
+    		//listeCouriersJson.add(courierJson);
+    		listeCouriersJson.put(courierJson);
+        }
+		File pathAsFile = new File("loadedDeliveries");
+		Path path2 = Paths.get("loadedDeliveries");
+		if (!Files.isDirectory(path2)) {
+			System.out.println("HERE!!!!!!");
+			System.out.println(pathAsFile.getAbsolutePath());
+			pathAsFile.mkdir();
+		}
+        try (PrintWriter out = new PrintWriter(new FileWriter(path))) {
+            out.write(listeCouriersJson.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+      
+       
+		
 	}
 
 }
