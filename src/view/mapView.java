@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -168,8 +170,13 @@ public class mapView extends Application implements Observer {
 		// table.getColumns().addAll(courierCol, locationCol, timeWindowCol);
 
 		VBox vBoxiIntentedTours = new VBox();
-		vBoxiIntentedTours.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
-				+ "-fx-border-radius: 5;" + "-fx-border-color: #f3f6f4;" + "-fx-margin: 120 150 150 120;");
+		vBoxiIntentedTours.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;" + "-fx-border-insets: 5;"+ "-fx-border-radius: 5;" 
+		+ "-fx-border-color: #f3f6f4;" + "-fx-margin: 120 150 150 120;");
+
+		vBoxiIntentedTours.setMaxHeight(this.height - 40);
+        vBoxiIntentedTours.setMaxWidth(this.width / 1.6);
+        vBoxiIntentedTours.prefWidthProperty().bind(hbox.widthProperty().multiply(0.45));
+		
 
 		vBoxiIntentedTours.getChildren().add(new Label("Deliveries of the day:"));
 		
@@ -194,8 +201,8 @@ public class mapView extends Application implements Observer {
 		Intersection inter6= map.getNodes().get(id6);
 		
 		deliveries1.add(new Delivery("Livraison", 8, inter2, LocalTime.of(8, 45), courier1));
-		deliveries1.add(new Delivery("Livraison", 8, inter3, LocalTime.of(9, 22), courier1));
-		deliveries1.add(new Delivery("Livraison", 9, inter4, LocalTime.of(8, 15), courier1));
+		deliveries1.add(new Delivery("Livraison", 9, inter3, LocalTime.of(9, 22), courier1));
+		deliveries1.add(new Delivery("Livraison", 8, inter4, LocalTime.of(8, 15), courier1));
 		deliveries2.add(new Delivery("Livraison", 8, inter5, LocalTime.of(8, 38), courier2));
 		deliveries2.add(new Delivery("Livraison", 10, inter5, LocalTime.of(10, 18), courier2));
 		
@@ -210,18 +217,59 @@ public class mapView extends Application implements Observer {
 		TreeView treeView = new TreeView();
 		// Create the Root TreeItem
 		TreeItem rootItem = new TreeItem("Deliveries");
-		
+		//ArrayList of TreeItem Couriers
 		ArrayList<TreeItem> courierItems = new ArrayList<TreeItem>();
-		
+		//Parcours de chaque tournée
 		tours.forEach((t)->{
+			//Nom du courier de la tournée
 			TreeItem courierItem = new TreeItem(t.getCourier().getName());
-			ArrayList<TreeItem> deliveryItems = new ArrayList<TreeItem>();
+			//ArrayList of TreeItem TimeWindows 
+			ArrayList<TreeItem> timeWindows = new ArrayList<TreeItem>();
+			//Liste des livraisons de la tournée +Tri de la liste 
 			ArrayList<Delivery> tourDeliveries = t.getDeliveries();
+			Collections.sort(tourDeliveries, Comparator.comparing(a -> a.getDeliveryTime()));
+			Collections.sort(tourDeliveries, Comparator.comparing(a -> a.getStartTime()));
+			//TreeItem pour chaque TimeWindow
+			TreeItem timeWindow8 = new TreeItem("8");
+			TreeItem timeWindow9 = new TreeItem("9");
+			TreeItem timeWindow10 = new TreeItem("10");
+			TreeItem timeWindow11 = new TreeItem("11");
+			//ArrayList de TreeItem pour les livraisons des timeWindow
+			ArrayList<TreeItem> deliveries8 = new ArrayList<TreeItem>();
+			ArrayList<TreeItem> deliveries9 = new ArrayList<TreeItem>();
+			ArrayList<TreeItem> deliveries10 = new ArrayList<TreeItem>();
+			ArrayList<TreeItem> deliveries11 = new ArrayList<TreeItem>();
+			//Parcours de la liste de livraisons et ajout à chaque timeWindow correspondant 
 			tourDeliveries.forEach((d)->{
 				TreeItem deliveryItem = new TreeItem(d.toString());
-				deliveryItems.add(deliveryItem);
+				switch(d.getStartTime())
+				{
+					case 8:
+						deliveries8.add(deliveryItem);
+						break;
+					case 9:
+						deliveries9.add(deliveryItem);
+						break;
+					case 10:
+						deliveries10.add(deliveryItem);
+						break;
+					case 11:
+						deliveries11.add(deliveryItem);
+						break;
+				}
 			});
-			courierItem.getChildren().addAll(deliveryItems);
+			//Ajout de chaque liste de livraisons dans les arraylist de TreeItem
+			timeWindow8.getChildren().addAll(deliveries8);
+			timeWindow9.getChildren().addAll(deliveries9);
+			timeWindow10.getChildren().addAll(deliveries10);
+			timeWindow11.getChildren().addAll(deliveries11);
+			//Ajout de chaque TimeWindow dans l'ArrayList de timeWindows
+			timeWindows.add(timeWindow8);
+			timeWindows.add(timeWindow9);
+			timeWindows.add(timeWindow10);
+			timeWindows.add(timeWindow11);
+			
+			courierItem.getChildren().addAll(timeWindows);
 			courierItems.add(courierItem);
 		});
 		// Add children to the root
@@ -236,7 +284,7 @@ public class mapView extends Application implements Observer {
 		// hbox contains two elements
 		hbox.getChildren().add(vBoxMap);
 		hbox.getChildren().add(vBoxiIntentedTours);
-		Scene scene = new Scene(hbox, 200, 500);
+		Scene scene = new Scene(hbox, 2000, 2000);
 		this.stage.setScene(scene);
 		this.stage.show();
 
