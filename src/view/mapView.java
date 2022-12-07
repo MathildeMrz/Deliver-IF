@@ -93,11 +93,12 @@ public class mapView extends Application implements Observer {
 			}
 			
 			//
+			for(MapLayer layer : this.mapPolygoneMarkerLayers) {
+				this.mapView.removeLayer(layer);
+			}
+			this.mapPolygoneMarkerLayers.clear();
 			for (Courier c : this.map.getCouriers()) {
 				Tour tour = c.getTour();
-				for(MapLayer layer : this.mapPolygoneMarkerLayers) {
-					this.mapView.removeLayer(layer);
-				}
 				if (tour.getDeliveries().size() != 0) {
 					TSP(tour);
 					// TODO Voir avec Gloria si warehouse pas déjà ajoutée
@@ -109,7 +110,7 @@ public class mapView extends Application implements Observer {
 						double y1 = tour.getTourSteps().get(i).getLatitude();
 						points.add(new MapPoint(y1, x1));
 					}
-					MapLayer layer = new CustomPolygoneMarkerLayer(points, this.mapView, Color.BLUE, 5);
+					MapLayer layer = new CustomPolygoneMarkerLayer(points, this.mapView, c.getColor(), 5);
 					mapPolygoneMarkerLayers.add(layer);
 					this.mapView.addLayer(layer);
 				}
