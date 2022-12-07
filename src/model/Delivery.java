@@ -55,5 +55,23 @@ public class Delivery extends Observable {
 	public void setDeliveryTime(LocalTime deliveryTime) {
 		this.deliveryTime = deliveryTime;
 	}
+
+	public static AtomicInteger getIdFactory() {
+		return ID_FACTORY;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setStartTime(int startTime) {
+		this.startTime = startTime;
+	}
+
+	public void setDestination(Intersection destination) {
+		this.destination = destination;
+	}
+	
+	
 	
 }
