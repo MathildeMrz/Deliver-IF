@@ -79,7 +79,7 @@ public class CompleteGraph2 implements Graph {
 							LocalTime timeOfDeliveryStart = LocalTime.parse(finalHourDeliveryStart, DateTimeFormatter.ISO_TIME);
 							LocalTime timeOfTourStart = LocalTime.parse(finalHourTourStart, DateTimeFormatter.ISO_TIME);
 							timeLapsStart[i] = (int) ChronoUnit.SECONDS.between(timeOfTourStart/*de la plage horaire de la tournée*/, timeOfDeliveryStart/*debut de la plage horaire du delivery */);
-							timeLapsEnd[i] = (int) ChronoUnit.SECONDS.between(tour.getStartDate()/*de la plage horaire de la tournée*/, deliveries.get(i-1).getArrival().plusHours(1)/*fin de la plage horaire du delivery */);
+							timeLapsEnd[i] = (int) ChronoUnit.SECONDS.between(timeOfTourStart/*de la plage horaire de la tournée*/, timeOfDeliveryStart.plusHours(1)/*fin de la plage horaire du delivery */);
 						}
 						else {
 							timeLapsStart[i] = 0;
