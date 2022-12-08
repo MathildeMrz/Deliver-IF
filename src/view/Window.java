@@ -8,13 +8,19 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.text.html.parser.Parser;
 
@@ -33,10 +39,15 @@ import com.gluonhq.maps.MapView;
 import controller.ControllerAddDelivery;
 import javafx.application.Application;
 import javafx.scene.control.ListView;
+import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Courier;
+import model.Delivery;
+import model.Intersection;
 import model.Map;
+import model.Segment;
+import model.Tour;
 
 public class Window  extends Application  {
 	private Map map;
@@ -49,6 +60,7 @@ public class Window  extends Application  {
 	
 	public static void main(String[] args) throws Exception {
 		
+		//Settings for the map
 		StorageService storageService = new StorageService() {
 			@Override
             public Optional<File> getPrivateStorage() {
@@ -101,7 +113,6 @@ public class Window  extends Application  {
 		this.map = new Map();
 		this.map.setMapDate(LocalDate.now());
 		this.listViewCouriers = initCouriers();
-		//loadCouriers();
 		
 		/* Définit la plate-forme pour éviter "javafx.platform is not defined" */
 		  System.setProperty("javafx.platform", "desktop");
@@ -139,48 +150,10 @@ public class Window  extends Application  {
 		this.nr = new newRequestView();
 		this.nr.setOurMapView(mv);
 		this.mv.setNr(nr);
-		this.mv.start(new Stage());	
+		this.mv.start(new Stage());
 		
 	}
 	
-	/*public void loadCouriers() throws org.json.simple.parser.ParseException, FileNotFoundException, IOException {		
-
-	    //JSON parser object to parse read file       
-        JSONParser parser = new JSONParser();                
-        String fileName = "loadedDeliveries/"+this.map.getMapDate()+".json";                
-       
-        org.json.simple.JSONArray jsonArrayCouriers = (org.json.simple.JSONArray) parser.parse(new InputStreamReader(new FileInputStream(fileName)));
-        
-        for (Object o : jsonArrayCouriers)
-        {
-          JSONObject courier = (JSONObject) o;
-
-          String id = (String) courier.get("id");
-          System.out.println(id);
-        }
-	    
-	}
-	
-	 private static void parseCourierObject(JSONObject employee) 
-	    {
-		 	System.out.println("Icii");
-	        //Get employee object within list
-	        JSONObject employeeObject = (JSONObject) employee.get("employee");
-	         
-	        //Get employee first name
-	        String firstName = (String) employeeObject.get("firstName");    
-	        System.out.println(firstName);
-	         
-	        //Get employee last name
-	        String lastName = (String) employeeObject.get("lastName");  
-	        System.out.println(lastName);
-	         
-	        //Get employee website name
-	        String website = (String) employeeObject.get("website");    
-	        System.out.println(website);
-	    }*/
-	
-
 	public ListView<Courier> initCouriers() {
 
 		File file = new File("./saveCouriers.txt");

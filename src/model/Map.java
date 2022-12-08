@@ -17,6 +17,7 @@ public class Map extends Observable {
 	private float longitudeMin;
 	private float longitudeMax;	
 	private LocalDate mapDate;
+	private int mapSize;
 
 	
 	public LocalDate getMapDate() {
@@ -29,8 +30,8 @@ public class Map extends Observable {
 	
 	public Map() {
 		this.nodes  = new HashMap<Long,Intersection>();
-		this.destinations  = new ArrayList<Intersection>();
-		this.couriers = new ArrayList<Courier>();
+		this.destinations  = new ArrayList<Intersection>();//During load function
+		this.couriers = new ArrayList<Courier>();//During load function
 		this.warehouse = null;
 		this.isLoaded = false;
 		latitudeMin = Float.MAX_VALUE;
@@ -65,6 +66,10 @@ public class Map extends Observable {
 	
 	public void addCourier(Courier courier) {
 		this.couriers.add(courier);
+	}
+	
+	public void addDestination(Intersection intersection) {
+		this.destinations.add(intersection);
 	}
 
 	public Intersection getWarehouse() {
@@ -142,4 +147,5 @@ public class Map extends Observable {
 	     }
 		return closerIntersection;
 	}
+	
 }

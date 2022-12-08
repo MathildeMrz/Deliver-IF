@@ -37,8 +37,12 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.Courier;
@@ -137,31 +141,40 @@ public class newRequestView extends Application implements Observer {
 		
 		HBox hbox = new HBox();
 		
+		BackgroundFill background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
+        Background background = new Background(background_fill);
+		hbox.setBackground(background);
+		
 		/*button return mapView*/
 		Button buttonChangePage = new Button("Map view");
 		buttonChangePage.setStyle("-fx-text-fill: #000000;\r\n"
-				+ "    -fx-border-color: #e6bf4b;\r\n"
 				+ "    -fx-border-radius: 3px;\r\n"
-				+ "	   -fx-background-color: #ffffff; ");
+				+ "	   -fx-background-color: #8c4817; ");
 		
 				
 		/*vBoxCouriers*/
 		VBox vBoxCouriers= new VBox();		
 		vBoxCouriers.getChildren().add(new Label("Select a courier:"));		
 		vBoxCouriers.getChildren().add(couriers);
+		
 		couriers.getSelectionModel().select(0);
+		
 		if(couriers.getItems().size() != 0)
 		{
 			requestedCourier = couriers.getItems().get(0);	
 		}
-		couriers.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-			   System.out.println("requestedCourier :"+newValue);
-			   requestedCourier = newValue;
-			});
-		
+
+		couriers.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+		        @Override
+		        public void handle(MouseEvent event) {
+		            System.out.println("requestedCourier :"+couriers.getSelectionModel().getSelectedItem());
+					requestedCourier = couriers.getSelectionModel().getSelectedItem();
+		        }
+		    });
+	
 		DatePicker date = new DatePicker();
 		date.setStyle("-fx-text-fill: #000000;\r\n"
-				+ "    -fx-border-color: #e6bf4b;\r\n"
 				+ "    -fx-border-radius: 3px;\r\n"
 				+ "	   -fx-background-color: rgb(49, 89, 47);");
 		date.setValue(LocalDate.now());
@@ -170,9 +183,9 @@ public class newRequestView extends Application implements Observer {
 		vBoxCouriers.getChildren().add(new Label("Time-window"));
 		ComboBox<Integer> timeWindow = new ComboBox<Integer>();
 		timeWindow.setStyle("-fx-text-fill: #000000;\r\n"
-				+ "    -fx-border-color: #e6bf4b;\r\n"
 				+ "    -fx-border-radius: 3px;\r\n"
-				+ "	   -fx-background-color: #ffffff; ");
+				+ "	   -fx-background-color: #8c4817; ");
+
 		timeWindow.getItems().add(8);
 		timeWindow.getItems().add(9);
 		timeWindow.getItems().add(10);
@@ -182,10 +195,6 @@ public class newRequestView extends Application implements Observer {
 
 		vBoxCouriers.getChildren().add(timeWindow);
 		Button buttonValidate = new Button("Valider la livraison");
-		buttonValidate.setStyle("-fx-text-fill: #000000;\r\n"
-				+ "    -fx-border-color: #e6bf4b;\r\n"
-				+ "    -fx-border-radius: 3px;\r\n"
-				+ "	   -fx-background-color: #ffffff; ");
 		
 		Button buttonSeeIntersections;
 			if(seeIntersection == false) {
@@ -194,15 +203,17 @@ public class newRequestView extends Application implements Observer {
 				buttonSeeIntersections = new Button("Cacher les intersections");
 			}
 		buttonValidate.setStyle("-fx-text-fill: #000000;\r\n"
-				+ "    -fx-border-color: #e6bf4b;\r\n"
 				+ "    -fx-border-radius: 3px;\r\n"
-				+ "	   -fx-background-color: #ffffff; ");
+				+ "	   -fx-background-color: #8c4817; ");
 		
 		Button buttonChangePoint = new Button("Changer le point de livraison");
 		buttonChangePoint.setStyle("-fx-text-fill: #000000;\r\n"
-				+ "    -fx-border-color: #e6bf4b;\r\n"
 				+ "    -fx-border-radius: 3px;\r\n"
-				+ "	   -fx-background-color: #ffffff; ");
+				+ "	   -fx-background-color: #8c4817; ");
+		
+		buttonSeeIntersections.setStyle("-fx-text-fill: #000000;\r\n"
+				+ "    -fx-border-radius: 3px;\r\n"
+				+ "	   -fx-background-color: #8c4817; ");
 		
 		vBoxCouriers.getChildren().add(buttonValidate);		
 		vBoxCouriers.getChildren().add(buttonChangePage);
@@ -325,6 +336,7 @@ public class newRequestView extends Application implements Observer {
 					        	   ourMapView.setMap(map);
 					        	   ourMapView.setMapView(mapView);
 					        	   ourMapView.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
+					        	   System.out.println("Pin Ajouté");
 					        	   ourMapView.start(stage);
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
@@ -434,18 +446,10 @@ public class newRequestView extends Application implements Observer {
 	protected void saveCouriers() {
 		LocalDate date = this.map.getMapDate();
 		String path = "loadedDeliveries/"+date+".json";
-		/*ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-		String listeCouriersJson = "";
-		try {
-			listeCouriersJson = ow.writeValueAsString(this.map.getCouriers());
-		} catch (JsonProcessingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		System.out.println(listeCouriersJson);*/	
-		
+
 		JSONArray listeCouriersJson = new JSONArray();
 		
+		//For each courier
         for(Courier courier : this.map.getCouriers()) {
             JSONObject courierJson = new JSONObject();
             courierJson.put("id", courier.getId());
@@ -456,30 +460,40 @@ public class newRequestView extends Application implements Observer {
             tourJson.put("id", tournée.getId());
             tourJson.put("startDate", tournée.getStartDate());
             tourJson.put("endDate", tournée.getEndDate());
+            
             //Array tourSteps
             JSONArray tourStepsJson = new JSONArray();
+            
+            //For each intersection of the tour
             for(Intersection tourStep : tournée.getTourSteps()) {
               JSONObject tourStepJson = new JSONObject();
-              tourStepJson.put("id", tourStep.getId());
-              tourStepJson.put("latitude", tourStep.getLatitude());
-              tourStepJson.put("longitude", tourStep.getLongitude());
-              tourStepsJson.put(tourStepJson);
-              //tourStepsJson.add(tourStepJson);
+              tourStepJson.put("id", tourStep.getId());              
+              JSONArray tourSegmentsJson = new JSONArray();
+              
+              //For each segment of the intersection
+              for(Segment tourStepSegment : tourStep.getOutSections()) {
+            	  JSONObject tourStepSegmentJson = new JSONObject();
+            	  tourStepSegmentJson.put("length", tourStepSegment.getLength());
+            	  tourStepSegmentJson.put("name", tourStepSegment.getName());
+            	  tourSegmentsJson.put(tourStepSegmentJson);
+            	  tourStepsJson.put(tourStepJson);
             }
             Tour tour = courier.getTour();
             tourJson.put("tourSteps", tourStepsJson);
-            //Array tourTimes
+            tourJson.put("outSections", tourSegmentsJson);
+            
             JSONArray tourTimesJson = new JSONArray();
+            
+            //For each tour time
             for(LocalTime tourTime : tour.getTourTimes()) {
             	JSONObject tourTimeJson = new JSONObject();
             	tourTimeJson.put("time", tourTime.toString());
-                //tourTimesJson.add(tourTimeJson);
             	tourTimesJson.put(tourTimeJson);
             }
             tourJson.put("tourTimes", tourTimesJson);
-            //Array deliveries
     		JSONArray deliveriesJson = new JSONArray();
     		
+    		//For each delivery
     		for(Delivery delivery : tour.getDeliveries()) {
                JSONObject deliveryJson = new JSONObject();
                deliveryJson.put("id", delivery.getId());
@@ -488,41 +502,32 @@ public class newRequestView extends Application implements Observer {
                deliveryJson.put("deliveryTime", delivery.getDeliveryTime());
                
                JSONObject intersectionJson = new JSONObject();
-               Intersection intersection = delivery.getDestination();
-               intersectionJson.put("id", intersection.getId());
-               intersectionJson.put("latitude", intersection.getLatitude());
-               intersectionJson.put("longitude", intersection.getLongitude());
+               Intersection destinationIntersection = delivery.getDestination();
+               intersectionJson.put("id", destinationIntersection.getId());
+               //intersectionJson.put("latitude", destinationIntersection.getLatitude());
+               //intersectionJson.put("longitude", destinationIntersection.getLongitude());
                
-               //array outsections
        		   JSONArray outsectionsJson = new JSONArray();
-       		   for(Segment segment : intersection.getOutSections()) {
+       		   //For each segment of the intersection
+       		   for(Segment segment : destinationIntersection.getOutSections()) {
        			   JSONObject segmentJson = new JSONObject();
        			   JSONObject segmentIntersectionJson = new JSONObject();
        			   Intersection segmentIntersection = segment.getDestination();
        			   segmentIntersectionJson.put("id", segmentIntersection.getId());
-       			   segmentIntersectionJson.put("latitude", segmentIntersection.getLatitude());
-       			   segmentIntersectionJson.put("longitude", segmentIntersection.getLongitude());
-       			   segmentJson.put("length", segment.getLength());
-       			   segmentJson.put("name", segment.getName());
-       			   segmentJson.put("destinations", segmentIntersectionJson);
-       			   //outsectionsJson.add(segmentJson);
+       			   segmentJson.put("destination", segmentIntersectionJson);
        			   outsectionsJson.put(segmentJson);
        		   }
        		   intersectionJson.put("outsections", outsectionsJson);
        		   deliveryJson.put("destination", intersectionJson);
-       		   //deliveriesJson.add(deliveryJson);
        		   deliveriesJson.put(deliveryJson);
     		}
     		tourJson.put("deliveries", deliveriesJson);
     		courierJson.put("tour", tourJson);
-    		//listeCouriersJson.add(courierJson);
     		listeCouriersJson.put(courierJson);
         }
 		File pathAsFile = new File("loadedDeliveries");
-		Path path2 = Paths.get("loadedDeliveries");
-		if (!Files.isDirectory(path2)) {
+		if (!Files.isDirectory(Paths.get("loadedDeliveries"))) {
 			System.out.println("HERE!!!!!!");
-			System.out.println(pathAsFile.getAbsolutePath());
 			pathAsFile.mkdir();
 		}
         try (PrintWriter out = new PrintWriter(new FileWriter(path))) {
@@ -531,6 +536,7 @@ public class newRequestView extends Application implements Observer {
             e.printStackTrace();
         }      
 		
+        }	
 	}
 
 }
