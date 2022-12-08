@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -86,6 +87,9 @@ public class mapView extends Application implements Observer {
 	private Stage stage;
 	private MapView mapView;
 	private ArrayList<MapLayer> mapPolygoneMarkerLayers;
+	private HashMap<Integer, MapLayer> pinLayers;
+	private Delivery lastSelectedDelivery;
+	private MapLayer lastSelectedDeliveryLayer;
 	private newRequestView nr;
 	
 	public newRequestView getNr() {
@@ -110,6 +114,9 @@ public class mapView extends Application implements Observer {
 		/* Resize the window */
 		stage.setWidth(width);
 		stage.setHeight(height);
+		this.pinLayers = new HashMap<Integer, MapLayer>();
+		this.lastSelectedDelivery = null;
+		this.lastSelectedDeliveryLayer = null;
 
 		createMap(this.map);
 		
@@ -164,8 +171,9 @@ public class mapView extends Application implements Observer {
 					float latDestination = d.getDestination().getLatitude();
 					float longDestination = d.getDestination().getLongitude();
 					MapPoint mapPointPin = new MapPoint(latDestination, longDestination);
-					MapLayer mapLayerPin = new CustomPinLayer(mapPointPin);
-					this.mapView.addLayer(mapLayerPin);
+					MapLayer pinLayer = new CustomPinLayer(mapPointPin, false);
+					this.pinLayers.put(d.getId(), pinLayer);
+					this.mapView.addLayer(pinLayer);
 				}
 			}
 			
@@ -243,9 +251,9 @@ public class mapView extends Application implements Observer {
 			deliveriesOfTheDayLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
 
 			vBoxiIntentedTours.getChildren().add(deliveriesOfTheDayLabel);
-			
-			// display the map
 			vBoxMap.getChildren().add(this.mapView);
+	
+			HashMap<TreeItem, Delivery> treeItemToDelivery = new HashMap<TreeItem, Delivery>();
 			// Create the TreeView
 			TreeView treeView = new TreeView();
 			// Create the Root TreeItem
@@ -256,7 +264,6 @@ public class mapView extends Application implements Observer {
 			
 			for(Courier c : listViewCouriers.getItems())
 			{
-				System.out.println("Tree : "+c.getName()+ " a "+c.getTour().getDeliveries().size()+" deliveries");
 				//Nom du courier de la tournée
 				TreeItem courierItem = new TreeItem(c.getName());
 				//ArrayList of TreeItem TimeWindows 
@@ -278,6 +285,8 @@ public class mapView extends Application implements Observer {
 				//Parcours de la liste de livraisons et ajout à chaque timeWindow correspondant 
 				tourDeliveries.forEach((d)->{
 					TreeItem deliveryItem = new TreeItem(d.toString());
+					//treeItemToDelivery.put(deliveryItem, d);
+					//deliveryItems.add(deliveryItem);
 					switch(d.getStartTime())
 					{
 						case 8:
@@ -308,17 +317,52 @@ public class mapView extends Application implements Observer {
 				courierItem.getChildren().addAll(timeWindows);
 				courierItems.add(courierItem);
 			}
-			// Add children to the root
-			rootItem.getChildren().addAll(courierItems);
-			// Set the Root Node
-			treeView.setRoot(rootItem);
-			
-			vBoxiIntentedTours.getChildren().add(treeView);			
-			hbox.getChildren().add(vBoxMap);
-			hbox.getChildren().add(vBoxiIntentedTours);
-			vBoxiIntentedTours.getChildren().add(buttonLoadMap);
-			Scene scene = new Scene(hbox, 2000, 2000);
-			this.stage.setScene(scene);
+		// Add children to the root
+		rootItem.getChildren().addAll(courierItems);
+		// Set the Root Node
+		treeView.setRoot(rootItem);
+		
+		vBoxiIntentedTours.getChildren().add(treeView);			
+		hbox.getChildren().add(vBoxMap);
+		hbox.getChildren().add(vBoxiIntentedTours);
+		vBoxiIntentedTours.getChildren().add(buttonLoadMap);
+		Scene scene = new Scene(hbox, 2000, 2000);
+		
+		this.stage.setScene(scene);
+		
+		treeView.setOnMouseClicked(new EventHandler<MouseEvent>(){
+			@Override
+			public void handle(MouseEvent event) {
+				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
+				if(lastSelectedDelivery != null) {
+					MapPoint position = ((CustomPinLayer)lastSelectedDeliveryLayer).getMapPoint();
+					mapView.removeLayer(lastSelectedDeliveryLayer);
+					try {
+						MapLayer blackPin = new CustomPinLayer(position, false);
+						pinLayers.put(lastSelectedDelivery.getId(), blackPin);
+						mapView.addLayer(blackPin);
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				if(selectedDelivery != null) {
+					MapLayer layer = pinLayers.get(selectedDelivery.getId());
+					MapPoint position = ((CustomPinLayer)layer).getMapPoint();
+					mapView.removeLayer(layer);
+					try {
+						lastSelectedDeliveryLayer = new CustomPinLayer(position, true);
+						mapView.addLayer(lastSelectedDeliveryLayer);
+						lastSelectedDelivery = selectedDelivery;
+						pinLayers.remove(selectedDelivery.getId());
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		
 		} 
 		else {
 			Label loadMapLabel = new Label("Veuillez charger une carte");
@@ -383,7 +427,6 @@ public class mapView extends Application implements Observer {
 		tours.add(tour2);
 		tours.add(tour3);*/
 		//TREEVIEW OF THE DELIVERIES FOR EACH COURIER 
-		
 
 		// -> Test ajout colonne
 
@@ -456,7 +499,11 @@ public class mapView extends Application implements Observer {
 				}
 			}
 		});
+		
+		
 	}
+	
+	
 
 	public void TSP(Tour tour) {
 		List<Intersection> sommets = new ArrayList<Intersection>();
