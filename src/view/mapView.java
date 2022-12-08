@@ -315,8 +315,8 @@ public class mapView extends Application implements Observer {
 			//Parcours de la liste de livraisons et ajout à chaque timeWindow correspondant 
 			tourDeliveries.forEach((d)->{
 				TreeItem deliveryItem = new TreeItem(d.toString());
-				treeItemToDelivery.put(deliveryItem, d);
-				deliveryItems.add(deliveryItem);
+				//treeItemToDelivery.put(deliveryItem, d);
+				//deliveryItems.add(deliveryItem);
 				switch(d.getStartTime())
 				{
 					case 8:

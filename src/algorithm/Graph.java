@@ -33,5 +33,9 @@ public interface Graph {
 	 * @return the table of costs
 	 */
 	public abstract double [][] getTableCost();
+	
+	public int [] getTimeLapsStart();
+	
+	public int [] getTimeLapsEnd() ;
 
 }
