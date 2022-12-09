@@ -72,5 +72,14 @@ public class CompleteGraph implements Graph {
 			return false;
 		return i != j;
 	}
-
+	
+	@Override
+	public int [] getTimeLapsStart() {
+		return null;
+	}
+	
+	@Override
+	public int [] getTimeLapsEnd() {
+		return null;
+	}
 }

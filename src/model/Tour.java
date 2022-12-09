@@ -21,7 +21,7 @@ public class Tour extends Observable {
 	public Tour()
 	{
 		this.id = ID_FACTORY.getAndIncrement();
-		deliveries = new ArrayList<Delivery>();
+		this.deliveries = new ArrayList<Delivery>();
 		this.tourSteps = new ArrayList<Intersection>();
 		this.startDate = LocalDateTime.now();
 		this.endDate = LocalDateTime.now();
@@ -82,20 +82,6 @@ public class Tour extends Observable {
 				System.out.println("New status of delivery : "+this.deliveries.get(i).toString());
 			}
 		}
-		/*for(int i=1; i<this.tourTimes.length; i++)
-		{
-			if(this.tourSteps.get(i)==deliveryPt)
-			{
-				System.out.println("i = "+i+" this.tourTimes[i] = "+this.tourTimes[i]+" & i-1 = "+(i-1)+" this.tourTimes[i+1] = "+this.tourTimes[i+1]);
-				this.tourTimes[i]=this.tourTimes[i-1].plusMinutes((long)(minutes));
-				
-				//display
-				DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");  
-				String formatDateTime = this.tourTimes[i].format(format);   
-				System.out.println("After Formatting: " + formatDateTime );  
-				
-			}
-		}*/
 	}
 	//END NEW
 	
@@ -160,7 +146,7 @@ public class Tour extends Observable {
 			}
 		}
 	    LocalTime startDelivery = startDate.toLocalTime();
-		Delivery delivery = new Delivery("test", timeWindow, closerIntersection, startDelivery);
+		Delivery delivery = new Delivery(timeWindow, closerIntersection, startDelivery);
 	    deliveries.add(delivery);
 		notifyObservers(delivery);
 	}	
@@ -195,4 +181,5 @@ public class Tour extends Observable {
 	public void setDeliveries(ArrayList<Delivery> deliveries) {
 		this.deliveries = deliveries;
 	}
+	
 }
