@@ -38,6 +38,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TreeItem;
@@ -236,7 +237,13 @@ public class mapView extends Application implements Observer {
 
 			vBoxiIntentedTours.getChildren().add(deliveriesOfTheDayLabel);
 			vBoxMap.getChildren().add(this.mapView);
-
+			Label chosenDayLabel = new Label("Date courante : "+this.map.getMapDate().toString());	
+			vBoxMap.getChildren().add(chosenDayLabel);			
+			// create a date picker
+	        DatePicker datePicker = new DatePicker();	
+			datePicker.setStyle("-fx-background-color: #8c4817; ");
+			vBoxMap.getChildren().add(datePicker);
+				        
 			HashMap<TreeItem, Delivery> treeItemToDelivery = new HashMap<TreeItem, Delivery>();
 			// Create the TreeView
 			TreeView treeView = new TreeView();
@@ -311,6 +318,14 @@ public class mapView extends Application implements Observer {
 			Scene scene = new Scene(hbox, 2000, 2000);
 
 			this.stage.setScene(scene);
+			
+			datePicker.setOnMouseClicked(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent event) {
+					System.out.println("Load another couriers file");
+				}
+				
+			});
 
 			treeView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
