@@ -3,7 +3,6 @@ package model;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import observer.Observable;
 
 public class Map extends Observable {

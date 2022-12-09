@@ -82,20 +82,6 @@ public class Tour extends Observable {
 				System.out.println("New status of delivery : "+this.deliveries.get(i).toString());
 			}
 		}
-		/*for(int i=1; i<this.tourTimes.length; i++)
-		{
-			if(this.tourSteps.get(i)==deliveryPt)
-			{
-				System.out.println("i = "+i+" this.tourTimes[i] = "+this.tourTimes[i]+" & i-1 = "+(i-1)+" this.tourTimes[i+1] = "+this.tourTimes[i+1]);
-				this.tourTimes[i]=this.tourTimes[i-1].plusMinutes((long)(minutes));
-				
-				//display
-				DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");  
-				String formatDateTime = this.tourTimes[i].format(format);   
-				System.out.println("After Formatting: " + formatDateTime );  
-				
-			}
-		}*/
 	}
 	//END NEW
 	

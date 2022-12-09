@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-
 import observer.Observable;
 
 public class Intersection extends Observable {
@@ -39,7 +38,6 @@ public class Intersection extends Observable {
 	public void addOutSection(Segment section) {
 		outSections.add(section);
 	}
-
 	
 	public void setId(long id) {
 		this.id = id;
