@@ -99,7 +99,7 @@ public class newRequestView extends Application implements Observer {
 		timeWindow.getItems().add(9);
 		timeWindow.getItems().add(10);
 		timeWindow.getItems().add(11);
-		timeWindow.getSelectionModel().select(0);
+		//timeWindow.getSelectionModel().select(0);
 		timeWindow.setMouseTransparent(true);
 		this.couriers.setMouseTransparent(true);
 		this.couriers.getSelectionModel().select(0);
@@ -271,6 +271,7 @@ public class newRequestView extends Application implements Observer {
 		});
 
 		timeWindow.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+			System.out.println("old value :" + oldValue);
 			System.out.println("requestedStartingTimeWindow :" + newValue);
 			requestedStartingTimeWindow = newValue;
 			this.couriers.setMouseTransparent(false);
