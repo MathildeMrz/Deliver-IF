@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.net.MalformedURLException;
@@ -43,6 +44,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -402,12 +405,13 @@ public class HomeView extends Application implements Observer {
 
 			hbox.getChildren().add(vBoxMap);
 			hbox.getChildren().add(vBoxiIntentedTours);
-			
-
-
 		} 
 		else 
 		{
+			InputStream inputLogo = this.getClass().getResourceAsStream("/Resources/logo_deliverif.png");
+			Image imageLogo = new Image(inputLogo, 200, 250, false, false);
+			ImageView imageViewLogo = new ImageView(imageLogo);
+			vBoxMap.getChildren().add(imageViewLogo);
 			Label loadMapLabel = new Label("Veuillez charger une carte");
 			loadMapLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
 			vBoxMap.setAlignment(Pos.CENTER);
