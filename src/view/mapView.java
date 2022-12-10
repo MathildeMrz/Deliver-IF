@@ -1,10 +1,12 @@
 package view;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.net.MalformedURLException;
@@ -43,6 +45,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -140,7 +144,7 @@ public class mapView extends Application implements Observer {
 		});
 	}
 
-	public void createMap(Map map) throws MalformedURLException {
+	public void createMap(Map map) throws MalformedURLException, FileNotFoundException {
 		// System.out.println("dans createMap : " + map);
 
 		if (this.map.getIsLoaded()) {
@@ -206,7 +210,7 @@ public class mapView extends Application implements Observer {
 		display();
 	}
 
-	public void display() {
+	public void display() throws FileNotFoundException {
 
 		HBox hbox = new HBox();
 		BackgroundFill background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
@@ -330,6 +334,7 @@ public class mapView extends Application implements Observer {
 			treeView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent event) {
+					System.out.println("add red pin");
 					Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
 					if (lastSelectedDelivery != null) {
 						MapPoint position = ((CustomPinLayer) lastSelectedDeliveryLayer).getMapPoint();

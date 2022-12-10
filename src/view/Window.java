@@ -72,7 +72,6 @@ public class Window extends Application {
 		};
 		// register service
 		Services.registerServiceFactory(storageServiceFactory);
-
 		Application.launch(args);
 	}
 

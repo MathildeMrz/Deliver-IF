@@ -69,7 +69,11 @@ public class newRequestView extends Application implements Observer {
 	private ArrayList<CustomCircleMarkerLayer> mapLayerDelivery;
 	private ArrayList<MapLayer> mapPolygoneMarkerLayers;
 	private mapView ourMapView;
-
+	private ComboBox<Integer> timeWindow;
+	private Label selectLocation;
+	private Label labelSelectCourier;
+	private Label labelSelectTimeWindow;
+	
 	public mapView getOurMapView() {
 		return ourMapView;
 	}
@@ -88,9 +92,27 @@ public class newRequestView extends Application implements Observer {
 		stage.setHeight(height);
 		this.clicked = false;
 		this.seeIntersection = false;
-		display();
 		this.closestIntersection = new Intersection();
 		mapLayerDelivery = this.getMapLayerDelivery();
+		this.timeWindow = new ComboBox<Integer>();
+		timeWindow.getItems().add(8);
+		timeWindow.getItems().add(9);
+		timeWindow.getItems().add(10);
+		timeWindow.getItems().add(11);
+		timeWindow.getSelectionModel().select(0);
+		timeWindow.setMouseTransparent(true);
+		this.couriers.setMouseTransparent(true);
+		this.couriers.getSelectionModel().select(0);
+		labelSelectCourier = new Label("Sélectionner un livreur");
+		labelSelectCourier.setStyle("-fx-background-color:rgba(85, 255, 68,0.7);");
+		labelSelectCourier.setVisible(false);
+		selectLocation = new Label("Sélectionner la destination de la nouvelle livraison (en cliquant sur la carte)");
+		selectLocation.setStyle("-fx-background-color:rgba(85, 255, 68,0.7);");
+		labelSelectTimeWindow = new Label("Sélectionner une plage horaire");
+		labelSelectTimeWindow.setStyle("-fx-background-color:rgba(85, 255, 68,0.7);");
+		labelSelectTimeWindow.setVisible(false);
+		
+		display();	
 		this.stage.show();
 
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -106,16 +128,21 @@ public class newRequestView extends Application implements Observer {
 				noButton.setDefaultButton(true);
 				yesButton.setDefaultButton(false);
 				Optional<ButtonType> result = alert.showAndWait();
-				if (result.isPresent() && result.get() == ButtonType.YES) {
+				if (result.isPresent() && result.get() == ButtonType.YES)
+				{
 					System.out.println("YES!!!!!");
 					saveCouriers();
 					Platform.exit();
 					System.exit(0);
-				} else if (result.isPresent() && result.get() == ButtonType.NO) {
+				} 
+				else if (result.isPresent() && result.get() == ButtonType.NO)
+				{
 					System.out.println("NO!!!!!");
 					Platform.exit();
 					System.exit(0);
-				} else {
+				} 
+				else if (result.isPresent() && result.get() == ButtonType.CANCEL)
+				{
 					System.out.println("Come back to the page");
 				}
 			}
@@ -136,11 +163,16 @@ public class newRequestView extends Application implements Observer {
 				+ "	   -fx-background-color: #8c4817; ");
 
 		/* vBoxCouriers */
-		VBox vBoxCouriers = new VBox();
-		vBoxCouriers.getChildren().add(new Label("Select a courier:"));
+		VBox vBoxCouriers = new VBox();		
+
+		vBoxCouriers.getChildren().add(new Label("Time-window"));
+		vBoxCouriers.getChildren().add(labelSelectTimeWindow);
+		vBoxCouriers.getChildren().add(timeWindow);
+		Button buttonValidate = new Button("Valider la livraison");
+		
+		vBoxCouriers.getChildren().add(labelSelectCourier);
 		vBoxCouriers.getChildren().add(couriers);
 
-		couriers.getSelectionModel().select(0);
 
 		if (couriers.getItems().size() != 0) {
 			requestedCourier = couriers.getItems().get(0);
@@ -161,20 +193,6 @@ public class newRequestView extends Application implements Observer {
 		date.setValue(LocalDate.now());
 		requestedDate = date.getValue();
 
-		vBoxCouriers.getChildren().add(new Label("Time-window"));
-		ComboBox<Integer> timeWindow = new ComboBox<Integer>();
-		timeWindow.setStyle("-fx-text-fill: #000000;\r\n" + "    -fx-border-radius: 3px;\r\n"
-				+ "	   -fx-background-color: #8c4817; ");
-
-		timeWindow.getItems().add(8);
-		timeWindow.getItems().add(9);
-		timeWindow.getItems().add(10);
-		timeWindow.getItems().add(11);
-		timeWindow.getSelectionModel().select(0);
-		requestedStartingTimeWindow = timeWindow.getItems().get(0);
-
-		vBoxCouriers.getChildren().add(timeWindow);
-		Button buttonValidate = new Button("Valider la livraison");
 
 		Button buttonSeeIntersections;
 		if (seeIntersection == false) {
@@ -192,8 +210,8 @@ public class newRequestView extends Application implements Observer {
 		buttonSeeIntersections.setStyle("-fx-text-fill: #000000;\r\n" + "    -fx-border-radius: 3px;\r\n"
 				+ "	   -fx-background-color: #8c4817; ");
 
-		vBoxCouriers.getChildren().add(buttonValidate);
 		vBoxCouriers.getChildren().add(buttonChangePage);
+		vBoxCouriers.getChildren().add(buttonValidate);
 		vBoxCouriers.getChildren().add(buttonSeeIntersections);
 		vBoxCouriers.getChildren().add(buttonChangePoint);
 
@@ -204,8 +222,8 @@ public class newRequestView extends Application implements Observer {
 		vBoxMap.setMaxWidth(this.width / 1.6);
 		vBoxMap.prefWidthProperty().bind(hbox.widthProperty().multiply(0.60));
 
-		vBoxMap.getChildren()
-				.add(new Label("Localisation (select the delivery's destination by clicking on the map):"));
+		
+		vBoxMap.getChildren().add(selectLocation);
 		vBoxMap.getChildren().add(this.mapView);
 
 		// hbox contains two elements
@@ -216,11 +234,20 @@ public class newRequestView extends Application implements Observer {
 
 		stage.setScene(scene);
 		this.stage.show();
+		
+		timeWindow.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				//TODO
+				System.out.println("Mettre à jour les couriers disponibles");
+			}
+		});
 
 		this.mapView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if (clicked == false) {
+				if (clicked == false) 
+				{
 					requestedX = (float) event.getX();
 					requestedY = (float) event.getY();
 					MapPoint mp = mapView.getMapPosition(requestedX, requestedY);
@@ -232,6 +259,11 @@ public class newRequestView extends Application implements Observer {
 							closestIntersection.getLongitude());
 					newDelivery = new CustomCircleMarkerLayer(mapPointPin, 6, javafx.scene.paint.Color.BLUE);
 					mapView.addLayer(newDelivery);
+					timeWindow.setStyle("-fx-text-fill: #000000;\r\n" + "    -fx-border-radius: 3px;\r\n"
+							+ "	   -fx-background-color: #8c4817; ");
+					timeWindow.setMouseTransparent(false);
+					selectLocation.setVisible(false);
+					labelSelectTimeWindow.setVisible(true);
 					display();
 				}
 				clicked = true;
@@ -241,6 +273,10 @@ public class newRequestView extends Application implements Observer {
 		timeWindow.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
 			System.out.println("requestedStartingTimeWindow :" + newValue);
 			requestedStartingTimeWindow = newValue;
+			this.couriers.setMouseTransparent(false);
+			labelSelectTimeWindow.setVisible(false);
+			labelSelectCourier.setVisible(true);
+
 		});
 
 		// Listener for updating the checkout date w.r.t check in date
@@ -249,16 +285,17 @@ public class newRequestView extends Application implements Observer {
 			System.out.println("You clicked: " + requestedDate);
 		});
 
-		timeWindow.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-			System.out.println("requestedStartingTimeWindow :" + newValue);
-			requestedStartingTimeWindow = newValue;
-		});
-
 		buttonChangePoint.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				clicked = false;
 				mapView.removeLayer(newDelivery);
+				timeWindow.getSelectionModel().select(0);
+				timeWindow.setMouseTransparent(true);
+				timeWindow.setStyle(null);
+				requestedStartingTimeWindow = timeWindow.getItems().get(0);	
+				couriers.getSelectionModel().select(0);
+				couriers.setMouseTransparent(true);
 			}
 		});
 
