@@ -47,7 +47,7 @@ import model.Tour;
 import observer.Observable;
 import observer.Observer;
 
-public class newRequestView extends Application implements Observer {
+public class NewRequestView extends Application implements Observer {
 
 	private Map map;
 	private ControllerAddDelivery controller;
@@ -68,7 +68,7 @@ public class newRequestView extends Application implements Observer {
 	private MapLayer newDelivery;
 	private ArrayList<CustomCircleMarkerLayer> mapLayerDelivery;
 	private ArrayList<MapLayer> mapPolygoneMarkerLayers;
-	private mapView ourMapView;
+	private HomeView ourMapView;
 	private ComboBox<Integer> timeWindow;
 	private Label selectLocation;
 	private Label labelSelectCourier;
@@ -81,15 +81,15 @@ public class newRequestView extends Application implements Observer {
 	private Button buttonSeeIntersections;
 	private DatePicker date;
 	
-	public mapView getOurMapView() {
+	public HomeView getOurMapView() {
 		return ourMapView;
 	}
 
-	public void setOurMapView(mapView ourMapView) {
+	public void setOurMapView(HomeView ourMapView) {
 		this.ourMapView = ourMapView;
 	}
 
-	public newRequestView() {
+	public NewRequestView() {
 	}
 
 	@Override

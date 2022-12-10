@@ -67,7 +67,7 @@ import observer.Observer;
 import xml.ExceptionXML;
 import xml.XMLdeserializer;
 
-public class mapView extends Application implements Observer {
+public class HomeView extends Application implements Observer {
 
 	private Map map;
 	private ControllerAddDelivery controller;
@@ -80,7 +80,7 @@ public class mapView extends Application implements Observer {
 	private HashMap<Integer, MapLayer> pinLayers;
 	private Delivery lastSelectedDelivery;
 	private MapLayer lastSelectedDeliveryLayer;
-	private newRequestView nr;
+	private NewRequestView nr;
 	private BackgroundFill background_fill;
 	private Background background;
 	private Button buttonLoadMap;
@@ -580,11 +580,11 @@ public class mapView extends Application implements Observer {
 		}
 	}
 	
-	public newRequestView getNr() {
+	public NewRequestView getNr() {
 		return nr;
 	}
 
-	public void setNr(newRequestView nr) {
+	public void setNr(NewRequestView nr) {
 		this.nr = nr;
 	}
 

@@ -26,8 +26,8 @@ public class Window extends Application {
 	private int width;
 	private int height;
 	private ListView<Courier> listViewCouriers;
-	private mapView mv;
-	private newRequestView nr;
+	private HomeView mv;
+	private NewRequestView nr;
 
 	public static void main(String[] args) throws Exception {
 
@@ -106,7 +106,7 @@ public class Window extends Application {
 		/* Centre la carte sur le point */
 		mapView.setCenter(mapPoint);
 
-		this.mv = new mapView();
+		this.mv = new HomeView();
 		this.mv.initMapPolygoneMarkerLayers();
 		this.mv.setListViewCouriers(listViewCouriers);
 		this.mv.setController(this.controller);
@@ -115,7 +115,7 @@ public class Window extends Application {
 		this.mv.setMap(this.map);
 		System.out.println("this.map " + this.map);
 		this.mv.setMapView(mapView);
-		this.nr = new newRequestView();
+		this.nr = new NewRequestView();
 		this.nr.setOurMapView(mv);
 		this.mv.setNr(nr);
 		this.mv.start(new Stage());
