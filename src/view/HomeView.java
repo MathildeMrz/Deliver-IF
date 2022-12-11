@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
 import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
-import algorithm.RunTSP;
+import algorithm.RunTSP2;
 import controller.ControllerAddDelivery;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -510,7 +510,7 @@ public class HomeView extends Application implements Observer {
 		
 	}
 
-	public void TSP(Tour tour) {
+	/*public void TSP(Tour tour) {
 		List<Intersection> sommets = new ArrayList<Intersection>();
 		sommets.add(map.getWarehouse());
 		for (Delivery d : tour.getDeliveries()) {
@@ -518,6 +518,26 @@ public class HomeView extends Application implements Observer {
 		}
 		System.out.println("Debut TSP");
 		RunTSP testTSP = new RunTSP(sommets.size(), sommets, map, tour);
+		testTSP.start();
+		System.out.println("Fin TSP");
+	}*/
+	public void TSP(Tour tour) {
+		List<Intersection> sommets = new ArrayList<Intersection>();
+		sommets.add(map.getWarehouse());
+		int debut =12;
+		for (Delivery d : tour.getDeliveries()) {
+			sommets.add(d.getDestination());
+			System.out.print(d.getStartTime()+ " ");
+			System.out.println();
+			if(d.getStartTime()<debut) {
+				debut=d.getStartTime();
+			}
+		}
+		LocalDate tourStartDate=tour.getStartDate().toLocalDate();
+		tour.setStartDate(tourStartDate.atTime(debut,0,0));
+		System.out.println("Debut de la tournée à" + tour.getStartDate());
+		System.out.println("Debut TSP");
+		RunTSP2 testTSP = new RunTSP2(map.getWarehouse(),tour.getDeliveries().size()+1, sommets, map, tour);
 		testTSP.start();
 		System.out.println("Fin TSP");
 	}

@@ -8,7 +8,7 @@ public class TSP2 extends TSP1 {
 	
 
 	@Override
-	protected double bound(Integer currentVertex, Collection<Integer> unvisited, double cost[][]) {
+	protected double bound(Integer currentVertex, Collection<Integer> unvisited, double cost[][],double currentCost,int [] timeLapsStart,int [] timeLapsEnd) {
 		
 		//Récupérer le cout minimal parmis les couts du sommet courant vers les sommets non visités
 		
