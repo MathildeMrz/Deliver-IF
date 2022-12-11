@@ -135,7 +135,8 @@ public class HomeView extends Application implements Observer {
 				alert.setTitle("Changements non enregistrés");
 				alert.setContentText("Voulez-vous sauvegarder vos changements?");
 				alert.getButtonTypes().clear();
-				alert.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
+				alert.getButtonTypes().add(ButtonType.YES);
+				alert.getButtonTypes().add(ButtonType.NO);
 				Button noButton = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
 				noButton.setStyle("-fx-background-color: #BFD1E5; ");
 				Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
@@ -409,7 +410,7 @@ public class HomeView extends Application implements Observer {
 		else 
 		{
 			InputStream inputLogo = this.getClass().getResourceAsStream("/Resources/logo_deliverif.png");
-			Image imageLogo = new Image(inputLogo, 200, 250, false, false);
+			Image imageLogo = new Image(inputLogo, 100, 150, false, false);
 			ImageView imageViewLogo = new ImageView(imageLogo);
 			vBoxMap.getChildren().add(imageViewLogo);
 			Label loadMapLabel = new Label("Veuillez charger une carte");
