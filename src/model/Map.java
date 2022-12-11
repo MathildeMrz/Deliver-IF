@@ -88,6 +88,7 @@ public class Map extends Observable {
 		this.latitudeMax = 0;
 		this.longitudeMin = Float.MAX_VALUE;
 		this.longitudeMax = 0;
+		this.isLoaded = false;
 	}
 
 	public float getLatitudeMin() {

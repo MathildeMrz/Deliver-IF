@@ -73,6 +73,7 @@ public class newRequestView extends Application implements Observer {
 	private Label selectLocation;
 	private Label labelSelectCourier;
 	private Label labelSelectTimeWindow;
+	private Button buttonValidate;
 	
 	public mapView getOurMapView() {
 		return ourMapView;
@@ -102,7 +103,7 @@ public class newRequestView extends Application implements Observer {
 		//timeWindow.getSelectionModel().select(0);
 		timeWindow.setMouseTransparent(true);
 		this.couriers.setMouseTransparent(true);
-		this.couriers.getSelectionModel().select(0);
+		//this.couriers.getSelectionModel().select(0);
 		labelSelectCourier = new Label("Sélectionner un livreur");
 		labelSelectCourier.setStyle("-fx-background-color:rgba(85, 255, 68,0.7);");
 		labelSelectCourier.setVisible(false);
@@ -168,7 +169,8 @@ public class newRequestView extends Application implements Observer {
 		vBoxCouriers.getChildren().add(new Label("Time-window"));
 		vBoxCouriers.getChildren().add(labelSelectTimeWindow);
 		vBoxCouriers.getChildren().add(timeWindow);
-		Button buttonValidate = new Button("Valider la livraison");
+		buttonValidate = new Button("Valider la livraison");
+		buttonValidate.setMouseTransparent(true);
 		
 		vBoxCouriers.getChildren().add(labelSelectCourier);
 		vBoxCouriers.getChildren().add(couriers);
@@ -184,6 +186,7 @@ public class newRequestView extends Application implements Observer {
 			public void handle(MouseEvent event) {
 				System.out.println("requestedCourier :" + couriers.getSelectionModel().getSelectedItem());
 				requestedCourier = couriers.getSelectionModel().getSelectedItem();
+				buttonValidate.setMouseTransparent(false);
 			}
 		});
 
@@ -291,12 +294,16 @@ public class newRequestView extends Application implements Observer {
 			public void handle(MouseEvent event) {
 				clicked = false;
 				mapView.removeLayer(newDelivery);
-				timeWindow.getSelectionModel().select(0);
+				//timeWindow.getSelectionModel().select(0);
+				timeWindow.getSelectionModel().select(null);
 				timeWindow.setMouseTransparent(true);
 				timeWindow.setStyle(null);
-				requestedStartingTimeWindow = timeWindow.getItems().get(0);	
-				couriers.getSelectionModel().select(0);
+				//requestedStartingTimeWindow = timeWindow.getItems().get(0);	
+				//couriers.getSelectionModel().select(0);
 				couriers.setMouseTransparent(true);
+				labelSelectTimeWindow.setVisible(false);
+				labelSelectCourier.setVisible(false);
+				selectLocation.setVisible(true);
 			}
 		});
 

@@ -28,8 +28,8 @@ public class XMLfileOpener extends FileFilter {// Singleton
          	file = fileChooserXML.showOpenDialog(stage);
         else
          	file = fileChooserXML.showSaveDialog(stage);
-        if (file == null) 
-        	throw new ExceptionXML("Problem when opening file");
+        //if (file == null) 
+        	//throw new ExceptionXML("Problem when opening file");
         return file;
  	}
  	

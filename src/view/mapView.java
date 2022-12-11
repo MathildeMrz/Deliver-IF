@@ -278,7 +278,18 @@ public class mapView extends Application implements Observer {
 				ArrayList<TreeItem> deliveries11 = new ArrayList<TreeItem>();
 				// Parcours de la liste de livraisons et ajout à chaque timeWindow correspondant
 				tourDeliveries.forEach((d) -> {
-					TreeItem deliveryItem = new TreeItem(d.toString());
+					String detailLivraison = d.toString();
+					Label labelDetailLivraison = new Label(detailLivraison);
+					if(detailLivraison.contains("Waiting time at the destination from"))
+					{
+						labelDetailLivraison.setStyle("-fx-background-color:rgba(255, 0, 0, 1.00);");
+					}
+					if(d.getArrival().getHour()!=d.getStartTime())
+					{
+						labelDetailLivraison.setStyle("-fx-background-color:rgba(255, 0, 0, 1.00);");
+					}
+					TreeItem deliveryItem = new TreeItem(labelDetailLivraison);
+					//TreeItem deliveryItem = new TreeItem(d.toString());
 					// treeItemToDelivery.put(deliveryItem, d);
 					// deliveryItems.add(deliveryItem);
 					switch (d.getStartTime()) {
@@ -455,22 +466,25 @@ public class mapView extends Application implements Observer {
 			@Override
 			public void handle(MouseEvent event) {
 				try {
-					map.setMapLoaded();
 					map.resetMap();
 					XMLdeserializer.load(map, stage);
-					for (Courier c : map.getCouriers()) {
-						c.getTour().clearTourSteps();
-						c.getTour().clearDeliveries();
-						c.getTour().getDeliveries().clear();
+					if(map.getIsLoaded())
+					{
+						//map.setMapLoaded();
+						for (Courier c : map.getCouriers()) {
+							c.getTour().clearTourSteps();
+							c.getTour().clearDeliveries();
+							c.getTour().getDeliveries().clear();
+						}
+	
+						mapView = new MapView();
+						double latAverage = (map.getLatitudeMin() + map.getLatitudeMax()) / 2;
+						double longAverage = (map.getLongitudeMin() + map.getLongitudeMax()) / 2;
+						MapPoint mapPoint = new MapPoint(latAverage, longAverage);
+						mapView.setZoom(14);
+						mapView.setCenter(mapPoint);
+	
 					}
-
-					mapView = new MapView();
-					double latAverage = (map.getLatitudeMin() + map.getLatitudeMax()) / 2;
-					double longAverage = (map.getLongitudeMin() + map.getLongitudeMax()) / 2;
-					MapPoint mapPoint = new MapPoint(latAverage, longAverage);
-					mapView.setZoom(14);
-					mapView.setCenter(mapPoint);
-
 					createMap(map);
 				} catch (ParserConfigurationException | SAXException | IOException | ExceptionXML e) {
 					// TODO Auto-generated catch block
