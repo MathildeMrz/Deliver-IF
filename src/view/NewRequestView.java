@@ -122,13 +122,13 @@ public class NewRequestView extends Application implements Observer {
 		
 		/*Creation of the buttons*/
 		this.buttonValidate = new Button("Valider la livraison");
-		this.buttonValidate.setStyle("-fx-text-fill: #000000;\r\n" + " -fx-border-radius: 3px;\r\n" + "	 -fx-background-color: #8c4817; ");
+		this.buttonValidate.setStyle("-fx-text-fill: #000000;\r\n" + " -fx-border-radius: 6px;" +  " -fx-border-color: #000000" + " -fx-background-color: #AD785D; " + "-fx-background-radius: 6px" );
 		this.buttonChangePoint = new Button("Changer le point de livraison");
-		this.buttonChangePoint.setStyle("-fx-text-fill: #000000;\r\n" + " -fx-border-radius: 3px;\r\n" + " -fx-background-color: #8c4817; ");
+		this.buttonChangePoint.setStyle("-fx-text-fill: #000000;\r\n" + " -fx-border-radius: 6px;" +  " -fx-border-color: #000000" + " -fx-background-color: #AD785D; " + "-fx-background-radius: 6px" );
 		this.buttonChangePage = new Button("Map view");
-		this.buttonChangePage.setStyle("-fx-text-fill: #000000;\r\n" + " -fx-border-radius: 3px;\r\n" + " -fx-background-color: #8c4817; ");
+		this.buttonChangePage.setStyle("-fx-text-fill: #000000;\r\n" + " -fx-border-radius: 6px;" +  " -fx-border-color: #000000" + " -fx-background-color: #AD785D; " + "-fx-background-radius: 6px" );
 		this.buttonSeeIntersections = new Button("Voir les intersections");
-		this.buttonSeeIntersections.setStyle("-fx-text-fill: #000000;\r\n" + "-fx-border-radius: 3px;\r\n" + " -fx-background-color: #8c4817; ");
+		this.buttonSeeIntersections.setStyle("-fx-text-fill: #000000;\r\n" + " -fx-border-radius: 6px;" +  " -fx-border-color: #000000" + " -fx-background-color: #AD785D; " + "-fx-background-radius: 6px" );
 			
 		/*Creation of the background*/
 		this.background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
@@ -349,6 +349,7 @@ public class NewRequestView extends Application implements Observer {
 		vBoxCouriers.getChildren().add(buttonValidate);
 		vBoxCouriers.getChildren().add(buttonSeeIntersections);
 		vBoxCouriers.getChildren().add(buttonChangePoint);
+		vBoxCouriers.setSpacing(10);
 		
 		/* vBoxMap */
 		VBox vBoxMap = new VBox();

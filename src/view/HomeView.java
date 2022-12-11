@@ -113,7 +113,7 @@ public class HomeView extends Application implements Observer {
 		this.background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
 		this.background = new Background(background_fill);
 		this.buttonLoadMap = new Button("Sélectionner une carte");
-		this.buttonLoadMap.setStyle("-fx-background-color: #8c4817; ");
+		this.buttonLoadMap.setStyle(" -fx-border-radius: 6px;" +  " -fx-border-color: #000000" + " -fx-background-color: #AD785D; " + "-fx-background-radius: 6px" );
 		this.datePicker = new DatePicker();	
 		this.datePicker.setStyle("-fx-background-color: #8c4817; ");
 		this.treeItemToDelivery = new HashMap<TreeItem, Delivery>();
@@ -164,6 +164,7 @@ public class HomeView extends Application implements Observer {
 			public void handle(MouseEvent event) {
 				System.out.println("add red pin");
 				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
+				System.out.println(selectedDelivery);
 				if (lastSelectedDelivery != null) {
 					MapPoint position = ((CustomPinLayer) lastSelectedDeliveryLayer).getMapPoint();
 					mapView.removeLayer(lastSelectedDeliveryLayer);
@@ -359,19 +360,24 @@ public class HomeView extends Application implements Observer {
 				// Parcours de la liste de livraisons et ajout à chaque timeWindow correspondant
 				tourDeliveries.forEach((d) -> {
 					TreeItem deliveryItem = new TreeItem(d.toString());
-					// treeItemToDelivery.put(deliveryItem, d);
-					// deliveryItems.add(deliveryItem);
+					treeItemToDelivery.put(deliveryItem, d);
+					courierItem.setExpanded(true);
+					deliveryItem.setExpanded(true);
 					switch (d.getStartTime()) {
 					case 8:
+						timeWindow8.setExpanded(true);
 						deliveries8.add(deliveryItem);
 						break;
 					case 9:
+						timeWindow9.setExpanded(true);
 						deliveries9.add(deliveryItem);
 						break;
 					case 10:
+						timeWindow10.setExpanded(true);
 						deliveries10.add(deliveryItem);
 						break;
 					case 11:
+						timeWindow11.setExpanded(true);
 						deliveries11.add(deliveryItem);
 						break;
 					}
@@ -385,15 +391,17 @@ public class HomeView extends Application implements Observer {
 				timeWindows.add(timeWindow8);
 				timeWindows.add(timeWindow9);
 				timeWindows.add(timeWindow10);
-				timeWindows.add(timeWindow11);
+				timeWindows.add(timeWindow11);	
 
 				courierItem.getChildren().addAll(timeWindows);
 				courierItems.add(courierItem);							
 				
 			}
-			
+			this.rootItem.setExpanded(true);
+				
 			vBoxiIntentedTours.getChildren().add(treeView);
 			vBoxiIntentedTours.getChildren().add(buttonLoadMap);
+			vBoxiIntentedTours.setSpacing(10);
 			
 			// Add children to the root
 			rootItem.getChildren().addAll(courierItems);
@@ -469,7 +477,8 @@ public class HomeView extends Application implements Observer {
 		// Ajout du bouton new request seulement si une map est chargée
 		if (this.map.getIsLoaded()) {
 			Button buttonChangePage = new Button("Nouvelle livraison");
-			buttonChangePage.setStyle("-fx-background-color: #8c4817; ");
+			buttonChangePage.setStyle(" -fx-border-radius: 6px;" +  " -fx-border-color: #000000" + " -fx-background-color: #AD785D; " + "-fx-background-radius: 6px" );
+
 			vBoxiIntentedTours.getChildren().add(buttonChangePage);
 			buttonChangePage.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
