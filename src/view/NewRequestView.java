@@ -47,7 +47,7 @@ import model.Tour;
 import observer.Observable;
 import observer.Observer;
 
-public class newRequestView extends Application implements Observer {
+public class NewRequestView extends Application implements Observer {
 
 	private Map map;
 	private ControllerAddDelivery controller;
@@ -68,159 +68,109 @@ public class newRequestView extends Application implements Observer {
 	private MapLayer newDelivery;
 	private ArrayList<CustomCircleMarkerLayer> mapLayerDelivery;
 	private ArrayList<MapLayer> mapPolygoneMarkerLayers;
-	private mapView ourMapView;
-
-	public mapView getOurMapView() {
+	private HomeView ourMapView;
+	private ComboBox<Integer> timeWindow;
+	private Label selectLocation;
+	private Label labelSelectCourier;
+	private Label labelSelectTimeWindow;
+	private Button buttonValidate;
+	private Button buttonChangePoint;
+	private Button buttonChangePage;
+	private BackgroundFill background_fill;
+	private Background background;
+	private Button buttonSeeIntersections;
+	private DatePicker date;
+	
+	public HomeView getOurMapView() {
 		return ourMapView;
 	}
 
-	public void setOurMapView(mapView ourMapView) {
+	public void setOurMapView(HomeView ourMapView) {
 		this.ourMapView = ourMapView;
 	}
 
-	public newRequestView() {
+	public NewRequestView() {
 	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.stage = stage;
-		stage.setWidth(width);
-		stage.setHeight(height);
+		this.stage.setWidth(width);
+		this.stage.setHeight(height);
 		this.clicked = false;
 		this.seeIntersection = false;
-		display();
 		this.closestIntersection = new Intersection();
-		mapLayerDelivery = this.getMapLayerDelivery();
-		this.stage.show();
-
-		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			@Override
-			public void handle(WindowEvent e) {
-				Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-				alert.setTitle("Changements non enregistrés");
-				alert.setContentText("Voulez-vous sauvegarder vos changements?");
-				alert.getButtonTypes().clear();
-				alert.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
-				Button noButton = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
-				Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
-				noButton.setDefaultButton(true);
-				yesButton.setDefaultButton(false);
-				Optional<ButtonType> result = alert.showAndWait();
-				if (result.isPresent() && result.get() == ButtonType.YES) {
-					System.out.println("YES!!!!!");
-					saveCouriers();
-					Platform.exit();
-					System.exit(0);
-				} else if (result.isPresent() && result.get() == ButtonType.NO) {
-					System.out.println("NO!!!!!");
-					Platform.exit();
-					System.exit(0);
-				} else {
-					System.out.println("Come back to the page");
-				}
-			}
-		});
-	}
-
-	public void display() {
-
-		HBox hbox = new HBox();
-
-		BackgroundFill background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
-		Background background = new Background(background_fill);
-		hbox.setBackground(background);
-
-		/* button return mapView */
-		Button buttonChangePage = new Button("Map view");
-		buttonChangePage.setStyle("-fx-text-fill: #000000;\r\n" + "    -fx-border-radius: 3px;\r\n"
-				+ "	   -fx-background-color: #8c4817; ");
-
-		/* vBoxCouriers */
-		VBox vBoxCouriers = new VBox();
-		vBoxCouriers.getChildren().add(new Label("Select a courier:"));
-		vBoxCouriers.getChildren().add(couriers);
-
-		couriers.getSelectionModel().select(0);
-
-		if (couriers.getItems().size() != 0) {
-			requestedCourier = couriers.getItems().get(0);
-		}
-
-		couriers.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent event) {
-				System.out.println("requestedCourier :" + couriers.getSelectionModel().getSelectedItem());
-				requestedCourier = couriers.getSelectionModel().getSelectedItem();
-			}
-		});
-
-		DatePicker date = new DatePicker();
-		date.setStyle("-fx-text-fill: #000000;\r\n" + "    -fx-border-radius: 3px;\r\n"
+		this.mapLayerDelivery = this.getMapLayerDelivery();
+		this.timeWindow = new ComboBox<Integer>();
+		this.timeWindow.getItems().add(8);
+		this.timeWindow.getItems().add(9);
+		this.timeWindow.getItems().add(10);
+		this.timeWindow.getItems().add(11);
+		this.timeWindow.setMouseTransparent(true);
+		this.couriers.setMouseTransparent(true);
+		this.couriers.getSelectionModel().select(0);
+		
+		/*Creation of the labels*/
+		this.labelSelectCourier = new Label("Sélectionner un livreur");
+		this.labelSelectCourier.setStyle("-fx-background-color:rgba(85, 255, 68,0.7);");
+		this.labelSelectCourier.setVisible(false);
+		this.selectLocation = new Label("Sélectionner la destination de la nouvelle livraison (en cliquant sur la carte)");
+		this.selectLocation.setStyle("-fx-background-color:rgba(85, 255, 68,0.7);");
+		this.labelSelectTimeWindow = new Label("Sélectionner une plage horaire");
+		this.labelSelectTimeWindow.setStyle("-fx-background-color:rgba(85, 255, 68,0.7);");
+		this.labelSelectTimeWindow.setVisible(false);		
+		
+		/*Creation of the buttons*/
+		this.buttonValidate = new Button("Valider la livraison");
+		this.buttonValidate.setStyle("-fx-text-fill: #000000;\r\n" + " -fx-border-radius: 3px;\r\n" + "	 -fx-background-color: #8c4817; ");
+		this.buttonChangePoint = new Button("Changer le point de livraison");
+		this.buttonChangePoint.setStyle("-fx-text-fill: #000000;\r\n" + " -fx-border-radius: 3px;\r\n" + " -fx-background-color: #8c4817; ");
+		this.buttonChangePage = new Button("Map view");
+		this.buttonChangePage.setStyle("-fx-text-fill: #000000;\r\n" + " -fx-border-radius: 3px;\r\n" + " -fx-background-color: #8c4817; ");
+		this.buttonSeeIntersections = new Button("Voir les intersections");
+		this.buttonSeeIntersections.setStyle("-fx-text-fill: #000000;\r\n" + "-fx-border-radius: 3px;\r\n" + " -fx-background-color: #8c4817; ");
+			
+		/*Creation of the background*/
+		this.background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
+		this.background = new Background(background_fill);
+		
+		/* Creation of the datePicker */
+		this.date = new DatePicker();
+		this.date.setStyle("-fx-text-fill: #000000;\r\n" + "    -fx-border-radius: 3px;\r\n"
 				+ "	   -fx-background-color: rgb(49, 89, 47);");
-		date.setValue(LocalDate.now());
-		requestedDate = date.getValue();
-
-		vBoxCouriers.getChildren().add(new Label("Time-window"));
-		ComboBox<Integer> timeWindow = new ComboBox<Integer>();
-		timeWindow.setStyle("-fx-text-fill: #000000;\r\n" + "    -fx-border-radius: 3px;\r\n"
-				+ "	   -fx-background-color: #8c4817; ");
-
-		timeWindow.getItems().add(8);
-		timeWindow.getItems().add(9);
-		timeWindow.getItems().add(10);
-		timeWindow.getItems().add(11);
-		timeWindow.getSelectionModel().select(0);
-		requestedStartingTimeWindow = timeWindow.getItems().get(0);
-
-		vBoxCouriers.getChildren().add(timeWindow);
-		Button buttonValidate = new Button("Valider la livraison");
-
-		Button buttonSeeIntersections;
-		if (seeIntersection == false) {
-			buttonSeeIntersections = new Button("Voir les intersections");
-		} else {
-			buttonSeeIntersections = new Button("Cacher les intersections");
-		}
-		buttonValidate.setStyle("-fx-text-fill: #000000;\r\n" + "    -fx-border-radius: 3px;\r\n"
-				+ "	   -fx-background-color: #8c4817; ");
-
-		Button buttonChangePoint = new Button("Changer le point de livraison");
-		buttonChangePoint.setStyle("-fx-text-fill: #000000;\r\n" + "    -fx-border-radius: 3px;\r\n"
-				+ "	   -fx-background-color: #8c4817; ");
-
-		buttonSeeIntersections.setStyle("-fx-text-fill: #000000;\r\n" + "    -fx-border-radius: 3px;\r\n"
-				+ "	   -fx-background-color: #8c4817; ");
-
-		vBoxCouriers.getChildren().add(buttonValidate);
-		vBoxCouriers.getChildren().add(buttonChangePage);
-		vBoxCouriers.getChildren().add(buttonSeeIntersections);
-		vBoxCouriers.getChildren().add(buttonChangePoint);
-
-		/* vBoxMap */
-		VBox vBoxMap = new VBox();
-		vBoxMap.setPadding(new Insets(20, 20, 20, 20));
-		vBoxMap.setMaxHeight(this.height - 40);
-		vBoxMap.setMaxWidth(this.width / 1.6);
-		vBoxMap.prefWidthProperty().bind(hbox.widthProperty().multiply(0.60));
-
-		vBoxMap.getChildren()
-				.add(new Label("Localisation (select the delivery's destination by clicking on the map):"));
-		vBoxMap.getChildren().add(this.mapView);
-
-		// hbox contains two elements
-		hbox.getChildren().add(vBoxMap);
-		hbox.getChildren().add(vBoxCouriers);
-
-		Scene scene = new Scene(hbox, 200, 500);
-
-		stage.setScene(scene);
+		this.date.setValue(LocalDate.now());
+		
+		display();	
 		this.stage.show();
-
+		
+		/* mouse listeners */
+		this.buttonSeeIntersections.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {	
+				buttonSeeIntersections.setText("Cacher les intersections");
+				if (seeIntersection == false) 
+				{
+					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
+						getMapView().addLayer(customCircleMarkerLayer);
+					}
+					seeIntersection = true;
+				} 
+				else 
+				{
+					buttonSeeIntersections.setText("Voir les intersections");
+					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
+						getMapView().removeLayer(customCircleMarkerLayer);
+					}
+					seeIntersection = false;
+				}				
+			}
+		});
+		
 		this.mapView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if (clicked == false) {
+				if (clicked == false) 
+				{
 					requestedX = (float) event.getX();
 					requestedY = (float) event.getY();
 					MapPoint mp = mapView.getMapPosition(requestedX, requestedY);
@@ -232,37 +182,48 @@ public class newRequestView extends Application implements Observer {
 							closestIntersection.getLongitude());
 					newDelivery = new CustomCircleMarkerLayer(mapPointPin, 6, javafx.scene.paint.Color.BLUE);
 					mapView.addLayer(newDelivery);
+					timeWindow.setStyle("-fx-text-fill: #000000;\r\n" + "    -fx-border-radius: 3px;\r\n"
+							+ "	   -fx-background-color: #8c4817; ");
+					timeWindow.setMouseTransparent(false);
+					selectLocation.setVisible(false);
+					labelSelectTimeWindow.setVisible(true);
 					display();
 				}
 				clicked = true;
 			}
 		});
 
-		timeWindow.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+		this.timeWindow.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+			System.out.println("old value :" + oldValue);
 			System.out.println("requestedStartingTimeWindow :" + newValue);
 			requestedStartingTimeWindow = newValue;
+			this.couriers.setMouseTransparent(false);
+			labelSelectTimeWindow.setVisible(false);
+			labelSelectCourier.setVisible(true);
+
 		});
 
 		// Listener for updating the checkout date w.r.t check in date
-		date.valueProperty().addListener((ov, oldValue, newValue) -> {
+		this.date.valueProperty().addListener((ov, oldValue, newValue) -> {
 			requestedDate = newValue.plusDays(noOfDaysToAdd);
 			System.out.println("You clicked: " + requestedDate);
 		});
 
-		timeWindow.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-			System.out.println("requestedStartingTimeWindow :" + newValue);
-			requestedStartingTimeWindow = newValue;
-		});
-
-		buttonChangePoint.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		this.buttonChangePoint.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				clicked = false;
 				mapView.removeLayer(newDelivery);
+				timeWindow.getSelectionModel().select(0);
+				timeWindow.setMouseTransparent(true);
+				timeWindow.setStyle(null);
+				requestedStartingTimeWindow = timeWindow.getItems().get(0);	
+				couriers.getSelectionModel().select(0);
+				couriers.setMouseTransparent(true);
 			}
 		});
 
-		buttonValidate.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		this.buttonValidate.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				System.out.println("Validate");
@@ -290,7 +251,7 @@ public class newRequestView extends Application implements Observer {
 			}
 		});
 
-		buttonChangePage.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		this.buttonChangePage.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				if (JOptionPane.showConfirmDialog(null, "Vos changements ne seront pas enregistrés", "Confirmation",
@@ -321,23 +282,96 @@ public class newRequestView extends Application implements Observer {
 			}
 		});
 
-		buttonSeeIntersections.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		/*If the user wants to leave the applicatoin*/
+		this.stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
-			public void handle(MouseEvent event) {
-				if (seeIntersection == false) {
-					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
-						getMapView().addLayer(customCircleMarkerLayer);
-					}
-					seeIntersection = true;
-				} else {
-					seeIntersection = false;
-					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
-						getMapView().removeLayer(customCircleMarkerLayer);
-					}
+			public void handle(WindowEvent e) {
+				Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+				alert.setTitle("Changements non enregistrés");
+				alert.setContentText("Voulez-vous sauvegarder vos changements?");
+				alert.getButtonTypes().clear();
+				alert.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
+				Button noButton = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
+				Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
+				noButton.setDefaultButton(true);
+				yesButton.setDefaultButton(false);
+				Optional<ButtonType> result = alert.showAndWait();
+				if (result.isPresent() && result.get() == ButtonType.YES)
+				{
+					System.out.println("YES!!!!!");
+					saveCouriers();
+					Platform.exit();
+					System.exit(0);
+				} 
+				else if (result.isPresent() && result.get() == ButtonType.NO)
+				{
+					System.out.println("NO!!!!!");
+					Platform.exit();
+					System.exit(0);
+				} 
+				else if (result.isPresent() && result.get() == ButtonType.CANCEL)
+				{
+					System.out.println("Come back to the page");
 				}
-				display();
 			}
 		});
+		
+		this.couriers.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				System.out.println("requestedCourier :" + couriers.getSelectionModel().getSelectedItem());
+				requestedCourier = couriers.getSelectionModel().getSelectedItem();
+			}
+		});
+		
+		this.timeWindow.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				//TODO
+				System.out.println("Mettre à jour les couriers disponibles");
+			}
+		});
+	}
+
+	public void display() {
+
+		HBox hbox = new HBox();
+		hbox.setBackground(background);
+
+		/* vBoxCouriers */
+		VBox vBoxCouriers = new VBox();
+		vBoxCouriers.getChildren().add(labelSelectTimeWindow);
+		vBoxCouriers.getChildren().add(timeWindow);		
+		vBoxCouriers.getChildren().add(labelSelectCourier);
+		vBoxCouriers.getChildren().add(couriers);
+		vBoxCouriers.getChildren().add(buttonChangePage);
+		vBoxCouriers.getChildren().add(buttonValidate);
+		vBoxCouriers.getChildren().add(buttonSeeIntersections);
+		vBoxCouriers.getChildren().add(buttonChangePoint);
+		
+		/* vBoxMap */
+		VBox vBoxMap = new VBox();
+		vBoxMap.setPadding(new Insets(20, 20, 20, 20));
+		vBoxMap.setMaxHeight(this.height - 40);
+		vBoxMap.setMaxWidth(this.width / 1.6);
+		vBoxMap.prefWidthProperty().bind(hbox.widthProperty().multiply(0.60));		
+		vBoxMap.getChildren().add(selectLocation);
+		vBoxMap.getChildren().add(this.mapView);
+
+		if (couriers.getItems().size() != 0) {
+			requestedCourier = couriers.getItems().get(0);
+		}
+		
+		requestedDate = date.getValue();
+
+		// hbox contains two elements
+		hbox.getChildren().add(vBoxMap);
+		hbox.getChildren().add(vBoxCouriers);
+
+		Scene scene = new Scene(hbox, 200, 500);
+
+		stage.setScene(scene);
 	}
 
 	@Override

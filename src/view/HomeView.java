@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.net.MalformedURLException;
@@ -43,6 +44,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -67,7 +70,7 @@ import observer.Observer;
 import xml.ExceptionXML;
 import xml.XMLdeserializer;
 
-public class mapView extends Application implements Observer {
+public class HomeView extends Application implements Observer {
 
 	private Map map;
 	private ControllerAddDelivery controller;
@@ -80,16 +83,16 @@ public class mapView extends Application implements Observer {
 	private HashMap<Integer, MapLayer> pinLayers;
 	private Delivery lastSelectedDelivery;
 	private MapLayer lastSelectedDeliveryLayer;
-	private newRequestView nr;
-
-	public newRequestView getNr() {
-		return nr;
-	}
-
-	public void setNr(newRequestView nr) {
-		this.nr = nr;
-	}
-
+	private NewRequestView nr;
+	private BackgroundFill background_fill;
+	private Background background;
+	private Button buttonLoadMap;
+	private TreeView treeView;
+	private TreeItem rootItem;
+	private ArrayList<TreeItem> courierItems;
+	private DatePicker datePicker;
+	private HashMap<TreeItem, Delivery> treeItemToDelivery  ;
+	
 	@Override
 	public void start(Stage stage) throws Exception {
 
@@ -106,9 +109,25 @@ public class mapView extends Application implements Observer {
 		this.pinLayers = new HashMap<Integer, MapLayer>();
 		this.lastSelectedDelivery = null;
 		this.lastSelectedDeliveryLayer = null;
+		
+		this.background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
+		this.background = new Background(background_fill);
+		this.buttonLoadMap = new Button("Sélectionner une carte");
+		this.buttonLoadMap.setStyle("-fx-background-color: #8c4817; ");
+		this.datePicker = new DatePicker();	
+		this.datePicker.setStyle("-fx-background-color: #8c4817; ");
+		this.treeItemToDelivery = new HashMap<TreeItem, Delivery>();
+		/*TreeView*/
+		this.treeView = new TreeView();
+		// Create the Root TreeItem
+		this.rootItem = new TreeItem("Livraisons pour chaque livreur");
+		// ArrayList of TreeItem Couriers
+		this.courierItems = new ArrayList<TreeItem>();
 
 		createMap(this.map);
 
+		/*Mouse listeners*/		
+			
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent e) {
@@ -116,7 +135,8 @@ public class mapView extends Application implements Observer {
 				alert.setTitle("Changements non enregistrés");
 				alert.setContentText("Voulez-vous sauvegarder vos changements?");
 				alert.getButtonTypes().clear();
-				alert.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
+				alert.getButtonTypes().add(ButtonType.YES);
+				alert.getButtonTypes().add(ButtonType.NO);
 				Button noButton = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
 				noButton.setStyle("-fx-background-color: #BFD1E5; ");
 				Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
@@ -138,10 +158,84 @@ public class mapView extends Application implements Observer {
 				}
 			}
 		});
+		
+		treeView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				System.out.println("add red pin");
+				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
+				if (lastSelectedDelivery != null) {
+					MapPoint position = ((CustomPinLayer) lastSelectedDeliveryLayer).getMapPoint();
+					mapView.removeLayer(lastSelectedDeliveryLayer);
+					try {
+						MapLayer blackPin = new CustomPinLayer(position, false);
+						pinLayers.put(lastSelectedDelivery.getId(), blackPin);
+						mapView.addLayer(blackPin);
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				if (selectedDelivery != null) {
+					MapLayer layer = pinLayers.get(selectedDelivery.getId());
+					MapPoint position = ((CustomPinLayer) layer).getMapPoint();
+					mapView.removeLayer(layer);
+					try {
+						lastSelectedDeliveryLayer = new CustomPinLayer(position, true);
+						mapView.addLayer(lastSelectedDeliveryLayer);
+						lastSelectedDelivery = selectedDelivery;
+						pinLayers.remove(selectedDelivery.getId());
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		
+		buttonLoadMap.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				try {
+					map.setMapLoaded();
+					map.resetMap();
+					XMLdeserializer.load(map, stage);
+					for (Courier c : map.getCouriers()) {
+						c.getTour().clearTourSteps();
+						c.getTour().clearDeliveries();
+						c.getTour().getDeliveries().clear();
+					}
+
+					mapView = new MapView();
+					double latAverage = (map.getLatitudeMin() + map.getLatitudeMax()) / 2;
+					double longAverage = (map.getLongitudeMin() + map.getLongitudeMax()) / 2;
+					MapPoint mapPoint = new MapPoint(latAverage, longAverage);
+					mapView.setZoom(14);
+					mapView.setCenter(mapPoint);
+
+					createMap(map);
+				} catch (ParserConfigurationException | SAXException | IOException | ExceptionXML e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+				
+		datePicker.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				System.out.println("Load another couriers file");
+			}
+			
+		});
+		
+
 	}
 
-	public void createMap(Map map) throws MalformedURLException {
-		// System.out.println("dans createMap : " + map);
+	public void createMap(Map map) throws MalformedURLException, FileNotFoundException {
 
 		if (this.map.getIsLoaded()) {
 			// Add warehouse
@@ -198,40 +292,39 @@ public class mapView extends Application implements Observer {
 			borderPoints.add(new MapPoint(latMin - coeff, longMax + coeff));
 			borderPoints.add(new MapPoint(latMin - coeff, longMin - coeff));
 			borderPoints.add(new MapPoint(latMax + coeff, longMin - coeff));
-			CustomPolygoneMarkerLayer border = new CustomPolygoneMarkerLayer(borderPoints, this.mapView, Color.BLACK,
-					3);
+			CustomPolygoneMarkerLayer border = new CustomPolygoneMarkerLayer(borderPoints, this.mapView, Color.BLACK, 3);
 			this.mapView.addLayer(border);
 
 		}
 		display();
 	}
 
-	public void display() {
+	public void display() throws FileNotFoundException {
 
-		HBox hbox = new HBox();
-		BackgroundFill background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
-		Background background = new Background(background_fill);
+		/* HBox */
+		HBox hbox = new HBox();		
 		hbox.setBackground(background);
+		
 
+		/* VBoxMap */
 		VBox vBoxMap = new VBox();
 		vBoxMap.setPadding(new Insets(20, 20, 20, 20));
 		vBoxMap.setMaxHeight(this.height - 40);
 		vBoxMap.setMaxWidth(this.width / 1.6);
 		vBoxMap.prefWidthProperty().bind(hbox.widthProperty().multiply(0.55));
 
+		/* vBoxiIntentedTours */
 		VBox vBoxiIntentedTours = new VBox();
-		vBoxiIntentedTours.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
-				+ "-fx-border-radius: 5;" + "-fx-border-color: #f3f6f4;" + "-fx-margin: 120 150 150 120;");
-		vBoxiIntentedTours.setBackground(background);
-		vBoxMap.setBackground(background);
-
+		vBoxiIntentedTours.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;" + "-fx-border-insets: 5;" + "-fx-border-radius: 5;" + "-fx-border-color: #f3f6f4;" + "-fx-margin: 120 150 150 120;");
+		vBoxiIntentedTours.setBackground(this.background);
+		vBoxMap.setBackground(this.background);
 		vBoxiIntentedTours.setMaxHeight(this.height - 40);
 		vBoxiIntentedTours.setMaxWidth(this.width / 1.6);
-		vBoxiIntentedTours.prefWidthProperty().bind(hbox.widthProperty().multiply(0.45));
-		Button buttonLoadMap = new Button("Sélectionner une carte");
-		buttonLoadMap.setStyle("-fx-background-color: #8c4817; ");
-
-		if (this.map.getIsLoaded()) {
+		vBoxiIntentedTours.prefWidthProperty().bind(hbox.widthProperty().multiply(0.45));		
+		
+		// Parcours de chaque tournée
+		if (this.map.getIsLoaded())
+		{
 			Label deliveriesOfTheDayLabel = new Label("Livreurs du jour : ");
 			deliveriesOfTheDayLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
 
@@ -240,20 +333,11 @@ public class mapView extends Application implements Observer {
 			Label chosenDayLabel = new Label("Date courante : "+this.map.getMapDate().toString());	
 			vBoxMap.getChildren().add(chosenDayLabel);			
 			// create a date picker
-	        DatePicker datePicker = new DatePicker();	
-			datePicker.setStyle("-fx-background-color: #8c4817; ");
-			vBoxMap.getChildren().add(datePicker);
-				        
-			HashMap<TreeItem, Delivery> treeItemToDelivery = new HashMap<TreeItem, Delivery>();
-			// Create the TreeView
-			TreeView treeView = new TreeView();
-			// Create the Root TreeItem
-			TreeItem rootItem = new TreeItem("Livraisons pour chaque livreur");
-			// ArrayList of TreeItem Couriers
-			ArrayList<TreeItem> courierItems = new ArrayList<TreeItem>();
-			// Parcours de chaque tournée
-
-			for (Courier c : listViewCouriers.getItems()) {
+	        
+			vBoxMap.getChildren().add(datePicker);				        
+	
+			for (Courier c : listViewCouriers.getItems())
+			{
 				// Nom du courier de la tournée
 				TreeItem courierItem = new TreeItem(c.getName());
 				// ArrayList of TreeItem TimeWindows
@@ -304,63 +388,31 @@ public class mapView extends Application implements Observer {
 				timeWindows.add(timeWindow11);
 
 				courierItem.getChildren().addAll(timeWindows);
-				courierItems.add(courierItem);
+				courierItems.add(courierItem);							
+				
 			}
+			
+			vBoxiIntentedTours.getChildren().add(treeView);
+			vBoxiIntentedTours.getChildren().add(buttonLoadMap);
+			
 			// Add children to the root
 			rootItem.getChildren().addAll(courierItems);
 			// Set the Root Node
 			treeView.setRoot(rootItem);
 
-			vBoxiIntentedTours.getChildren().add(treeView);
-			hbox.getChildren().add(vBoxMap);
-			hbox.getChildren().add(vBoxiIntentedTours);
-			vBoxiIntentedTours.getChildren().add(buttonLoadMap);
 			Scene scene = new Scene(hbox, 2000, 2000);
 
 			this.stage.setScene(scene);
-			
-			datePicker.setOnMouseClicked(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent event) {
-					System.out.println("Load another couriers file");
-				}
-				
-			});
 
-			treeView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent event) {
-					Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
-					if (lastSelectedDelivery != null) {
-						MapPoint position = ((CustomPinLayer) lastSelectedDeliveryLayer).getMapPoint();
-						mapView.removeLayer(lastSelectedDeliveryLayer);
-						try {
-							MapLayer blackPin = new CustomPinLayer(position, false);
-							pinLayers.put(lastSelectedDelivery.getId(), blackPin);
-							mapView.addLayer(blackPin);
-						} catch (MalformedURLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					if (selectedDelivery != null) {
-						MapLayer layer = pinLayers.get(selectedDelivery.getId());
-						MapPoint position = ((CustomPinLayer) layer).getMapPoint();
-						mapView.removeLayer(layer);
-						try {
-							lastSelectedDeliveryLayer = new CustomPinLayer(position, true);
-							mapView.addLayer(lastSelectedDeliveryLayer);
-							lastSelectedDelivery = selectedDelivery;
-							pinLayers.remove(selectedDelivery.getId());
-						} catch (MalformedURLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}
-			});
-
-		} else {
+			hbox.getChildren().add(vBoxMap);
+			hbox.getChildren().add(vBoxiIntentedTours);
+		} 
+		else 
+		{
+			InputStream inputLogo = this.getClass().getResourceAsStream("/Resources/logo_deliverif.png");
+			Image imageLogo = new Image(inputLogo, 100, 150, false, false);
+			ImageView imageViewLogo = new ImageView(imageLogo);
+			vBoxMap.getChildren().add(imageViewLogo);
 			Label loadMapLabel = new Label("Veuillez charger une carte");
 			loadMapLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
 			vBoxMap.setAlignment(Pos.CENTER);
@@ -446,37 +498,7 @@ public class mapView extends Application implements Observer {
 			});
 		}
 
-		buttonLoadMap.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				try {
-					map.setMapLoaded();
-					map.resetMap();
-					XMLdeserializer.load(map, stage);
-					for (Courier c : map.getCouriers()) {
-						c.getTour().clearTourSteps();
-						c.getTour().clearDeliveries();
-						c.getTour().getDeliveries().clear();
-					}
-
-					mapView = new MapView();
-					double latAverage = (map.getLatitudeMin() + map.getLatitudeMax()) / 2;
-					double longAverage = (map.getLongitudeMin() + map.getLongitudeMax()) / 2;
-					MapPoint mapPoint = new MapPoint(latAverage, longAverage);
-					mapView.setZoom(14);
-					mapView.setCenter(mapPoint);
-
-					createMap(map);
-				} catch (ParserConfigurationException | SAXException | IOException | ExceptionXML e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
-
+		
 	}
 
 	public void TSP(Tour tour) {
@@ -562,6 +584,15 @@ public class mapView extends Application implements Observer {
 //			deliveries.getItems().add((Delivery) arg);
 		}
 	}
+	
+	public NewRequestView getNr() {
+		return nr;
+	}
+
+	public void setNr(NewRequestView nr) {
+		this.nr = nr;
+	}
+
 
 	protected void saveCouriers() {
 		System.out.println("Save couriers");

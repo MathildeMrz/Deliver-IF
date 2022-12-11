@@ -17,6 +17,7 @@ public class Map extends Observable {
 	private float longitudeMax;	
 	private LocalDate mapDate;
 	private int mapSize;
+	private String mapName;
 
 	
 	public LocalDate getMapDate() {

@@ -57,7 +57,7 @@ public class Tour extends Observable {
 		System.out.println("After Formatting: " + formatDateTime );
 		if(orderOfArrival == (this.tourTimes.length-1))
 		{
-			//this.endDate = this.tourTimes[orderOfArrival];
+			this.endDate = LocalDateTime.of(this.endDate.toLocalDate(),tourTimes[orderOfArrival]);
 		
 		}
 		//Association of the arrival time and the delivery corresponding 
@@ -134,16 +134,9 @@ public class Tour extends Observable {
 	public void addDelivery(Intersection closerIntersection, LocalDate date, int timeWindow)
 	{
 		//StartDate = timeWindow la plus tôt d'une Delivery
-		if(this.startDate == null)
+		if(this.startDate.getHour() > timeWindow)
 		{
 			this.startDate = LocalDateTime.of(date, LocalTime.of(timeWindow,0));
-		}
-		else
-		{
-			if(this.startDate.getMinute() > timeWindow)
-			{
-				this.startDate = LocalDateTime.of(date, LocalTime.of(timeWindow,0));
-			}
 		}
 	    LocalTime startDelivery = startDate.toLocalTime();
 		Delivery delivery = new Delivery(timeWindow, closerIntersection, startDelivery);
