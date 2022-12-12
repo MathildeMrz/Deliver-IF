@@ -1,4 +1,4 @@
-/target/
-.classpath
-/loadedDeliveries/
-/src/
+/deliverif.class
+/model/
+/observer/
+/tests/
