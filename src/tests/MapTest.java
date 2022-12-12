@@ -55,7 +55,7 @@ public class MapTest {
 	public void testgetClosestIntersection() {
 		plan.addNode(inter1);
 		plan.addNode(inter2);
-		Intersection inter3 = plan.getClosestIntersection((float)45.365, (float)5.2);
+		Intersection inter3 = plan.getClosestIntersection((float)45.365, (float)5.2, -1);
 		assertEquals(inter1, inter3);
 	}
 

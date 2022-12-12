@@ -181,10 +181,12 @@ public class NewRequestView extends Application implements Observer {
 					MapPoint mp = mapView.getMapPosition(requestedX, requestedY);
 					float latitude = (float) mp.getLatitude();
 					float longitude = (float) mp.getLongitude();
-					closestIntersection = map.getClosestIntersection(latitude, longitude);
-
-					MapPoint mapPointPin = new MapPoint(closestIntersection.getLatitude(),
-							closestIntersection.getLongitude());
+					closestIntersection = map.getClosestIntersection(latitude, longitude, -1);
+					if(closestIntersection.getOutSections().size() == 0)
+					{
+						closestIntersection = map.getClosestIntersection(closestIntersection.getLatitude(), closestIntersection.getLongitude(),closestIntersection.getId());
+					}
+					MapPoint mapPointPin = new MapPoint(closestIntersection.getLatitude(), closestIntersection.getLongitude());
 					newDelivery = new CustomCircleMarkerLayer(mapPointPin, 6, javafx.scene.paint.Color.BLUE);
 					mapView.addLayer(newDelivery);
 					timeWindow.setStyle("-fx-text-fill: #000000;\r\n" + "    -fx-border-radius: 3px;\r\n");

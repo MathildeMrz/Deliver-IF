@@ -67,6 +67,7 @@ import model.Delivery;
 import model.Intersection;
 import model.Map;
 import model.Tour;
+import model.Segment;
 import observer.Observable;
 import observer.Observer;
 import xml.ExceptionXML;
@@ -677,7 +678,14 @@ public class HomeView extends Application implements Observer {
 		int debut =12;
 		for (Delivery d : tour.getDeliveries()) {
 			sommets.add(d.getDestination());
-			System.out.print(d.getStartTime()+ " ");
+			/*System.out.print(d.getDestination().getId()+ " ");
+			ArrayList <Segment> t= (d.getDestination().getOutSections());
+			System.out.println("les outsections de ce point :");
+			if(t.size()!=0) {
+				for(Segment s:t) {
+					System.out.print(s.getDestination().getId()+ " ");
+				}
+			}*/
 			System.out.println();
 			if(d.getStartTime()<debut) {
 				debut=d.getStartTime();

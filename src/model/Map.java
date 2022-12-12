@@ -144,12 +144,14 @@ public class Map extends Observable {
 	 * @param longitude	la longitude du point
 	 * @return l'intersection la plus proche
 	 */
-	public Intersection getClosestIntersection(float latitude, float longitude)
+	public Intersection getClosestIntersection(float latitude, float longitude, long idIntersection)
 	{
 		float minimumDistance = Float.MAX_VALUE;
 		Intersection closerIntersection = null;
 		for(Intersection i : this.nodes.values())
 	     {
+			if(i.getId()!=idIntersection) {
+				
 			 float dist = (float) Math.sqrt((i.getLatitude() - latitude) * (i.getLatitude() - latitude) + (i.getLongitude() - longitude) * (i.getLongitude() - longitude));
 	    	 
 	    	 if(dist < minimumDistance)
@@ -158,6 +160,7 @@ public class Map extends Observable {
 	    		 closerIntersection = i;
 	    		 System.out.println("closerIntersection changes");
 	    	 }
+			}
 	     }
 		return closerIntersection;
 	}
