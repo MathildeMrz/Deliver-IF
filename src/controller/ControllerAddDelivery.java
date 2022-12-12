@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import javafx.stage.Stage;
 import model.Courier;
+import model.Delivery;
 import model.Intersection;
 import model.Map;
 
@@ -15,7 +16,7 @@ public class ControllerAddDelivery {
 		this.map= map;
 	}
 
-	public void addDelivery(Intersection closerIntersection, LocalDate date, int timeWindow, Courier courier) {
-		courier.getTour().addDelivery(closerIntersection, date, timeWindow);
+	public Delivery addDelivery(Intersection closerIntersection, LocalDate date, int timeWindow, Courier courier) {
+		return courier.getTour().addDelivery(closerIntersection, date, timeWindow);
 	}
 }

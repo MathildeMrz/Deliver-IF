@@ -23,6 +23,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -240,8 +241,14 @@ public class NewRequestView extends Application implements Observer {
 		this.buttonChangePage.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if (JOptionPane.showConfirmDialog(null, "Vos changements ne seront pas enregistrés", "Confirmation",
-						JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Warning");
+				alert.setHeaderText("Vos changements ne seront pas enregistrés");
+				ButtonType buttonOk = new ButtonType("Continuer");
+				ButtonType buttonCancel = new ButtonType("Annuler");
+				alert.getButtonTypes().setAll(buttonOk, buttonCancel);
+				Optional<ButtonType> result = alert.showAndWait();
+				if (result.get() == buttonOk) {
 					mapView.removeLayer(newDelivery);
 					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
 						getMapView().removeLayer(customCircleMarkerLayer);
@@ -386,7 +393,7 @@ public class NewRequestView extends Application implements Observer {
 					getMapView().removeLayer(customCircleMarkerLayer);
 				}
 				if (requestedX != 0.0f && requestedY != 0.0f) {
-					controller.addDelivery(closestIntersection, requestedDate, requestedStartingTimeWindow,
+					Delivery delivery = controller.addDelivery(closestIntersection, requestedDate, requestedStartingTimeWindow,
 							requestedCourier);
 					try {
 						ourMapView.setController(controller);
@@ -396,6 +403,8 @@ public class NewRequestView extends Application implements Observer {
 						ourMapView.setMap(map);
 						ourMapView.setMapView(mapView);
 						ourMapView.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
+						ourMapView.setLastAddedDelivery(delivery);
+						ourMapView.setLastAddedDeliveryCourier(requestedCourier);
 						ourMapView.start(stage);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block

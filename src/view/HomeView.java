@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import javafx.scene.paint.Color;
@@ -87,6 +88,7 @@ public class HomeView extends Application implements Observer {
 	private Stage stage;
 	private MapView mapView;
 	private ArrayList<MapLayer> mapPolygoneMarkerLayers;
+	private ArrayList<MapLayer> lastToCurrentSelectedStepLayer;
 	private HashMap<Integer, MapLayer> pinLayers;
 	private Delivery lastSelectedDelivery;
 	private MapLayer lastSelectedDeliveryLayer;
@@ -109,6 +111,8 @@ public class HomeView extends Application implements Observer {
 	private Button buttonValidateAddCourier;
 	private TextField courierName;
 	private Scene scene;
+	private Delivery lastAddedDelivery;
+	private Courier lastAddedDeliveryCourier;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -208,6 +212,52 @@ public class HomeView extends Application implements Observer {
 					}
 				}
 				if (selectedDelivery != null) {
+					for (MapLayer layer : lastToCurrentSelectedStepLayer) {
+						mapView.removeLayer(layer);
+					}
+					lastToCurrentSelectedStepLayer.clear();
+					boolean deliveryFound = false;
+					ArrayList<MapPoint> points = new ArrayList<MapPoint>();
+					for(Courier c :map.getCouriers()) {
+						Tour tour = c.getTour();
+						for(int i = 0; i < tour.getDeliveries().size(); i++) {
+							if (tour.getDeliveries().get(i) == selectedDelivery) {
+								Intersection beginIntersection;
+								if(i-1<0) {
+									beginIntersection = map.getWarehouse();
+									points.add(new MapPoint(beginIntersection.getLatitude(), beginIntersection.getLongitude()));
+								} else {
+									beginIntersection = tour.getDeliveries().get(i-1).getDestination();
+								}
+								
+								for (int j = 0; j < tour.getTourSteps().size(); j++) {
+									if (deliveryFound == true && tour.getTourSteps().get(j)!= selectedDelivery.getDestination()) {
+										double x2 = tour.getTourSteps().get(j).getLongitude();
+										double y2 = tour.getTourSteps().get(j).getLatitude();
+										points.add(new MapPoint(y2, x2));
+									}
+									if (tour.getTourSteps().get(j)== selectedDelivery.getDestination()) {
+										double x2 = tour.getTourSteps().get(j).getLongitude();
+										double y2 = tour.getTourSteps().get(j).getLatitude();
+										points.add(new MapPoint(y2, x2));
+										break;
+									}
+									if (deliveryFound == false && tour.getTourSteps().get(j) == beginIntersection) {
+										deliveryFound = true;
+										double x2 = tour.getTourSteps().get(j).getLongitude();
+										double y2 = tour.getTourSteps().get(j).getLatitude();
+										points.add(new MapPoint(y2, x2));
+									}
+								}
+								
+								MapLayer layer = new CustomPolygoneMarkerLayer(points, mapView, Color.RED, 5);
+								lastToCurrentSelectedStepLayer.add(layer);
+								mapView.addLayer(layer);
+								break;
+							}
+						}
+					}
+
 					MapLayer layer = pinLayers.get(selectedDelivery.getId());
 					MapPoint position = ((CustomPinLayer) layer).getMapPoint();
 					mapView.removeLayer(layer);
@@ -220,6 +270,7 @@ public class HomeView extends Application implements Observer {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					mapView.setZoom(mapView.getZoom()-0.001);
 				}
 			}
 		});
@@ -262,11 +313,13 @@ public class HomeView extends Application implements Observer {
 				}
 			}
 
-			//
+			
 			for (MapLayer layer : this.mapPolygoneMarkerLayers) {
 				this.mapView.removeLayer(layer);
 			}
 			this.mapPolygoneMarkerLayers.clear();
+			
+			//add tours
 			for (Courier c : this.map.getCouriers()) {
 				Tour tour = c.getTour();
 				if (tour.getDeliveries().size() != 0) {
@@ -278,7 +331,8 @@ public class HomeView extends Application implements Observer {
 						double y1 = tour.getTourSteps().get(i).getLatitude();
 						points.add(new MapPoint(y1, x1));
 					}
-					MapLayer layer = new CustomPolygoneMarkerLayer(points, this.mapView, c.getColor(), 5);
+				
+					MapLayer layer = new CustomPolygoneMarkerLayer(points, this.mapView, c.getColor(), 3);
 					mapPolygoneMarkerLayers.add(layer);
 					this.mapView.addLayer(layer);
 				}
@@ -347,7 +401,12 @@ public class HomeView extends Application implements Observer {
 			for (Courier c : listViewCouriers.getItems())
 			{
 				// Nom du courier de la tournée
-				TreeItem courierItem = new TreeItem(c.getName());
+				Label labelCourier = new Label(c.getName());
+				Color colorCourier = c.getColor();
+				System.out.println(colorCourier);
+				System.out.println(colorCourier.toString());
+				labelCourier.setStyle("-fx-background-color:rgba("+255*colorCourier.getRed()+","+255*colorCourier.getGreen()+","+255*colorCourier.getBlue()+", 0.7);");
+				TreeItem courierItem = new TreeItem(labelCourier);
 				// ArrayList of TreeItem TimeWindows
 				ArrayList<TreeItem> timeWindows = new ArrayList<TreeItem>();
 				// Liste des livraisons de la tournée +Tri de la liste
@@ -370,34 +429,43 @@ public class HomeView extends Application implements Observer {
 					Label labelDetailLivraison = new Label(detailLivraison);
 					if(detailLivraison.contains("Waiting time at the destination from"))
 					{
-						labelDetailLivraison.setStyle("-fx-background-color:rgba(255, 0, 0, 1.00);");
+						labelDetailLivraison.setStyle("-fx-text-fill:rgba(255, 0, 0, 1.00);");
 					}
 					if(d.getArrival().getHour()!=d.getStartTime())
 					{
-						labelDetailLivraison.setStyle("-fx-background-color:rgba(255, 0, 0, 1.00);");
+						labelDetailLivraison.setStyle("-fx-text-fill:rgba(255, 0, 0, 1.00);");
 					}
 					TreeItem deliveryItem = new TreeItem(labelDetailLivraison);
 					//TreeItem deliveryItem = new TreeItem(d.toString());
-					// treeItemToDelivery.put(deliveryItem, d);
 					// deliveryItems.add(deliveryItem);
 					treeItemToDelivery.put(deliveryItem, d);
-					courierItem.setExpanded(true);
-					deliveryItem.setExpanded(true);
+					if(d==this.lastAddedDelivery) {
+						courierItem.setExpanded(true);
+						deliveryItem.setExpanded(true);
+					}	
 					switch (d.getStartTime()) {
 					case 8:
-						timeWindow8.setExpanded(true);
+						if(d==this.lastAddedDelivery) {
+							timeWindow8.setExpanded(true);
+						}	
 						deliveries8.add(deliveryItem);
 						break;
 					case 9:
-						timeWindow9.setExpanded(true);
+						if(d==this.lastAddedDelivery) {
+							timeWindow9.setExpanded(true);
+						}	
 						deliveries9.add(deliveryItem);
 						break;
 					case 10:
-						timeWindow10.setExpanded(true);
+						if(d==this.lastAddedDelivery) {
+							timeWindow10.setExpanded(true);
+						}	
 						deliveries10.add(deliveryItem);
 						break;
 					case 11:
-						timeWindow11.setExpanded(true);
+						if(d==this.lastAddedDelivery) {
+							timeWindow11.setExpanded(true);
+						}	
 						deliveries11.add(deliveryItem);
 						break;
 					}
@@ -668,9 +736,21 @@ public class HomeView extends Application implements Observer {
 	public void setMapPolygoneMarkerLayers(ArrayList<MapLayer> layer) {
 		this.mapPolygoneMarkerLayers = layer;
 	}
+	
+	public void setLastAddedDelivery(Delivery delivery) {
+		this.lastAddedDelivery = delivery;
+	}
+	
+	public void setLastAddedDeliveryCourier(Courier courier) {
+		this.lastAddedDeliveryCourier = courier;
+	}
 
 	public void initMapPolygoneMarkerLayers() {
 		this.mapPolygoneMarkerLayers = new ArrayList<MapLayer>();
+	}
+	
+	public void initLastToCurrentSelectedStepLayer() {
+		this.lastToCurrentSelectedStepLayer = new ArrayList<MapLayer>();
 	}
 
 	@Override
