@@ -1,6 +1,7 @@
 package view;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -121,14 +122,14 @@ public class NewRequestView extends Application implements Observer {
 		
 		/*Creation of the buttons*/
 		this.buttonValidate = new Button("Valider la livraison");
-		this.buttonValidate.setStyle("-fx-text-fill: #000000;\r\n" + " -fx-border-radius: 6px;" +  " -fx-border-color: #000000;" + " -fx-background-color: #AD785D; " + "-fx-background-radius: 6px;" );
+		this.buttonValidate.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 		this.buttonValidate.setMouseTransparent(true);
 		this.buttonChangePoint = new Button("Changer le point de livraison");
-		this.buttonChangePoint.setStyle("-fx-text-fill: #000000;\r\n" + " -fx-border-radius: 6px;" +  " -fx-border-color: #000000;" + " -fx-background-color: #AD785D; " + "-fx-background-radius: 6px;" );
+		this.buttonChangePoint.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 		this.buttonChangePage = new Button("Map view");
-		this.buttonChangePage.setStyle("-fx-text-fill: #000000;\r\n" + " -fx-border-radius: 6px;" +  " -fx-border-color: #000000;" + " -fx-background-color: #AD785D; " + "-fx-background-radius: 6px;" );
+		this.buttonChangePage.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 		this.buttonSeeIntersections = new Button("Voir les intersections");
-		this.buttonSeeIntersections.setStyle("-fx-text-fill: #000000;\r\n" + " -fx-border-radius: 6px;" +  " -fx-border-color: #000000;" + " -fx-background-color: #AD785D; " + "-fx-background-radius: 6px;" );
+		this.buttonSeeIntersections.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 			
 		/*Creation of the background*/
 		this.background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
@@ -147,19 +148,28 @@ public class NewRequestView extends Application implements Observer {
 		this.buttonSeeIntersections.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {	
-				buttonSeeIntersections.setText("Cacher les intersections");
 				if (seeIntersection == false) 
 				{
 					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
 						getMapView().addLayer(customCircleMarkerLayer);
 					}
 					seeIntersection = true;
+					buttonSeeIntersections.setText("Cacher les intersections");
 				} 
 				else 
 				{
+					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
+						getMapView().removeLayer(customCircleMarkerLayer);
+					}
 					System.out.println("Come back to the page");
+					buttonSeeIntersections.setText("Voir les intersections");
+					seeIntersection = false;
 				}
+				
+				getMapView().setZoom(getMapView().getZoom()-0.001);
+				display();
 			}
+			
 		});
 		
 		this.mapView.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -178,11 +188,11 @@ public class NewRequestView extends Application implements Observer {
 							closestIntersection.getLongitude());
 					newDelivery = new CustomCircleMarkerLayer(mapPointPin, 6, javafx.scene.paint.Color.BLUE);
 					mapView.addLayer(newDelivery);
-					timeWindow.setStyle("-fx-text-fill: #000000;\r\n" + "    -fx-border-radius: 3px;\r\n"
-							+ "	   -fx-background-color: #8c4817; ");
+					timeWindow.setStyle("-fx-text-fill: #000000;\r\n" + "    -fx-border-radius: 3px;\r\n");
 					timeWindow.setMouseTransparent(false);
 					selectLocation.setVisible(false);
 					labelSelectTimeWindow.setVisible(true);
+					getMapView().setZoom(getMapView().getZoom()+0.001);
 					display();
 				}
 				clicked = true;

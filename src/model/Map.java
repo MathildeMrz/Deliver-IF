@@ -4,6 +4,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import observer.Observable;
+import java.time.*;
+import java.time.temporal.*;
+import java.lang.Math;
+
 
 public class Map extends Observable {
 	private HashMap<Long, Intersection> nodes;
@@ -148,5 +152,47 @@ public class Map extends Observable {
 	     }
 		return closerIntersection;
 	}
+	
+	public Courier getBestCourierAvalaibility(Intersection inter, int timeWindow) {
+	   	 Courier bestCourier = this.couriers.get(0);
+	   	 int tempsLibre = 0;
+	   	 for(Courier c : this.couriers) {
+	   		 for(Delivery del : c.getTour().getDeliveries()) {
+	   			 if((del.getStartTime() == timeWindow + 1) && (del.getArrival().until(del.getDeliveryTime(), ChronoUnit.MINUTES) > tempsLibre)) {
+	   				 bestCourier = c;
+	   				 tempsLibre = (int) del.getArrival().until(del.getDeliveryTime(), ChronoUnit.MINUTES);
+	   			 }
+	   		 }
+	   	 }
+	   	 if(tempsLibre != 0)
+	   	 {return bestCourier;}
+	   	 else {
+	   		 int nbMinDelivery = 1;
+	   		 for(Courier c: this.couriers) {
+	   			 int nbDelivery = c.getTour().getDeliveries().size();
+	   			 if(nbDelivery > 0 && nbDelivery < nbMinDelivery) {
+	   				 nbMinDelivery = nbDelivery;
+	   				 bestCourier = c;
+	   			 }
+	   		 }
+	   	 }
+	   	 return bestCourier;
+	    }
+	    
+	    public Courier getBestCourierProximity(Intersection inter, int timeWindow) {
+	   	 Courier bestCourier = couriers.get(0);
+	   	 Float distMin = Float.MAX_VALUE;
+	   	 for(Courier c: this.couriers) {
+	   		 for(Intersection i: c.getTour().getTourSteps()) {
+	   			 float dist = (float) Math.hypot(Math.abs(inter.getLongitude() - i.getLongitude()), Math.abs(inter.getLatitude() - i.getLatitude()));
+	   			 if(dist<distMin) {
+	   				 distMin = dist;
+	   				 bestCourier = c;
+	   			 }
+	   		 }
+	   	 }
+	   	 return bestCourier;
+	    }
+
 	
 }
