@@ -1,14 +1,10 @@
 package tests;
 
 import static org.junit.Assert.*;
-
 import java.time.LocalDate;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import model.Tour;
-import model.Delivery;
 import model.Intersection;
 
 public class TourTest {

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import observer.Observable;
-import java.time.*;
 import java.time.temporal.*;
 import java.lang.Math;
 
@@ -20,8 +19,6 @@ public class Map extends Observable {
 	private float longitudeMin;
 	private float longitudeMax;	
 	private LocalDate mapDate;
-	private int mapSize;
-	private String mapName;
 	
 	public Map() {
 		this.nodes  = new HashMap<Long,Intersection>();
