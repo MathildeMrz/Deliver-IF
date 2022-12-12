@@ -56,6 +56,7 @@ public class CompleteGraph2 implements Graph {
 		        	//NEW
 		        	cost[i][j] = djikstra.getCoutIntersection(this.Intersection.get(j).getId())*3.6/15;//pour avoir les secondes
 		        	//END NEW
+		        	System.out.println("cost[i][j] : "+cost[i][j]);
 		        	
 		        	/*enregistrer l'itineraire*/
 		        	path[i][j]=djikstra.getItinerary(this.Intersection.get(j).getId());
