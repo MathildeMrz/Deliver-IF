@@ -628,7 +628,7 @@ public class HomeView extends Application implements Observer {
 				{
 					Courier newCourier = new Courier(courierName.getText());
 					System.out.println("avant qu'On ajoute le livreur");
-					
+					map.addCourier(newCourier);
 					listViewCouriers.getItems().add(newCourier);
 					System.out.println("On ajoute le livreur");
 					
