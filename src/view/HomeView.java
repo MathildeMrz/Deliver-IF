@@ -20,6 +20,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+
+import javax.swing.JOptionPane;
 import javax.xml.parsers.ParserConfigurationException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -92,6 +94,7 @@ public class HomeView extends Application implements Observer {
 	private ArrayList<TreeItem> courierItems;
 	private DatePicker datePicker;
 	private HashMap<TreeItem, Delivery> treeItemToDelivery  ;
+	private boolean startPage;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -140,18 +143,35 @@ public class HomeView extends Application implements Observer {
 				noButton.setDefaultButton(true);
 				yesButton.setDefaultButton(false);
 				Optional<ButtonType> result = alert.showAndWait();
-				if (result.isPresent() && result.get() == ButtonType.YES) {
+				System.out.println(result.get());
+				if(result.get() != null)
+				{
+					if(result.get() == ButtonType.YES)
+					{
+						System.out.println("YES!!!!!");
+						saveCouriers();
+						Platform.exit();
+						System.exit(0);
+					}
+					else if(result.get() == ButtonType.NO)
+					{
+						System.out.println("NO!!!!!");
+						Platform.exit();
+						System.exit(0);
+					}
+				}
+				/*if (result.isPresent() && result.get() == ButtonType.YES) {
 					System.out.println("YES!!!!!");
 					saveCouriers();
 					Platform.exit();
 					System.exit(0);
-				} else if (result.isPresent() && result.get() == ButtonType.NO) {
+				} else if (result.get() == ButtonType.CLOSE) {
+					System.out.println("Come back to the page");
+				} else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
 					System.out.println("NO!!!!!");
 					Platform.exit();
 					System.exit(0);
-				} else {
-					System.out.println("Come back to the page");
-				}
+				}*/
 			}
 		});
 		
@@ -408,6 +428,7 @@ public class HomeView extends Application implements Observer {
 
 			hbox.getChildren().add(vBoxMap);
 			hbox.getChildren().add(vBoxiIntentedTours);
+			this.startPage=false;
 		} 
 		else 
 		{
@@ -422,6 +443,7 @@ public class HomeView extends Application implements Observer {
 			vBoxMap.getChildren().add(buttonLoadMap);
 			Scene scene = new Scene(vBoxMap, 2000, 2000);
 			this.stage.setScene(scene);
+			this.startPage = true;
 			// listViewCouriers = new ListView<Courier>();
 		}
 
@@ -524,7 +546,23 @@ public class HomeView extends Application implements Observer {
 						mapView.setCenter(mapPoint);
 	
 					}
-					createMap(map);
+					if(startPage == false)
+					{
+						if (JOptionPane.showConfirmDialog(null, "Vos tournées ne seront pas enregistrées", "Confirmation",
+								JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)
+						{
+							createMap(map);
+						}
+						else
+						{
+							//SAVE TOURS
+							createMap(map);
+						}
+					}
+					else
+					{
+						createMap(map);
+					}
 				} catch (ParserConfigurationException | SAXException | IOException | ExceptionXML e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
