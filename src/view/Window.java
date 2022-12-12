@@ -108,6 +108,7 @@ public class Window extends Application {
 
 		this.mv = new HomeView();
 		this.mv.initMapPolygoneMarkerLayers();
+		this.mv.initLastToCurrentSelectedStepLayer();
 		this.mv.setListViewCouriers(listViewCouriers);
 		this.mv.setController(this.controller);
 		this.mv.setHeight(this.height);
