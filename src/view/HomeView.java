@@ -20,6 +20,11 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import javafx.scene.paint.Color;
+
+import javax.swing.BorderFactory;
+import javax.swing.UIManager;
+import javax.swing.plaf.ColorUIResource;
 import javax.xml.parsers.ParserConfigurationException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -50,6 +55,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -124,7 +130,7 @@ public class HomeView extends Application implements Observer {
 		this.background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
 		this.background = new Background(background_fill);
 		this.buttonLoadMap = new Button("Sélectionner une carte");
-		this.buttonLoadMap.setStyle(" -fx-border-radius: 6px;" +  " -fx-border-color: #000000;" + " -fx-background-color: #AD785D; " + "-fx-background-radius: 6px;" );
+		this.buttonLoadMap.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 		this.buttonAddCourier = new Button("Ajouter un livreur");
 		this.buttonChangePage = new Button("Nouvelle livraison");
 		this.buttonCancelAddCourier = new Button("Annuler");
@@ -321,7 +327,7 @@ public class HomeView extends Application implements Observer {
 		// Parcours de chaque tournée
 		if (this.map.getIsLoaded())
 		{
-			this.buttonChangePage.setStyle(" -fx-border-radius: 6px;" +  " -fx-border-color: #000000;" + " -fx-background-color: #AD785D; " + "-fx-background-radius: 6px;" );
+			this.buttonChangePage.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 			this.vBoxiIntentedTours.getChildren().add(this.buttonChangePage);
 			
 			Label deliveriesOfTheDayLabel = new Label("Livreurs du jour : ");
@@ -524,8 +530,6 @@ public class HomeView extends Application implements Observer {
 							nr.setMap(map);
 							nr.setMapView(mapView);
 							nr.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
-							nr.start(stage);
-
 							nr.start(stage);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
