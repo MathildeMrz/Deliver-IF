@@ -184,6 +184,7 @@ public class Map extends Observable {
 	   			 }
 	   		 }
 	   	 }
+	   	 System.out.println("Best courier available : "+bestCourier.toString());
 	   	 return bestCourier;
 	    }
 	    
@@ -199,6 +200,7 @@ public class Map extends Observable {
 	   			 }
 	   		 }
 	   	 }
+	   	System.out.println("Best courier prox : "+bestCourier.toString());
 	   	 return bestCourier;
 	    }
 

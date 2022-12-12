@@ -443,12 +443,6 @@ public class HomeView extends Application implements Observer {
 			this.courierItems.forEach(t -> {
 				System.out.println("TreeItem -> "+t.toString());
 			});
-				
-			this.vBoxiIntentedTours.getChildren().add(treeView);
-			this.vBoxiIntentedTours.getChildren().add(this.buttonChangePage);
-			this.vBoxiIntentedTours.getChildren().add(buttonAddCourier);
-			this.vBoxiIntentedTours.getChildren().add(buttonLoadMap);
-			this.vBoxiIntentedTours.setSpacing(10);
 			
 			// Add children to the root
 			this.rootItem.getChildren().addAll(courierItems);
@@ -457,6 +451,14 @@ public class HomeView extends Application implements Observer {
 
 			// Set the Root Node
 			this.treeView.setRoot(rootItem);
+				
+			this.vBoxiIntentedTours.getChildren().add(treeView);
+			this.vBoxiIntentedTours.getChildren().add(this.buttonChangePage);
+			this.vBoxiIntentedTours.getChildren().add(buttonAddCourier);
+			this.vBoxiIntentedTours.getChildren().add(buttonLoadMap);
+			this.vBoxiIntentedTours.setSpacing(10);
+			
+
 
 			this.stage.setScene(scene);
 
@@ -592,6 +594,7 @@ public class HomeView extends Application implements Observer {
 							nr.setMap(map);
 							nr.setMapView(mapView);
 							nr.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
+							nr.setTreeview(treeView);
 							nr.start(stage);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
