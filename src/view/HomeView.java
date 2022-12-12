@@ -127,12 +127,15 @@ public class HomeView extends Application implements Observer {
 		this.background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
 		this.background = new Background(background_fill);
 		this.buttonLoadMap = new Button("Sélectionner une carte");
-		this.buttonLoadMap.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 		this.buttonAddCourier = new Button("Ajouter un livreur");
 		this.buttonChangePage = new Button("Nouvelle livraison");
 		this.buttonCancelAddCourier = new Button("Annuler");
 		this.buttonValidateAddCourier = new Button("Ajouter");	
-		
+		this.buttonLoadMap.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
+		this.buttonChangePage.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
+		this.buttonAddCourier.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
+		this.buttonValidateAddCourier.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
+
 		this.courierName = new TextField();
 		this.courierName.setPromptText("Nom du livreur");
 		
@@ -337,7 +340,7 @@ public class HomeView extends Application implements Observer {
 		this.vBoxMap.prefWidthProperty().bind(hBox.widthProperty().multiply(0.55));
 
 		/* vBoxiIntentedTours */
-		this.vBoxiIntentedTours.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;" + "-fx-border-insets: 5;" + "-fx-border-radius: 5;" + "-fx-border-color: #f3f6f4;" + "-fx-margin: 120 150 150 120;");
+		//this.vBoxiIntentedTours.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;" + "-fx-border-insets: 5;" + "-fx-border-radius: 5;" + "-fx-border-color: #f3f6f4;" + "-fx-margin: 120 150 150 120;");
 		this.vBoxiIntentedTours.setBackground(this.background);
 		this.vBoxMap.setBackground(this.background);
 		this.vBoxiIntentedTours.setMaxHeight(this.height - 40);
@@ -346,9 +349,7 @@ public class HomeView extends Application implements Observer {
 		
 		// Parcours de chaque tournée
 		if (this.map.getIsLoaded())
-		{
-			this.buttonChangePage.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
-			
+		{			
 			Label deliveriesOfTheDayLabel = new Label("Livreurs du jour : ");
 			deliveriesOfTheDayLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
 
