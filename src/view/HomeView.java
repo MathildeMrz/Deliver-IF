@@ -135,7 +135,7 @@ public class HomeView extends Application implements Observer {
 		
 		this.datePicker = new DatePicker();	
 		this.datePicker.setStyle("-fx-background-color: #8c4817; ");
-		this.treeItemToDelivery = new HashMap<TreeItem, Delivery>();
+		
 		/*TreeView*/
 		this.treeView = new TreeView();
 		// Create the Root TreeItem
@@ -335,9 +335,13 @@ public class HomeView extends Application implements Observer {
 	        
 			this.vBoxMap.getChildren().add(datePicker);	
 			
-			this.treeView = new TreeView();
+			/* TREEVIEW */
+			// Create the Root TreeItem
+			this.rootItem = new TreeItem("Livraisons pour chaque livreur");
+			// ArrayList of TreeItem Couriers
 			this.courierItems = new ArrayList<TreeItem>();
-	
+			this.treeItemToDelivery = new HashMap<TreeItem, Delivery>();
+
 			for (Courier c : listViewCouriers.getItems())
 			{
 				// Nom du courier de la tournée
