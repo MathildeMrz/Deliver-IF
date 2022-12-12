@@ -116,7 +116,7 @@ public class NewRequestView extends Application implements Observer {
 		this.timeWindow.setMouseTransparent(true);
 		this.timeWindow.getSelectionModel().select(0); //valeur par défaut affichée
 		this.requestedStartingTimeWindow = timeWindow.getItems().get(0);	//valeur par défaut pour la timeWindow de la livraison
-		//this.couriers.setMouseTransparent(true);
+		this.couriers.setMouseTransparent(true);
 		this.couriers.getSelectionModel().select(0); //valeur par défaut affichée 
 		this.requestedCourier = couriers.getSelectionModel().getSelectedItem(); //valeur par défaut pour le livreur de la livraison
 		
@@ -203,6 +203,7 @@ public class NewRequestView extends Application implements Observer {
 					labelSelectTimeWindow.setVisible(true);
 					getMapView().setZoom(getMapView().getZoom()+0.001);
 					buttonValidate.setMouseTransparent(false);
+					couriers.setMouseTransparent(false);
 					requestedCourier = map.getBestCourierAvalaibility(closestIntersection, requestedStartingTimeWindow);
 					display();
 				}
@@ -403,8 +404,8 @@ public class NewRequestView extends Application implements Observer {
 			requestedCourier = couriers.getSelectionModel().getSelectedItem();
 			//Expand du treeView 
 			treeview.getRoot().getChildren().forEach(t ->{
-				System.out.println("((TreeItem)t).getValue() = "+((TreeItem)t).getValue());
-				if(((TreeItem)t).getValue() == requestedCourier.getName())
+				System.out.println("((TreeItem)t).getValue() = "+((TreeItem)t).getValue().toString());
+				if(((TreeItem)t).getValue().toString().contains(requestedCourier.getName()))
 				{
 					((TreeItem)t).setExpanded(true);
 					((TreeItem)t).getChildren().forEach(ti ->{

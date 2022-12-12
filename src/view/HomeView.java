@@ -355,7 +355,7 @@ public class HomeView extends Application implements Observer {
 						points.add(new MapPoint(y1, x1));
 					}
 				
-					MapLayer layer = new CustomPolygoneMarkerLayer(points, this.mapView, c.getColor(), 3);
+					MapLayer layer = new CustomPolygoneMarkerLayer(points, this.mapView, c.getColor(), 4);
 					mapPolygoneMarkerLayers.add(layer);
 					this.mapView.addLayer(layer);
 				}
@@ -428,8 +428,6 @@ public class HomeView extends Application implements Observer {
 				// Nom du courier de la tournée
 				Label labelCourier = new Label(c.getName());
 				Color colorCourier = c.getColor();
-				System.out.println(colorCourier);
-				System.out.println(colorCourier.toString());
 				labelCourier.setStyle("-fx-background-color:rgba("+255*colorCourier.getRed()+","+255*colorCourier.getGreen()+","+255*colorCourier.getBlue()+", 0.7);");
 				TreeItem courierItem = new TreeItem(labelCourier);
 				// ArrayList of TreeItem TimeWindows
@@ -654,6 +652,9 @@ public class HomeView extends Application implements Observer {
 		this.buttonChangePage.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
+				for (MapLayer layer : lastToCurrentSelectedStepLayer) {
+					mapView.removeLayer(layer);
+				}
 
 				Platform.runLater(new Runnable() {
 					public void run() {

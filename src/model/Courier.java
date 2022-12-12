@@ -13,7 +13,7 @@ public class Courier extends Observable {
 	private String name;
 	private double speed;
 	private Tour tour;
-	private static final ArrayList<Color> ColorsList = new ArrayList<Color>(Arrays.asList(Color.HOTPINK, Color.PURPLE, Color.SALMON, Color.SEASHELL, Color.VIOLET, Color.SKYBLUE, Color.PEACHPUFF, Color.ORCHID, Color.STEELBLUE, Color.ROYALBLUE));
+	private static final ArrayList<Color> ColorsList = new ArrayList<Color>(Arrays.asList(Color.HOTPINK, Color.PURPLE,  Color.SKYBLUE, Color.VIOLET, Color.SALMON, Color.PEACHPUFF, Color.ORCHID, Color.STEELBLUE, Color.ROYALBLUE));
 	private Color travelColor;
 	
 	public Courier(String name)
