@@ -20,8 +20,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import javax.swing.JOptionPane;
 import javafx.scene.paint.Color;
-
 import javax.swing.BorderFactory;
 import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
@@ -99,6 +99,7 @@ public class HomeView extends Application implements Observer {
 	private TreeItem rootItem;
 	private ArrayList<TreeItem> courierItems;
 	private DatePicker datePicker;
+	private boolean startPage;
 	private HashMap<TreeItem, Delivery> treeItemToDelivery;
 	private Button buttonChangePage;
 	private VBox vBoxMap;
@@ -175,18 +176,35 @@ public class HomeView extends Application implements Observer {
 				noButton.setDefaultButton(true);
 				yesButton.setDefaultButton(false);
 				Optional<ButtonType> result = alert.showAndWait();
-				if (result.isPresent() && result.get() == ButtonType.YES) {
+				System.out.println(result.get());
+				if(result.get() != null)
+				{
+					if(result.get() == ButtonType.YES)
+					{
+						System.out.println("YES!!!!!");
+						saveCouriers();
+						Platform.exit();
+						System.exit(0);
+					}
+					else if(result.get() == ButtonType.NO)
+					{
+						System.out.println("NO!!!!!");
+						Platform.exit();
+						System.exit(0);
+					}
+				}
+				/*if (result.isPresent() && result.get() == ButtonType.YES) {
 					System.out.println("YES!!!!!");
 					saveCouriers();
 					Platform.exit();
 					System.exit(0);
-				} else if (result.isPresent() && result.get() == ButtonType.NO) {
+				} else if (result.get() == ButtonType.CLOSE) {
+					System.out.println("Come back to the page");
+				} else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
 					System.out.println("NO!!!!!");
 					Platform.exit();
 					System.exit(0);
-				} else {
-					System.out.println("Come back to the page");
-				}
+				}*/
 			}
 		});
 		
@@ -343,10 +361,12 @@ public class HomeView extends Application implements Observer {
 			this.vBoxMap.getChildren().add(datePicker);	
 			
 			this.treeView = new TreeView();
-			this.courierItems = new ArrayList<TreeItem>();
+			this.courierItems.clear();
+			this.rootItem.getChildren().clear();
 	
 			for (Courier c : listViewCouriers.getItems())
 			{
+				System.out.println("Il y a "+listViewCouriers.getItems().size()+ " livreurs dans la liste view");
 				// Nom du courier de la tournée
 				TreeItem courierItem = new TreeItem(c.getName());
 				// ArrayList of TreeItem TimeWindows
@@ -415,8 +435,9 @@ public class HomeView extends Application implements Observer {
 				timeWindows.add(timeWindow11);	
 
 				courierItem.getChildren().addAll(timeWindows);
-				courierItems.add(courierItem);							
+				courierItems.add(courierItem);		
 				
+				System.out.println("Il y a "+courierItems.size() +" courierItems");				
 			}
 			this.rootItem.setExpanded(true);
 			
@@ -431,13 +452,17 @@ public class HomeView extends Application implements Observer {
 			
 			// Add children to the root
 			this.rootItem.getChildren().addAll(courierItems);
+			System.out.println("2) Il y a "+courierItems.size() +" courierItems");				
+			System.out.println("2) Il y a "+this.rootItem.getChildren().size() +" this.rootItem.getChildren()");				
+
 			// Set the Root Node
 			this.treeView.setRoot(rootItem);
 
 			this.stage.setScene(scene);
 
-			this.hBox.getChildren().add(vBoxMap);
-			this.hBox.getChildren().add(vBoxiIntentedTours);
+			hBox.getChildren().add(vBoxMap);
+			hBox.getChildren().add(vBoxiIntentedTours);
+			this.startPage=false;
 		} 
 		else 
 		{
@@ -452,6 +477,7 @@ public class HomeView extends Application implements Observer {
 			this.vBoxMap.getChildren().add(buttonLoadMap);
 			Scene scene = new Scene(this.vBoxMap, 2000, 2000);
 			this.stage.setScene(scene);
+			this.startPage = true;
 			// listViewCouriers = new ListView<Courier>();
 		}
 
@@ -460,10 +486,8 @@ public class HomeView extends Application implements Observer {
 		this.buttonAddCourier.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {			
-				hBox.getChildren().clear();
-				
-				VBox vBoxTitle = new VBox();
-				
+				hBox.getChildren().clear();				
+				VBox vBoxTitle = new VBox();				
 				Label labelAddCourier = new Label("Ajout d'un nouveau livreur");
 				labelAddCourier.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
 
@@ -495,7 +519,6 @@ public class HomeView extends Application implements Observer {
 
 				hBox.getChildren().add(vBoxAddCourier);
 				hBox.setAlignment(Pos.CENTER);
-
 			}
 		});
 		
@@ -521,11 +544,22 @@ public class HomeView extends Application implements Observer {
 		this.buttonValidateAddCourier.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
+				System.out.println("Avant l'ajout");
+				courierItems.forEach(t -> {
+					System.out.println("TreeItem -> "+t.toString());
+				});
 				if( !(courierName.getText() == null) && !(courierName.getText().trim().isEmpty()))
 				{
 					Courier newCourier = new Courier(courierName.getText());
+					System.out.println("avant qu'On ajoute le livreur");
+					courierItems.forEach(t -> {
+						System.out.println("TreeItem -> "+t.toString());
+					});
 					listViewCouriers.getItems().add(newCourier);
 					System.out.println("On ajoute le livreur");
+					courierItems.forEach(t -> {
+						System.out.println("TreeItem -> "+t.toString());
+					});
 				}
 				
 				//Retour à la page de base
@@ -535,6 +569,7 @@ public class HomeView extends Application implements Observer {
 				vBoxAddCourier.getChildren().clear();
 				hBox.setAlignment(null);				
 				try {
+					System.out.println("On appelle bien le display");
 					display();
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
@@ -591,7 +626,23 @@ public class HomeView extends Application implements Observer {
 						mapView.setCenter(mapPoint);
 	
 					}
-					createMap(map);
+					if(startPage == false)
+					{
+						if (JOptionPane.showConfirmDialog(null, "Vos tournées ne seront pas enregistrées", "Confirmation",
+								JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)
+						{
+							createMap(map);
+						}
+						else
+						{
+							//SAVE TOURS
+							createMap(map);
+						}
+					}
+					else
+					{
+						createMap(map);
+					}
 				} catch (ParserConfigurationException | SAXException | IOException | ExceptionXML e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

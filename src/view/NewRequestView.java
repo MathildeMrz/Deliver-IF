@@ -165,8 +165,9 @@ public class NewRequestView extends Application implements Observer {
 					buttonSeeIntersections.setText("Voir les intersections");
 					seeIntersection = false;
 				}
+				
+				getMapView().setZoom(getMapView().getZoom()-0.001);
 				display();
-				getMapView().setZoom(13.5);
 			}
 			
 		});
@@ -191,8 +192,8 @@ public class NewRequestView extends Application implements Observer {
 					timeWindow.setMouseTransparent(false);
 					selectLocation.setVisible(false);
 					labelSelectTimeWindow.setVisible(true);
+					getMapView().setZoom(getMapView().getZoom()+0.001);
 					display();
-					getMapView().setZoom(13.5);
 				}
 				clicked = true;
 			}
