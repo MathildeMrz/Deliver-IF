@@ -151,6 +151,7 @@ public class HomeView extends Application implements Observer {
 		this.vBoxMap = new VBox();
 		this.vBoxiIntentedTours = new VBox();
 		this.vBoxAddCourier = new VBox();
+		
 		this.hBox = new HBox();
 		this.scene = new Scene(hBox, 2000, 2000);
 
@@ -458,15 +459,43 @@ public class HomeView extends Application implements Observer {
 		
 		this.buttonAddCourier.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
-			public void handle(MouseEvent event) {
-				System.out.println("buttonAddCourier");
-				//vBoxMap.setMouseTransparent(true);
-				//vBoxiIntentedTours.setMouseTransparent(true);	
+			public void handle(MouseEvent event) {			
 				hBox.getChildren().clear();
+				
+				VBox vBoxTitle = new VBox();
+				
+				Label labelAddCourier = new Label("Ajout d'un nouveau livreur");
+				labelAddCourier.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
+
+				InputStream inputCourier = this.getClass().getResourceAsStream("/Resources/Logo_deliverif.png");
+				Image imageLogo = new Image(inputCourier, 100, 150, false, false);
+				ImageView imageViewCourier = new ImageView(imageLogo);
+				vBoxTitle.getChildren().add(labelAddCourier);
+				vBoxTitle.getChildren().add(imageViewCourier);
+				vBoxTitle.setAlignment(Pos.CENTER);
+				
+				Label labelInstructionAddCourier = new Label("Entrer le nom du nouveau livreur");
+				HBox hboxButtonsAddCourier = new HBox();
+				hboxButtonsAddCourier.getChildren().add(buttonCancelAddCourier);
+				hboxButtonsAddCourier.getChildren().add(buttonValidateAddCourier);
+				
+				//Espacement en largeur
+				hboxButtonsAddCourier.setAlignment(Pos.CENTER);
+				hboxButtonsAddCourier.setSpacing(50);
+				hBox.setSpacing(100);
+
+				vBoxAddCourier.getChildren().add(vBoxTitle);
+				vBoxAddCourier.getChildren().add(labelInstructionAddCourier);
 				vBoxAddCourier.getChildren().add(courierName);
-				vBoxAddCourier.getChildren().add(buttonCancelAddCourier);
-				vBoxAddCourier.getChildren().add(buttonValidateAddCourier);				
+				vBoxAddCourier.getChildren().add(hboxButtonsAddCourier);
+				vBoxAddCourier.setAlignment(Pos.CENTER);
+				
+				//Espacement en hauteur
+				vBoxAddCourier.setSpacing(7);
+
 				hBox.getChildren().add(vBoxAddCourier);
+				hBox.setAlignment(Pos.CENTER);
+
 			}
 		});
 		
@@ -478,7 +507,8 @@ public class HomeView extends Application implements Observer {
 				vBoxMap.getChildren().clear();
 				vBoxiIntentedTours.getChildren().clear();
 				vBoxAddCourier.getChildren().clear();
-								
+				hBox.setAlignment(null);
+			
 				try {
 					display();
 				} catch (FileNotFoundException e) {
@@ -501,18 +531,15 @@ public class HomeView extends Application implements Observer {
 				//Retour à la page de base
 				hBox.getChildren().clear();
 				vBoxMap.getChildren().clear();
-				vBoxiIntentedTours.getChildren().clear();
-				
+				vBoxiIntentedTours.getChildren().clear();		
+				vBoxAddCourier.getChildren().clear();
+				hBox.setAlignment(null);				
 				try {
 					display();
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
-				//vBoxMap.setMouseTransparent(false);
-				//vBoxiIntentedTours.setMouseTransparent(false);	
-				//hBox.getChildren().add(vBoxMap);
-				//hBox.getChildren().add(vBoxiIntentedTours);				
+				}					
 			}
 		});
 		
