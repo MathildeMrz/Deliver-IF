@@ -232,6 +232,7 @@ public class NewRequestView extends Application implements Observer {
 				labelSelectTimeWindow.setVisible(false);
 				labelSelectCourier.setVisible(false);
 				selectLocation.setVisible(true);
+				buttonValidate.setMouseTransparent(true);
 			}
 		});
 
