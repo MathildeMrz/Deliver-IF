@@ -109,6 +109,7 @@ public class HomeView extends Application implements Observer {
 	private Button buttonCancelAddCourier;
 	private Button buttonValidateAddCourier;
 	private TextField courierName;
+	private VBox vBoxHome;
 	private Scene scene;
 	
 	@Override
@@ -152,11 +153,16 @@ public class HomeView extends Application implements Observer {
 		this.vBoxMap = new VBox();
 		this.vBoxiIntentedTours = new VBox();
 		this.vBoxAddCourier = new VBox();
+		this.vBoxHome = new VBox();	
+		this.vBoxHome.setBackground(background);
+		this.hBox = new HBox();		
 		
-		this.hBox = new HBox();
-		this.scene = new Scene(hBox, 2000, 2000);
+		this.scene = new Scene(this.hBox, 2000, 2000);		
 
 		createMap(this.map);
+		
+		//this.scene = new Scene(hBox, 2000, 2000);
+		//this.stage.setScene(scene);
 
 		/*Mouse listeners*/		
 			
@@ -362,6 +368,9 @@ public class HomeView extends Application implements Observer {
 			this.treeView = new TreeView();
 			this.courierItems.clear();
 			this.rootItem.getChildren().clear();
+			//Scene scene = new Scene(this.hBox, 2000, 2000);
+			scene.setRoot(this.hBox);
+			//this.stage.setScene(scene);
 	
 			for (Courier c : listViewCouriers.getItems())
 			{
@@ -440,10 +449,7 @@ public class HomeView extends Application implements Observer {
 			}
 			this.rootItem.setExpanded(true);
 			
-			this.courierItems.forEach(t -> {
-				System.out.println("TreeItem -> "+t.toString());
-			});
-				
+		
 			this.vBoxiIntentedTours.getChildren().add(treeView);
 			this.vBoxiIntentedTours.getChildren().add(this.buttonChangePage);
 			this.vBoxiIntentedTours.getChildren().add(buttonAddCourier);
@@ -462,23 +468,25 @@ public class HomeView extends Application implements Observer {
 
 			hBox.getChildren().add(vBoxMap);
 			hBox.getChildren().add(vBoxiIntentedTours);
+			
+			stage.setScene(scene);
 			this.startPage=false;
 		} 
 		else 
 		{
+			System.out.println("Affichage grenouille");
 			InputStream inputLogo = this.getClass().getResourceAsStream("/Resources/logo_deliverif.png");
 			Image imageLogo = new Image(inputLogo, 100, 150, false, false);
 			ImageView imageViewLogo = new ImageView(imageLogo);
-			this.vBoxMap.getChildren().add(imageViewLogo);
+			this.vBoxHome.getChildren().add(imageViewLogo);
 			Label loadMapLabel = new Label("Veuillez charger une carte");
 			loadMapLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
-			this.vBoxMap.setAlignment(Pos.CENTER);
-			this.vBoxMap.getChildren().add(loadMapLabel);
-			this.vBoxMap.getChildren().add(buttonLoadMap);
-			Scene scene = new Scene(this.vBoxMap, 2000, 2000);
-			this.stage.setScene(scene);
+			this.vBoxHome.setAlignment(Pos.CENTER);
+			this.vBoxHome.getChildren().add(loadMapLabel);
+			this.vBoxHome.getChildren().add(buttonLoadMap);
+			scene.setRoot(this.vBoxHome);
+			stage.setScene(scene);
 			this.startPage = true;
-			// listViewCouriers = new ListView<Courier>();
 		}
 
 		this.stage.show();
@@ -545,21 +553,15 @@ public class HomeView extends Application implements Observer {
 			@Override
 			public void handle(MouseEvent event) {
 				System.out.println("Avant l'ajout");
-				courierItems.forEach(t -> {
-					System.out.println("TreeItem -> "+t.toString());
-				});
+				
 				if( !(courierName.getText() == null) && !(courierName.getText().trim().isEmpty()))
 				{
 					Courier newCourier = new Courier(courierName.getText());
 					System.out.println("avant qu'On ajoute le livreur");
-					courierItems.forEach(t -> {
-						System.out.println("TreeItem -> "+t.toString());
-					});
+					
 					listViewCouriers.getItems().add(newCourier);
 					System.out.println("On ajoute le livreur");
-					courierItems.forEach(t -> {
-						System.out.println("TreeItem -> "+t.toString());
-					});
+					
 				}
 				
 				//Retour à la page de base
@@ -609,6 +611,11 @@ public class HomeView extends Application implements Observer {
 					map.resetMap();
 					XMLdeserializer.load(map, stage);
 					vBoxMap.getChildren().clear();
+					vBoxiIntentedTours.getChildren().clear();
+					vBoxAddCourier.getChildren().clear();
+					vBoxHome.getChildren().clear();
+					hBox.getChildren().clear();
+
 					if(map.getIsLoaded())
 					{
 						//map.setMapLoaded();
@@ -628,14 +635,16 @@ public class HomeView extends Application implements Observer {
 					}
 					if(startPage == false)
 					{
-						if (JOptionPane.showConfirmDialog(null, "Vos tournées ne seront pas enregistrées", "Confirmation",
-								JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)
-						{
+						if (JOptionPane.showConfirmDialog(null, "Vos tournées ne seront pas enregistrées", "Confirmation", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)
+						{		
+							//retour page accueil
+							//map.setIsLoaded(false);
 							createMap(map);
 						}
 						else
 						{
 							//SAVE TOURS
+							map.setIsLoaded(false);
 							createMap(map);
 						}
 					}

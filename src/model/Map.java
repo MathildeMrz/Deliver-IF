@@ -130,6 +130,10 @@ public class Map extends Observable {
 	public boolean getIsLoaded() {
 		return isLoaded;
 	}
+	
+	public void setIsLoaded(boolean loaded) {
+		this.isLoaded = loaded;
+	}
 
 	public void setMapLoaded() {
 		this.isLoaded = true;
