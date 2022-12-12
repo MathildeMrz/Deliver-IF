@@ -23,7 +23,9 @@ public abstract class TemplateTSP implements TSP {
 		visited.add(0); // The first visited vertex is 0
 		bestSolCost = Double.MAX_VALUE;
 		double [][]cost=g.getTableCost();
-		branchAndBound(0, unvisited, visited, 0,cost);
+		int []timeLapsStart= g.getTimeLapsStart();
+		int []timeLapsEnd= g.getTimeLapsEnd();
+		branchAndBound(0, unvisited, visited, 0,cost,timeLapsStart,timeLapsEnd);
 	}
 	
 	public Integer getSolution(int i){
@@ -45,7 +47,7 @@ public abstract class TemplateTSP implements TSP {
 	 * @return a lower bound of the cost of paths in <code>g</code> starting from <code>currentVertex</code>, visiting 
 	 * every vertex in <code>unvisited</code> exactly once, and returning back to vertex <code>0</code>.
 	 */
-	protected abstract double bound(Integer currentVertex, Collection<Integer> unvisited, double cost[][]);
+	protected abstract double bound(Integer currentVertex, Collection<Integer> unvisited, double cost[][],double currentCost,int [] timeLapsStart,int [] timeLapsEnd);
 	
 	/**
 	 * Method that must be defined in TemplateTSP subclasses
@@ -64,23 +66,38 @@ public abstract class TemplateTSP implements TSP {
 	 * @param currentCost the cost of the path corresponding to <code>visited</code>
 	 */	
 	private void branchAndBound(int currentVertex, Collection<Integer> unvisited, 
-			Collection<Integer> visited, double currentCost, double cost[][]){
+			Collection<Integer> visited, double currentCost, double cost[][], int[] timeLapsStart, int []timeLapsEnd){
 		if (System.currentTimeMillis() - startTime > timeLimit) return;
+		
+		double bound= bound(currentVertex,unvisited,cost,currentCost,timeLapsStart,timeLapsEnd);
 	    if (unvisited.size() == 0){ 
 	    	if (g.isArc(currentVertex,0)){ 
 	    		if (currentCost+g.getCost(currentVertex,0) < bestSolCost){ 
 	    			visited.toArray(bestSol);
 	    			bestSolCost = currentCost+g.getCost(currentVertex,0);
+	    			//System.out.println("unvisited est vide et bestSolCost="+ bestSolCost);
 	    		}
 	    	}
-	    } else if (currentCost+bound(currentVertex,unvisited,cost) < bestSolCost){
+	    } else if (currentCost+bound < bestSolCost && bound !=-1 ){
 	        Iterator<Integer> it = iterator(currentVertex, unvisited, g,cost);
+	        //System.out.println("Je suis dans le elseif du branchAndBound avec currentVertex="+ currentVertex+ "et bound="+ bound);
 	        while (it.hasNext()){
 	        	Integer nextVertex = it.next();
 	        	visited.add(nextVertex);
 	            unvisited.remove(nextVertex);
-	            branchAndBound(nextVertex, unvisited, visited, 
-	            		currentCost+g.getCost(currentVertex, nextVertex),cost);
+	            //branchAndBound(nextVertex, unvisited, visited, 
+	            	//	currentCost+g.getCost(currentVertex, nextVertex),cost);
+	            //NEW: TIME LAPS
+	            
+	            if(currentCost+ cost[currentVertex][nextVertex] < timeLapsStart[nextVertex]) {
+	            	//System.out.println("Je suis dans le if du branchAndBound avec currentVertex="+ currentVertex+ "et nextVertex="+ nextVertex);
+					branchAndBound(nextVertex, unvisited, visited, timeLapsStart[nextVertex], cost, timeLapsStart, timeLapsEnd);
+				}else {
+					//System.out.println("Je suis dans le else du branchAndBound avec currentVertex="+ currentVertex+ "et nextVertex="+ nextVertex);
+					branchAndBound(nextVertex, unvisited, visited, currentCost + cost[currentVertex][nextVertex], cost, timeLapsStart, timeLapsEnd);
+				}
+	             
+	            //END NEW
 	            visited.remove(nextVertex);
 	            unvisited.add(nextVertex);
 	        }	    
@@ -88,3 +105,4 @@ public abstract class TemplateTSP implements TSP {
 	}
 
 }
+

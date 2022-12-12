@@ -10,29 +10,31 @@ import java.util.ArrayList;
 import model.Intersection;
 import model.Map;
 
-public class RunTSP extends Observable {
+public class RunTSP2 extends Observable {
 	
 	private static int nbVertices;
 	private static List <Intersection> Intersection=new ArrayList<Intersection>();
 	private static Map lePlan;
 	private Tour tour;
+	private Intersection warehouse;
 	
 	
-	public RunTSP(int nbVertices, List<Intersection> intersection,Map lePlan, Tour tour) {
+	public RunTSP2(Intersection warehouse, int nbVertices, List<Intersection> intersection,Map lePlan, Tour tour) {
 		this.nbVertices = nbVertices;
 		Intersection = intersection;
 		this.lePlan=lePlan;
 		this.tour = tour;
 		this.tour.clearTourSteps();
+		this.warehouse=warehouse;
 	}
 
 
 
 	public void start() {
-		TemplateTSP tsp = new TSP2();
-		//TemplateTSP tsp = new TSP1();
+		//TemplateTSP2 tsp = new TSP2(); //après je vais copier le code dans TSP2 donc onsef
+		TemplateTSP tsp = new TSP3();
 		/*for (int nbVertices = 8; nbVertices <= 16; nbVertices += 2){*/
-			Graph g = new CompleteGraph(nbVertices,Intersection,lePlan);
+			Graph g = new CompleteGraph2(this.warehouse,nbVertices,tour,lePlan);
 			long startTime = System.currentTimeMillis();
 			tsp.searchSolution(20000, g);
 			System.out.print("Solution of cost "+tsp.getSolutionCost()+" found in "
@@ -67,9 +69,9 @@ public class RunTSP extends Observable {
 			{
 				/*calcul de la durée*/
 				//tour.setArrival(this.Intersection.get(tsp.getSolution(i)),i,g.getCost(tsp.getSolution(i-1),tsp.getSolution(i))*0.004);
-				tour.setArrival(this.Intersection.get(tsp.getSolution(i)),i,g.getCost(tsp.getSolution(i-1),tsp.getSolution(i))*0.004);
+				tour.setArrival(this.Intersection.get(tsp.getSolution(i)),i,g.getCost(tsp.getSolution(i-1),tsp.getSolution(i))/60);
 			}
-			tour.setArrival(this.Intersection.get(tsp.getSolution(0)),nbVertices,g.getCost(tsp.getSolution(nbVertices-1),tsp.getSolution(0))*0.004);
+			tour.setArrival(this.Intersection.get(tsp.getSolution(0)),nbVertices,g.getCost(tsp.getSolution(nbVertices-1),tsp.getSolution(0))/60);
 			//END NEW
 			
 		/*}*/
@@ -77,3 +79,4 @@ public class RunTSP extends Observable {
 
 
 }
+

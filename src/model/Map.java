@@ -1,8 +1,8 @@
 package model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import observer.Observable;
 
 public class Map extends Observable {
@@ -14,12 +14,24 @@ public class Map extends Observable {
 	private float latitudeMin;
 	private float latitudeMax;
 	private float longitudeMin;
-	private float longitudeMax;
+	private float longitudeMax;	
+	private LocalDate mapDate;
+	private int mapSize;
+	private String mapName;
+
+	
+	public LocalDate getMapDate() {
+		return mapDate;
+	}
+
+	public void setMapDate(LocalDate mapDate) {
+		this.mapDate = mapDate;
+	}
 	
 	public Map() {
 		this.nodes  = new HashMap<Long,Intersection>();
-		this.destinations  = new ArrayList<Intersection>();
-		this.couriers = new ArrayList<Courier>();
+		this.destinations  = new ArrayList<Intersection>();//During load function
+		this.couriers = new ArrayList<Courier>();//During load function
 		this.warehouse = null;
 		this.isLoaded = false;
 		latitudeMin = Float.MAX_VALUE;
@@ -55,6 +67,10 @@ public class Map extends Observable {
 	public void addCourier(Courier courier) {
 		this.couriers.add(courier);
 	}
+	
+	public void addDestination(Intersection intersection) {
+		this.destinations.add(intersection);
+	}
 
 	public Intersection getWarehouse() {
 		return warehouse;
@@ -72,6 +88,7 @@ public class Map extends Observable {
 		this.latitudeMax = 0;
 		this.longitudeMin = Float.MAX_VALUE;
 		this.longitudeMax = 0;
+		this.isLoaded = false;
 	}
 
 	public float getLatitudeMin() {
@@ -131,4 +148,5 @@ public class Map extends Observable {
 	     }
 		return closerIntersection;
 	}
+	
 }

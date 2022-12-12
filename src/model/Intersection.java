@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-
 import observer.Observable;
 
 public class Intersection extends Observable {
@@ -39,7 +38,19 @@ public class Intersection extends Observable {
 	public void addOutSection(Segment section) {
 		outSections.add(section);
 	}
-
+	
+	public void setId(long id) {
+		this.id = id;
+	}
+	public void setLatitude(float latitude) {
+		this.latitude = latitude;
+	}
+	public void setLongitude(float longitude) {
+		this.longitude = longitude;
+	}
+	public void setOutSections(ArrayList<Segment> outSections) {
+		this.outSections = outSections;
+	}
 	@Override
 	public String toString() {
 		return "Intersection [id=" + id + ", latitude=" + latitude + ", longitude=" + longitude + "]";

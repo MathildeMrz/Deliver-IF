@@ -3,7 +3,6 @@ package model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import observer.Observable;
 import javafx.scene.paint.Color;
 
@@ -23,7 +22,9 @@ public class Courier extends Observable {
 		this.name = name;
 		this.speed = SPEED_COURIER;
 		this.tour = new Tour();
-		this.travelColor = ColorsList.get(id);
+		this.travelColor = ColorsList.get(this.id);
+		System.out.println("Id courier : "+this.id);
+		System.out.println("name courier : "+this.name);
 	}
 	
 	@Override
@@ -54,5 +55,39 @@ public class Courier extends Observable {
 	public void setTour(Tour tour) {
 		this.tour = tour;
 	}
+
+	public Color getTravelColor() {
+		return travelColor;
+	}
+
+	public void setTravelColor(Color travelColor) {
+		this.travelColor = travelColor;
+	}
+
+	public static AtomicInteger getIdFactory() {
+		return ID_FACTORY;
+	}
+
+	public static double getSpeedCourier() {
+		return SPEED_COURIER;
+	}
+
+	public static ArrayList<Color> getColorslist() {
+		return ColorsList;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setSpeed(double speed) {
+		this.speed = speed;
+	}
+	
+	
 	
 }

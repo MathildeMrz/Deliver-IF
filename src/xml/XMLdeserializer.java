@@ -29,16 +29,20 @@ public class XMLdeserializer {
 	 */
 	public static void load(Map plan, Stage stage) throws ParserConfigurationException, SAXException, IOException, ExceptionXML{
 		File xml = XMLfileOpener.getInstance().open(true, stage);
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();	
-        Document document = docBuilder.parse(xml);
-        Element root = document.getDocumentElement();
-        if (root.getNodeName().equals("map")) {
-        	long start = System.currentTimeMillis();
-        	buildFromDOMXML(root, plan);
-        	System.out.println("Temps d'exécution (ms) : "+ (System.currentTimeMillis()-start));
-        }
-        else
-        	throw new ExceptionXML("Wrong format");
+		if(xml!=null)
+		{
+	        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();	
+	        Document document = docBuilder.parse(xml);
+	        Element root = document.getDocumentElement();
+	        if (root.getNodeName().equals("map")) {
+	        	long start = System.currentTimeMillis();
+	        	buildFromDOMXML(root, plan);
+	        	System.out.println("Temps d'exécution (ms) : "+ (System.currentTimeMillis()-start));
+	        	plan.setMapLoaded();
+	        }
+	        //else
+	        	//throw new ExceptionXML("Wrong format");
+		}
 	}
 
 	public static void load(Map plan) throws ParserConfigurationException, SAXException, IOException, ExceptionXML{
