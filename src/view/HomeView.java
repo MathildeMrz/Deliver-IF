@@ -116,14 +116,10 @@ public class HomeView extends Application implements Observer {
 		this.buttonLoadMap.setStyle(" -fx-border-radius: 6px;" +  " -fx-border-color: #000000;" + " -fx-background-color: #AD785D; " + "-fx-background-radius: 6px;" );
 		this.datePicker = new DatePicker();	
 		this.datePicker.setStyle("-fx-background-color: #8c4817; ");
-		this.treeItemToDelivery = new HashMap<TreeItem, Delivery>();
+		
 		/*TreeView*/
 		this.treeView = new TreeView();
-		// Create the Root TreeItem
-		this.rootItem = new TreeItem("Livraisons pour chaque livreur");
-		// ArrayList of TreeItem Couriers
-		this.courierItems = new ArrayList<TreeItem>();
-
+		
 		createMap(this.map);
 
 		/*Mouse listeners*/		
@@ -308,11 +304,15 @@ public class HomeView extends Application implements Observer {
 			vBoxMap.getChildren().add(chosenDayLabel);			
 			// create a date picker
 	        
-			vBoxMap.getChildren().add(datePicker);	
+			vBoxMap.getChildren().add(datePicker);
 			
-			this.treeView = new TreeView();
+			/* TREEVIEW */
+			// Create the Root TreeItem
+			this.rootItem = new TreeItem("Livraisons pour chaque livreur");
+			// ArrayList of TreeItem Couriers
 			this.courierItems = new ArrayList<TreeItem>();
-	
+			this.treeItemToDelivery = new HashMap<TreeItem, Delivery>();
+
 			for (Courier c : listViewCouriers.getItems())
 			{
 				System.out.println("COURIER ListView : "+c.toString());
