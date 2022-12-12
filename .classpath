@@ -18,32 +18,27 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/hamcrest-core-1.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/jackson-annotations-2.14.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/jackson-core-2.14.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/jackson-databind-2.14.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/javafx.base.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/javafx.controls.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/javafx.fxml.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/javafx.graphics.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/javafx.media.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/javafx.swing.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/javafx.web.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/javafx-base-16.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/javafx-base-16-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/javafx-controls-16.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/javafx-controls-16-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/javafx-graphics-16.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/javafx-graphics-16-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/javafx-swt.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/json-1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/json-20180813.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/json-simple-1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/junit-4.13.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/maps-2.0.0-ea+6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/rest-1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/rest-1.1-tests.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/storage-4.0.11.jar"/>
-	<classpathentry kind="lib" path="C:/Users/33660/OneDrive/Documents/4IF/Jars_deliverif/util-4.0.11.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/junit-4.13.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/javafx-sdk-19/lib/javafx.base.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/javafx-sdk-19/lib/javafx.controls.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/javafx-sdk-19/lib/javafx.fxml.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/javafx-sdk-19/lib/javafx.graphics.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/javafx-sdk-19/lib/javafx.media.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/javafx-sdk-19/lib/javafx.swing.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/javafx-sdk-19/lib/javafx.web.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/javafx-sdk-19/lib/javafx-swt.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/javafx-base-16.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/javafx-base-16-linux.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/javafx-controls-16.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/javafx-controls-16-linux.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/javafx-graphics-16.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/javafx-graphics-16-linux.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/maps-2.0.0-ea+6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/storage-4.0.11.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/util-4.0.11.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/json-simple-1.1.jar/json-simple-1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/json-simple-1.1.jar/json-20180813.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/json-simple-1.1.jar/json-1.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
