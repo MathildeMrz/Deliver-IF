@@ -21,11 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import javafx.scene.paint.Color;
-
-import javax.swing.BorderFactory;
-import javax.swing.UIManager;
-import javax.swing.plaf.ColorUIResource;
+import javax.swing.JOptionPane;
 import javax.xml.parsers.ParserConfigurationException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -56,7 +52,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -101,6 +96,7 @@ public class HomeView extends Application implements Observer {
 	private TreeItem rootItem;
 	private ArrayList<TreeItem> courierItems;
 	private DatePicker datePicker;
+	private boolean startPage;
 	private HashMap<TreeItem, Delivery> treeItemToDelivery;
 	private Button buttonChangePage;
 	private VBox vBoxMap;
@@ -110,6 +106,7 @@ public class HomeView extends Application implements Observer {
 	private Button buttonCancelAddCourier;
 	private Button buttonValidateAddCourier;
 	private TextField courierName;
+	private VBox vBoxHome;
 	private Scene scene;
 	private Delivery lastAddedDelivery;
 	private Courier lastAddedDeliveryCourier;
@@ -134,12 +131,15 @@ public class HomeView extends Application implements Observer {
 		this.background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
 		this.background = new Background(background_fill);
 		this.buttonLoadMap = new Button("Sélectionner une carte");
-		this.buttonLoadMap.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 		this.buttonAddCourier = new Button("Ajouter un livreur");
 		this.buttonChangePage = new Button("Nouvelle livraison");
 		this.buttonCancelAddCourier = new Button("Annuler");
 		this.buttonValidateAddCourier = new Button("Ajouter");	
-		
+		this.buttonLoadMap.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
+		this.buttonChangePage.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
+		this.buttonAddCourier.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
+		this.buttonValidateAddCourier.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
+
 		this.courierName = new TextField();
 		this.courierName.setPromptText("Nom du livreur");
 		
@@ -155,10 +155,16 @@ public class HomeView extends Application implements Observer {
 		this.vBoxMap = new VBox();
 		this.vBoxiIntentedTours = new VBox();
 		this.vBoxAddCourier = new VBox();
-		this.hBox = new HBox();
-		this.scene = new Scene(hBox, 2000, 2000);
+		this.vBoxHome = new VBox();	
+		this.vBoxHome.setBackground(background);
+		this.hBox = new HBox();		
+		
+		this.scene = new Scene(this.hBox, 2000, 2000);		
 
 		createMap(this.map);
+		
+		//this.scene = new Scene(hBox, 2000, 2000);
+		//this.stage.setScene(scene);
 
 		/*Mouse listeners*/		
 			
@@ -178,18 +184,35 @@ public class HomeView extends Application implements Observer {
 				noButton.setDefaultButton(true);
 				yesButton.setDefaultButton(false);
 				Optional<ButtonType> result = alert.showAndWait();
-				if (result.isPresent() && result.get() == ButtonType.YES) {
+				System.out.println(result.get());
+				if(result.get() != null)
+				{
+					if(result.get() == ButtonType.YES)
+					{
+						System.out.println("YES!!!!!");
+						saveCouriers();
+						Platform.exit();
+						System.exit(0);
+					}
+					else if(result.get() == ButtonType.NO)
+					{
+						System.out.println("NO!!!!!");
+						Platform.exit();
+						System.exit(0);
+					}
+				}
+				/*if (result.isPresent() && result.get() == ButtonType.YES) {
 					System.out.println("YES!!!!!");
 					saveCouriers();
 					Platform.exit();
 					System.exit(0);
-				} else if (result.isPresent() && result.get() == ButtonType.NO) {
+				} else if (result.get() == ButtonType.CLOSE) {
+					System.out.println("Come back to the page");
+				} else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
 					System.out.println("NO!!!!!");
 					Platform.exit();
 					System.exit(0);
-				} else {
-					System.out.println("Come back to the page");
-				}
+				}*/
 			}
 		});
 		
@@ -371,7 +394,7 @@ public class HomeView extends Application implements Observer {
 		this.vBoxMap.prefWidthProperty().bind(hBox.widthProperty().multiply(0.55));
 
 		/* vBoxiIntentedTours */
-		this.vBoxiIntentedTours.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;" + "-fx-border-insets: 5;" + "-fx-border-radius: 5;" + "-fx-border-color: #f3f6f4;" + "-fx-margin: 120 150 150 120;");
+		//this.vBoxiIntentedTours.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;" + "-fx-border-insets: 5;" + "-fx-border-radius: 5;" + "-fx-border-color: #f3f6f4;" + "-fx-margin: 120 150 150 120;");
 		this.vBoxiIntentedTours.setBackground(this.background);
 		this.vBoxMap.setBackground(this.background);
 		this.vBoxiIntentedTours.setMaxHeight(this.height - 40);
@@ -380,10 +403,7 @@ public class HomeView extends Application implements Observer {
 		
 		// Parcours de chaque tournée
 		if (this.map.getIsLoaded())
-		{
-			this.buttonChangePage.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
-			this.vBoxiIntentedTours.getChildren().add(this.buttonChangePage);
-			
+		{			
 			Label deliveriesOfTheDayLabel = new Label("Livreurs du jour : ");
 			deliveriesOfTheDayLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
 
@@ -396,10 +416,15 @@ public class HomeView extends Application implements Observer {
 			this.vBoxMap.getChildren().add(datePicker);	
 			
 			this.treeView = new TreeView();
-			this.courierItems = new ArrayList<TreeItem>();
+			this.courierItems.clear();
+			this.rootItem.getChildren().clear();
+			//Scene scene = new Scene(this.hBox, 2000, 2000);
+			scene.setRoot(this.hBox);
+			//this.stage.setScene(scene);
 	
 			for (Courier c : listViewCouriers.getItems())
 			{
+				System.out.println("Il y a "+listViewCouriers.getItems().size()+ " livreurs dans la liste view");
 				// Nom du courier de la tournée
 				Label labelCourier = new Label(c.getName());
 				Color colorCourier = c.getColor();
@@ -482,59 +507,97 @@ public class HomeView extends Application implements Observer {
 				timeWindows.add(timeWindow11);	
 
 				courierItem.getChildren().addAll(timeWindows);
-				courierItems.add(courierItem);							
+				courierItems.add(courierItem);		
 				
+				System.out.println("Il y a "+courierItems.size() +" courierItems");				
 			}
 			this.rootItem.setExpanded(true);
 			
 			this.courierItems.forEach(t -> {
 				System.out.println("TreeItem -> "+t.toString());
 			});
-				
+		
 			this.vBoxiIntentedTours.getChildren().add(treeView);
+			this.vBoxiIntentedTours.getChildren().add(this.buttonChangePage);
 			this.vBoxiIntentedTours.getChildren().add(buttonAddCourier);
 			this.vBoxiIntentedTours.getChildren().add(buttonLoadMap);
 			this.vBoxiIntentedTours.setSpacing(10);
 			
 			// Add children to the root
 			this.rootItem.getChildren().addAll(courierItems);
+			System.out.println("2) Il y a "+courierItems.size() +" courierItems");				
+			System.out.println("2) Il y a "+this.rootItem.getChildren().size() +" this.rootItem.getChildren()");				
+
 			// Set the Root Node
 			this.treeView.setRoot(rootItem);
+			
+			this.vBoxiIntentedTours.setSpacing(10);
+			
+
 
 			this.stage.setScene(scene);
 
-			this.hBox.getChildren().add(vBoxMap);
-			this.hBox.getChildren().add(vBoxiIntentedTours);
+			hBox.getChildren().add(vBoxMap);
+			hBox.getChildren().add(vBoxiIntentedTours);
+			
+			stage.setScene(scene);
+			this.startPage=false;
 		} 
 		else 
 		{
+			System.out.println("Affichage grenouille");
 			InputStream inputLogo = this.getClass().getResourceAsStream("/Resources/logo_deliverif.png");
 			Image imageLogo = new Image(inputLogo, 100, 150, false, false);
 			ImageView imageViewLogo = new ImageView(imageLogo);
-			this.vBoxMap.getChildren().add(imageViewLogo);
+			this.vBoxHome.getChildren().add(imageViewLogo);
 			Label loadMapLabel = new Label("Veuillez charger une carte");
 			loadMapLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
-			this.vBoxMap.setAlignment(Pos.CENTER);
-			this.vBoxMap.getChildren().add(loadMapLabel);
-			this.vBoxMap.getChildren().add(buttonLoadMap);
-			Scene scene = new Scene(this.vBoxMap, 2000, 2000);
-			this.stage.setScene(scene);
-			// listViewCouriers = new ListView<Courier>();
+			this.vBoxHome.setAlignment(Pos.CENTER);
+			this.vBoxHome.getChildren().add(loadMapLabel);
+			this.vBoxHome.getChildren().add(buttonLoadMap);
+			scene.setRoot(this.vBoxHome);
+			stage.setScene(scene);
+			this.startPage = true;
 		}
 
 		this.stage.show();
 		
 		this.buttonAddCourier.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
-			public void handle(MouseEvent event) {
-				System.out.println("buttonAddCourier");
-				//vBoxMap.setMouseTransparent(true);
-				//vBoxiIntentedTours.setMouseTransparent(true);	
-				hBox.getChildren().clear();
+			public void handle(MouseEvent event) {			
+				hBox.getChildren().clear();				
+				VBox vBoxTitle = new VBox();				
+				Label labelAddCourier = new Label("Ajout d'un nouveau livreur");
+				labelAddCourier.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
+
+				InputStream inputCourier = this.getClass().getResourceAsStream("/Resources/Logo_deliverif.png");
+				Image imageLogo = new Image(inputCourier, 100, 150, false, false);
+				ImageView imageViewCourier = new ImageView(imageLogo);
+				vBoxTitle.getChildren().add(labelAddCourier);
+				vBoxTitle.getChildren().add(imageViewCourier);
+				vBoxTitle.setAlignment(Pos.CENTER);
+				
+				Label labelInstructionAddCourier = new Label("Entrer le nom du nouveau livreur");
+				HBox hboxButtonsAddCourier = new HBox();
+				hboxButtonsAddCourier.getChildren().add(buttonCancelAddCourier);
+				hboxButtonsAddCourier.getChildren().add(buttonValidateAddCourier);
+				
+				//Espacement en largeur
+				hboxButtonsAddCourier.setAlignment(Pos.CENTER);
+				hboxButtonsAddCourier.setSpacing(50);
+				hBox.setSpacing(100);
+
+				vBoxAddCourier.getChildren().add(vBoxTitle);
+				vBoxAddCourier.getChildren().add(labelInstructionAddCourier);
 				vBoxAddCourier.getChildren().add(courierName);
-				vBoxAddCourier.getChildren().add(buttonCancelAddCourier);
-				vBoxAddCourier.getChildren().add(buttonValidateAddCourier);				
+				vBoxAddCourier.getChildren().add(hboxButtonsAddCourier);
+				vBoxAddCourier.setAlignment(Pos.CENTER);
+				
+				//Espacement en hauteur
+				vBoxAddCourier.setSpacing(7);
+
 				hBox.getChildren().add(vBoxAddCourier);
+				hBox.setAlignment(Pos.CENTER);
 			}
 		});
 		
@@ -546,7 +609,8 @@ public class HomeView extends Application implements Observer {
 				vBoxMap.getChildren().clear();
 				vBoxiIntentedTours.getChildren().clear();
 				vBoxAddCourier.getChildren().clear();
-								
+				hBox.setAlignment(null);
+			
 				try {
 					display();
 				} catch (FileNotFoundException e) {
@@ -559,28 +623,31 @@ public class HomeView extends Application implements Observer {
 		this.buttonValidateAddCourier.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
+				System.out.println("Avant l'ajout");
+				
 				if( !(courierName.getText() == null) && !(courierName.getText().trim().isEmpty()))
 				{
 					Courier newCourier = new Courier(courierName.getText());
+					System.out.println("avant qu'On ajoute le livreur");
+					
 					listViewCouriers.getItems().add(newCourier);
 					System.out.println("On ajoute le livreur");
+					
 				}
 				
 				//Retour à la page de base
 				hBox.getChildren().clear();
 				vBoxMap.getChildren().clear();
-				vBoxiIntentedTours.getChildren().clear();
-				
+				vBoxiIntentedTours.getChildren().clear();		
+				vBoxAddCourier.getChildren().clear();
+				hBox.setAlignment(null);				
 				try {
+					System.out.println("On appelle bien le display");
 					display();
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
-				//vBoxMap.setMouseTransparent(false);
-				//vBoxiIntentedTours.setMouseTransparent(false);	
-				//hBox.getChildren().add(vBoxMap);
-				//hBox.getChildren().add(vBoxiIntentedTours);				
+				}					
 			}
 		});
 		
@@ -598,6 +665,7 @@ public class HomeView extends Application implements Observer {
 							nr.setMap(map);
 							nr.setMapView(mapView);
 							nr.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
+							nr.setTreeview(treeView);
 							nr.start(stage);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
@@ -615,6 +683,11 @@ public class HomeView extends Application implements Observer {
 					map.resetMap();
 					XMLdeserializer.load(map, stage);
 					vBoxMap.getChildren().clear();
+					vBoxiIntentedTours.getChildren().clear();
+					vBoxAddCourier.getChildren().clear();
+					vBoxHome.getChildren().clear();
+					hBox.getChildren().clear();
+
 					if(map.getIsLoaded())
 					{
 						//map.setMapLoaded();
@@ -632,7 +705,25 @@ public class HomeView extends Application implements Observer {
 						mapView.setCenter(mapPoint);
 	
 					}
-					createMap(map);
+					if(startPage == false)
+					{
+						if (JOptionPane.showConfirmDialog(null, "Vos tournées ne seront pas enregistrées", "Confirmation", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)
+						{		
+							//retour page accueil
+							//map.setIsLoaded(false);
+							createMap(map);
+						}
+						else
+						{
+							//SAVE TOURS
+							map.setIsLoaded(false);
+							createMap(map);
+						}
+					}
+					else
+					{
+						createMap(map);
+					}
 				} catch (ParserConfigurationException | SAXException | IOException | ExceptionXML e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

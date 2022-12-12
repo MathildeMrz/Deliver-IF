@@ -1,7 +1,6 @@
 package view;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -10,7 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Optional;
-import javax.swing.JOptionPane;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import com.gluonhq.maps.MapLayer;
@@ -30,6 +28,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -82,6 +82,10 @@ public class NewRequestView extends Application implements Observer {
 	private Background background;
 	private Button buttonSeeIntersections;
 	private DatePicker date;
+	private TreeView treeview;
+	private Courier bestCourierAvailable;
+	private Courier bestCourierProx;
+	private VBox vBoxCouriers;
 	
 	public HomeView getOurMapView() {
 		return ourMapView;
@@ -96,6 +100,7 @@ public class NewRequestView extends Application implements Observer {
 
 	@Override
 	public void start(Stage stage) throws Exception {
+		System.out.println("En haut du start");
 		this.stage = stage;
 		this.stage.setWidth(width);
 		this.stage.setHeight(height);
@@ -109,7 +114,11 @@ public class NewRequestView extends Application implements Observer {
 		this.timeWindow.getItems().add(10);
 		this.timeWindow.getItems().add(11);
 		this.timeWindow.setMouseTransparent(true);
-		this.couriers.setMouseTransparent(true);
+		this.timeWindow.getSelectionModel().select(0); //valeur par défaut affichée
+		this.requestedStartingTimeWindow = timeWindow.getItems().get(0);	//valeur par défaut pour la timeWindow de la livraison
+		//this.couriers.setMouseTransparent(true);
+		this.couriers.getSelectionModel().select(0); //valeur par défaut affichée 
+		this.requestedCourier = couriers.getSelectionModel().getSelectedItem(); //valeur par défaut pour le livreur de la livraison
 		
 		/*Creation of the labels*/
 		this.labelSelectCourier = new Label("Sélectionner un livreur");
@@ -166,7 +175,6 @@ public class NewRequestView extends Application implements Observer {
 					buttonSeeIntersections.setText("Voir les intersections");
 					seeIntersection = false;
 				}
-				
 				getMapView().setZoom(getMapView().getZoom()-0.001);
 				display();
 			}
@@ -194,23 +202,12 @@ public class NewRequestView extends Application implements Observer {
 					selectLocation.setVisible(false);
 					labelSelectTimeWindow.setVisible(true);
 					getMapView().setZoom(getMapView().getZoom()+0.001);
+					buttonValidate.setMouseTransparent(false);
+					requestedCourier = map.getBestCourierAvalaibility(closestIntersection, requestedStartingTimeWindow);
 					display();
 				}
 				clicked = true;
 			}
-		});
-
-		this.timeWindow.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-			System.out.println("old value :" + oldValue);
-			System.out.println("requestedStartingTimeWindow :" + newValue);
-			if(newValue!=null)
-			{
-				requestedStartingTimeWindow = newValue;
-			}
-			this.couriers.setMouseTransparent(false);
-			labelSelectTimeWindow.setVisible(false);
-			labelSelectCourier.setVisible(true);
-
 		});
 
 		// Listener for updating the checkout date w.r.t check in date
@@ -224,12 +221,12 @@ public class NewRequestView extends Application implements Observer {
 			public void handle(MouseEvent event) {
 				clicked = false;
 				mapView.removeLayer(newDelivery);
-				//timeWindow.getSelectionModel().select(0);
-				timeWindow.getSelectionModel().select(null);
+				//timeWindow.getSelectionModel().select(0); //valeur par défaut affichée
 				timeWindow.setMouseTransparent(true);
 				timeWindow.setStyle(null);
-				//requestedStartingTimeWindow = timeWindow.getItems().get(0);	
-				//couriers.getSelectionModel().select(0);
+				//requestedStartingTimeWindow = timeWindow.getItems().get(0);	//valeur par défaut pour la timeWindow de la livraison
+				//couriers.getSelectionModel().select(0); //valeur par défaut affichée 
+				//requestedCourier = couriers.getSelectionModel().getSelectedItem(); //valeur par défaut pour le livreur de la livraison
 				couriers.setMouseTransparent(true);
 				labelSelectTimeWindow.setVisible(false);
 				labelSelectCourier.setVisible(false);
@@ -309,22 +306,6 @@ public class NewRequestView extends Application implements Observer {
 			}
 		});
 		
-		this.couriers.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent event) {
-				System.out.println("requestedCourier :" + couriers.getSelectionModel().getSelectedItem());
-				requestedCourier = couriers.getSelectionModel().getSelectedItem();
-				buttonValidate.setMouseTransparent(false);
-				System.out.println("Bouton valider appuyable");
-				buttonSeeIntersections.setText("Voir les intersections");
-				for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
-						getMapView().removeLayer(customCircleMarkerLayer);
-					}
-					seeIntersection = false;
-				}				
-			});
-		
 		/*this.couriers.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
@@ -334,6 +315,61 @@ public class NewRequestView extends Application implements Observer {
 			}
 		});*/
 		
+		this.timeWindow.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+			System.out.println("old value :" + oldValue);
+			System.out.println("requestedStartingTimeWindow :" + newValue);
+			if(newValue!=null)
+			{
+				requestedStartingTimeWindow = newValue;
+				bestCourierAvailable = map.getBestCourierAvalaibility(closestIntersection, requestedStartingTimeWindow);
+				bestCourierProx = map.getBestCourierProximity(closestIntersection, requestedStartingTimeWindow);
+				requestedCourier = bestCourierAvailable;
+				vBoxCouriers.getChildren().remove(couriers);
+				vBoxCouriers.getChildren().remove(buttonChangePage);
+				vBoxCouriers.getChildren().remove(buttonValidate);
+				vBoxCouriers.getChildren().remove(buttonSeeIntersections);
+				vBoxCouriers.getChildren().remove(buttonChangePoint);
+				ListView<Courier> couriersTmp = couriers;
+				ListView<Courier> newCouriers = new ListView<Courier>();
+				//couriers = new ListView<Courier>();
+				if(bestCourierProx != bestCourierAvailable)
+				{
+					newCouriers.getItems().add(bestCourierProx);
+					newCouriers.getItems().add(bestCourierAvailable);
+				}
+				else
+				{
+					newCouriers.getItems().add(bestCourierProx);
+				}
+				for (Courier c : couriersTmp.getItems())
+				{
+					if(c!=bestCourierProx && c!=bestCourierAvailable)
+					{
+						newCouriers.getItems().add(c);
+					}
+				}
+				couriers = newCouriers;
+				vBoxCouriers.getChildren().add(couriers);
+				vBoxCouriers.getChildren().add(buttonChangePage);
+				vBoxCouriers.getChildren().add(buttonValidate);
+				vBoxCouriers.getChildren().add(buttonSeeIntersections);
+				vBoxCouriers.getChildren().add(buttonChangePoint);
+			}
+			couriers.setMouseTransparent(false);
+			for(Courier c : this.couriers.getItems())
+			{
+				System.out.println("time window modifications : "+c.toString());
+			}
+			labelSelectTimeWindow.setVisible(false);
+			labelSelectCourier.setVisible(true);
+			try {
+				buttonCourier();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
+		
 		this.timeWindow.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -341,15 +377,70 @@ public class NewRequestView extends Application implements Observer {
 				System.out.println("Mettre à jour les couriers disponibles");
 			}
 		});
+		
+		/*this.couriers.itemsProperty().addListener((obs, old, current) -> {
+			System.out.println("requestedCourier : " + current.toString());
+			System.out.println("old value : "+old.toString());
+			//requestedCourier = couriers.getSelectionModel().getSelectedItem();
+			System.out.println("Bouton valider appuyable");
+			buttonSeeIntersections.setText("Voir les intersections");
+			for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
+					getMapView().removeLayer(customCircleMarkerLayer);
+			}
+			seeIntersection = false; 
+			
+		});*/
+		buttonCourier();
+	}
+	
+	public void buttonCourier() throws Exception {
+	
+	this.couriers.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+		@Override
+		public void handle(MouseEvent event) {
+			System.out.println("requestedCourier :" + couriers.getSelectionModel().getSelectedItem());
+			requestedCourier = couriers.getSelectionModel().getSelectedItem();
+			//Expand du treeView 
+			treeview.getRoot().getChildren().forEach(t ->{
+				System.out.println("((TreeItem)t).getValue() = "+((TreeItem)t).getValue());
+				if(((TreeItem)t).getValue() == requestedCourier.getName())
+				{
+					((TreeItem)t).setExpanded(true);
+					((TreeItem)t).getChildren().forEach(ti ->{
+						((TreeItem)ti).setExpanded(true);
+					});
+				}
+				else
+				{
+					((TreeItem)t).setExpanded(false);
+				}
+			});
+			
+			System.out.println("Bouton valider appuyable");
+			buttonSeeIntersections.setText("Voir les intersections");
+			for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
+					getMapView().removeLayer(customCircleMarkerLayer);
+				}
+				seeIntersection = false;
+			}				
+		});
 	}
 
 	public void display() {
 
 		HBox hbox = new HBox();
 		hbox.setBackground(background);
+		
+		/* vBox Treeview */
+        VBox vBoxTreeView = new VBox();
+        //vBoxTreeView.prefWidthProperty().bind(hbox.widthProperty().multiply(0.25));
+        vBoxTreeView.getChildren().add(treeview);
+        vBoxTreeView.setPadding(new Insets(90, 20, 20, 20));
+        vBoxTreeView.prefWidthProperty().bind(hbox.widthProperty().multiply(0.30));
 
 		/* vBoxCouriers */
-		VBox vBoxCouriers = new VBox();
+		vBoxCouriers = new VBox();
 		//this.buttonValidate.setMouseTransparent(true);
 		vBoxCouriers.getChildren().add(labelSelectTimeWindow);
 		vBoxCouriers.getChildren().add(timeWindow);		
@@ -370,15 +461,16 @@ public class NewRequestView extends Application implements Observer {
 		vBoxMap.getChildren().add(selectLocation);
 		vBoxMap.getChildren().add(this.mapView);
 
-		if (couriers.getItems().size() != 0) {
+		/*if (couriers.getItems().size() != 0) {
 			requestedCourier = couriers.getItems().get(0);
-		}
+		}*/
 		
 		requestedDate = date.getValue();
 
 		// hbox contains two elements
 		hbox.getChildren().add(vBoxMap);
 		hbox.getChildren().add(vBoxCouriers);
+		hbox.getChildren().add(vBoxTreeView);
 
 		Scene scene = new Scene(hbox, 200, 500);
 
@@ -414,6 +506,8 @@ public class NewRequestView extends Application implements Observer {
 			}
 		});
 	}
+	
+	
 
 	@Override
 	public void update(Observable observed, Object arg) {
@@ -431,6 +525,10 @@ public class NewRequestView extends Application implements Observer {
 		}
 		return mapLayerDelivery;
 	}
+	
+    public void setTreeview(TreeView treeview) {
+        this.treeview = treeview;
+    }
 
 	public void setMap(Map map) {
 		this.map = map;
@@ -501,16 +599,16 @@ public class NewRequestView extends Application implements Observer {
 			courierJson.put("name", courier.getName());
 			courierJson.put("speed", courier.getSpeed());
 			JSONObject tourJson = new JSONObject();
-			Tour tournée = courier.getTour();
-			tourJson.put("id", tournée.getId());
-			tourJson.put("startDate", tournée.getStartDate());
-			tourJson.put("endDate", tournée.getEndDate());
+			Tour tournee = courier.getTour();
+			tourJson.put("id", tournee.getId());
+			tourJson.put("startDate", tournee.getStartDate());
+			tourJson.put("endDate", tournee.getEndDate());
 
 			// Array tourSteps
 			JSONArray tourStepsJson = new JSONArray();
 
 			// For each intersection of the tour
-			for (Intersection tourStep : tournée.getTourSteps()) {
+			for (Intersection tourStep : tournee.getTourSteps()) {
 				JSONObject tourStepJson = new JSONObject();
 				tourStepJson.put("id", tourStep.getId());
 				JSONArray tourSegmentsJson = new JSONArray();

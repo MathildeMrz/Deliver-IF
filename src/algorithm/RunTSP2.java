@@ -4,9 +4,7 @@ import java.util.List;
 import model.Segment;
 import model.Tour;
 import observer.Observable;
-
 import java.util.ArrayList;
-
 import model.Intersection;
 import model.Map;
 

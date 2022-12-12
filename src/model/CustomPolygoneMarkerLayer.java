@@ -9,12 +9,21 @@ import com.gluonhq.maps.MapView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polyline;
 
+/**
+ * Affiche un chemin sur la carte
+ */
 public class CustomPolygoneMarkerLayer extends MapLayer{
 	private final Polyline line;
 	private ArrayList<MapPoint> mapPoints;
     private double[] points;
     private MapView mapView;
    
+    /**
+     * @param mapPoints ensemble des points par lesquels passe le trajet
+     * @param mapView
+     * @param lineColor couleur du tracé
+     * @param lineWidth taille du tracé
+     */
 	 public CustomPolygoneMarkerLayer(ArrayList<MapPoint> mapPoints, MapView mapView, Color lineColor, int lineWidth) {	
 		 this.mapView = mapView;
 		 this.mapPoints = mapPoints;
