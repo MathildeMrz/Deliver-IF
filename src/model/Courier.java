@@ -1,10 +1,11 @@
 package model;
 
 import java.util.ArrayList;
+import javafx.scene.paint.Color;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import observer.Observable;
-import javafx.scene.paint.Color;
 
 public class Courier extends Observable {
 	private static final AtomicInteger ID_FACTORY = new AtomicInteger();
@@ -13,7 +14,7 @@ public class Courier extends Observable {
 	private String name;
 	private double speed;
 	private Tour tour;
-	private static final ArrayList<Color> ColorsList = new ArrayList<Color>(Arrays.asList(Color.HOTPINK, Color.PURPLE,  Color.SKYBLUE, Color.VIOLET, Color.SALMON, Color.PEACHPUFF, Color.ORCHID, Color.STEELBLUE, Color.ROYALBLUE));
+	private static final ArrayList<Color> ColorsList = new ArrayList<Color>(Arrays.asList(Color.HOTPINK, Color.PURPLE,  Color.SKYBLUE, Color.SALMON, Color.CADETBLUE, Color.AQUAMARINE, Color.CHOCOLATE, Color.GREENYELLOW, Color.LIGHTSEAGREEN,Color.MEDIUMSPRINGGREEN));
 	private Color travelColor;
 	
 	public Courier(String name)
@@ -22,7 +23,15 @@ public class Courier extends Observable {
 		this.name = name;
 		this.speed = SPEED_COURIER;
 		this.tour = new Tour();
-		this.travelColor = ColorsList.get(this.id);
+		if(this.id<this.ColorsList.size()) {
+			this.travelColor = ColorsList.get(this.id);
+		} else {
+			Random rand = new Random();
+			float r = rand.nextFloat();
+			float g = rand.nextFloat();
+			float b = rand.nextFloat();
+			this.travelColor = new Color(r, g, b, 1.0);
+		}
 		System.out.println("Id courier : "+this.id);
 		System.out.println("name courier : "+this.name);
 	}
