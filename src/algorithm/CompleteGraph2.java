@@ -1,17 +1,15 @@
 package algorithm;
 
-import model.Intersection;
-import model.Tour;
-import model.Segment;
-import model.Delivery;
-import model.Path;
-import model.Map;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.time.temporal.ChronoUnit;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import model.Delivery;
+import model.Intersection;
+import model.Map;
+import model.Path;
+import model.Tour;
 
 public class CompleteGraph2 implements Graph {
 	int nbVertices;

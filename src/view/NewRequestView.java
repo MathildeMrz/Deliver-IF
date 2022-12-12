@@ -1,7 +1,6 @@
 package view;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -10,7 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Optional;
-import javax.swing.JOptionPane;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import com.gluonhq.maps.MapLayer;
