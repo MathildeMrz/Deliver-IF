@@ -38,7 +38,8 @@ public class Courier extends Observable {
 	
 	@Override
     public String toString() {
-        return id + " " + name + " " +speed;
+        //return id + " " + name + " " +speed;
+		return name;
     }
 
 	public String getName() {
