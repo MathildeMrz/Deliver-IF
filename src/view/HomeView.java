@@ -347,7 +347,6 @@ public class HomeView extends Application implements Observer {
 		if (this.map.getIsLoaded())
 		{
 			this.buttonChangePage.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
-			this.vBoxiIntentedTours.getChildren().add(this.buttonChangePage);
 			
 			Label deliveriesOfTheDayLabel = new Label("Livreurs du jour : ");
 			deliveriesOfTheDayLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
@@ -446,6 +445,7 @@ public class HomeView extends Application implements Observer {
 			});
 				
 			this.vBoxiIntentedTours.getChildren().add(treeView);
+			this.vBoxiIntentedTours.getChildren().add(this.buttonChangePage);
 			this.vBoxiIntentedTours.getChildren().add(buttonAddCourier);
 			this.vBoxiIntentedTours.getChildren().add(buttonLoadMap);
 			this.vBoxiIntentedTours.setSpacing(10);
