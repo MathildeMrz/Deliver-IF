@@ -17,6 +17,7 @@ public class CustomPinLayer extends MapLayer{
 	 /**
 	  * @param mapPoint le point (latitude et longitude) où afficher l'épingle
 	  * @see com.gluonhq.maps.MapPoint
+	  * @param isRed affichage du pin rouge ou noir
 	  */
 	 public CustomPinLayer(MapPoint mapPoint, boolean isRed) throws MalformedURLException {
 		  this.mapPoint = mapPoint;
@@ -35,7 +36,9 @@ public class CustomPinLayer extends MapLayer{
 		 return this.mapPoint;
 	 }
 
-	 /* La fonction est appelée à chaque rafraichissement de la carte */
+	 /**
+	  *  La fonction est appelée à chaque rafraichissement de la carte
+	 */
 	 @Override
 	 protected void layoutLayer() {
 	  /* Conversion du MapPoint vers Point2D */

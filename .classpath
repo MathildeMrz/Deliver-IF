@@ -36,5 +36,8 @@
 	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/maps-2.0.0-ea+6.jar"/>
 	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/storage-4.0.11.jar"/>
 	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/gluonhq_map/util-4.0.11.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/json-simple-1.1.jar/json-simple-1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/json-simple-1.1.jar/json-20180813.jar"/>
+	<classpathentry kind="lib" path="C:/Users/robin/Documents/4IF/AGILE/json-simple-1.1.jar/json-1.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

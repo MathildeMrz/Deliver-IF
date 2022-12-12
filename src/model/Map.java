@@ -18,15 +18,6 @@ public class Map extends Observable {
 	private LocalDate mapDate;
 	private int mapSize;
 	private String mapName;
-
-	
-	public LocalDate getMapDate() {
-		return mapDate;
-	}
-
-	public void setMapDate(LocalDate mapDate) {
-		this.mapDate = mapDate;
-	}
 	
 	public Map() {
 		this.nodes  = new HashMap<Long,Intersection>();
@@ -60,6 +51,14 @@ public class Map extends Observable {
 		return couriers;
 	}
 	
+	public LocalDate getMapDate() {
+		return mapDate;
+	}
+
+	public void setMapDate(LocalDate mapDate) {
+		this.mapDate = mapDate;
+	}
+	
 	public void setCouriers(ArrayList<Courier> couriers) {
 		this.couriers = couriers;
 	}
@@ -81,6 +80,9 @@ public class Map extends Observable {
 		return "Plan [nodes=" + nodes + ", warehouse=" + warehouse + "]";
 	}
 	
+	/**
+	 * Permet de remettre à 0 tous les attributs d'une carte, pour en charger une autre
+	 */
 	public void resetMap() {
 		this.nodes.clear();
 		this.destinations.clear();
@@ -131,6 +133,12 @@ public class Map extends Observable {
 		this.isLoaded = true;
 	}
 	
+	/**
+	 * Retourne l'intersection existante la plus proche de la carte par rapport aux coordonnees passees en parametre
+	 * @param latitude la latitude du point
+	 * @param longitude	la longitude du point
+	 * @return l'intersection la plus proche
+	 */
 	public Intersection getClosestIntersection(float latitude, float longitude)
 	{
 		float minimumDistance = Float.MAX_VALUE;

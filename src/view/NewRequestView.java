@@ -22,6 +22,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -229,8 +230,14 @@ public class NewRequestView extends Application implements Observer {
 		this.buttonChangePage.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if (JOptionPane.showConfirmDialog(null, "Vos changements ne seront pas enregistrés", "Confirmation",
-						JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Warning");
+				alert.setHeaderText("Vos changements ne seront pas enregistrés");
+				ButtonType buttonOk = new ButtonType("Continuer");
+				ButtonType buttonCancel = new ButtonType("Annuler");
+				alert.getButtonTypes().setAll(buttonOk, buttonCancel);
+				Optional<ButtonType> result = alert.showAndWait();
+				if (result.get() == buttonOk) {
 					mapView.removeLayer(newDelivery);
 					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
 						getMapView().removeLayer(customCircleMarkerLayer);
@@ -481,16 +488,16 @@ public class NewRequestView extends Application implements Observer {
 			courierJson.put("name", courier.getName());
 			courierJson.put("speed", courier.getSpeed());
 			JSONObject tourJson = new JSONObject();
-			Tour tournée = courier.getTour();
-			tourJson.put("id", tournée.getId());
-			tourJson.put("startDate", tournée.getStartDate());
-			tourJson.put("endDate", tournée.getEndDate());
+			Tour tournee = courier.getTour();
+			tourJson.put("id", tournee.getId());
+			tourJson.put("startDate", tournee.getStartDate());
+			tourJson.put("endDate", tournee.getEndDate());
 
 			// Array tourSteps
 			JSONArray tourStepsJson = new JSONArray();
 
 			// For each intersection of the tour
-			for (Intersection tourStep : tournée.getTourSteps()) {
+			for (Intersection tourStep : tournee.getTourSteps()) {
 				JSONObject tourStepJson = new JSONObject();
 				tourStepJson.put("id", tourStep.getId());
 				JSONArray tourSegmentsJson = new JSONArray();

@@ -6,7 +6,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-/** Affiche un point rouge sur la carte */
+/** Affiche un point sur la carte */
 public class CustomCircleMarkerLayer extends MapLayer {
 	 private final MapPoint mapPoint;
 	 private final Circle circle;
@@ -14,6 +14,8 @@ public class CustomCircleMarkerLayer extends MapLayer {
 	 /**
 	  * @param mapPoint le point (latitude et longitude) où afficher le cercle
 	  * @see com.gluonhq.maps.MapPoint
+	  * @param circleSize la taille du cercle
+	  * @param color la couleur
 	  */
 	 public CustomCircleMarkerLayer(MapPoint mapPoint, int circleSize, Color color) {
 	  this.mapPoint = mapPoint;
