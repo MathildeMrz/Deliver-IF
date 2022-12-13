@@ -35,6 +35,24 @@ public class Courier extends Observable {
 		System.out.println("Id courier : "+this.id);
 		System.out.println("name courier : "+this.name);
 	}
+	public Courier(String name, int id)
+	{
+		this.id = id;
+		this.name = name;
+		this.speed = SPEED_COURIER;
+		this.tour = new Tour();
+		if(this.id<this.ColorsList.size()) {
+			this.travelColor = ColorsList.get(this.id);
+		} else {
+			Random rand = new Random();
+			float r = rand.nextFloat();
+			float g = rand.nextFloat();
+			float b = rand.nextFloat();
+			this.travelColor = new Color(r, g, b, 1.0);
+		}
+		System.out.println("Id courier : "+this.id);
+		System.out.println("name courier : "+this.name);
+	}
 	
 	@Override
     public String toString() {

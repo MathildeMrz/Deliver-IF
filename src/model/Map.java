@@ -20,6 +20,16 @@ public class Map extends Observable {
 	private float longitudeMax;	
 	private LocalDate mapDate;
 	
+	public String getMapName() {
+		return mapName;
+	}
+
+	public void setMapName(String mapName) {
+		this.mapName = mapName;
+	}
+
+	private String mapName;
+
 	public Map() {
 		this.nodes  = new HashMap<Long,Intersection>();
 		this.destinations  = new ArrayList<Intersection>();//During load function
@@ -94,6 +104,12 @@ public class Map extends Observable {
 		this.isLoaded = false;
 	}
 
+	public void resetNodes() {
+		this.nodes.clear();
+	}
+	public void resetDestinations() {
+		this.destinations.clear();
+	}
 	public float getLatitudeMin() {
 		return latitudeMin;
 	}

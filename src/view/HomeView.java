@@ -1,9 +1,11 @@
 package view;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -24,6 +26,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.xml.sax.SAXException;
 import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
@@ -94,6 +97,8 @@ public class HomeView extends Application implements Observer {
 	private Background background;
 	private Button buttonLoadMap;
 	private Button buttonAddCourier;
+	private Button buttonSaveMap;
+	private Button dateValidateButton;
 	private TreeView treeView;
 	private TreeItem rootItem;
 	private ArrayList<TreeItem> courierItems;
@@ -113,7 +118,9 @@ public class HomeView extends Application implements Observer {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-
+		if(listViewCouriers==null) {
+			this.listViewCouriers = initCouriers();
+		}
 		/* Init attributes */
 		this.stage = stage;
 		for (Courier c : this.map.getCouriers()) {
@@ -130,6 +137,7 @@ public class HomeView extends Application implements Observer {
 		this.buttonLoadMap = new Button("Ouvrir une autre carte");
 		this.buttonAddCourier = new Button("Ajouter un livreur");
 		this.buttonChangePage = new Button("Nouvelle livraison");
+		this.buttonSaveMap = new Button("Enregistrer un itinéraire");
 		this.buttonValidateAddCourier = new Button("Ajouter");	
 		this.buttonLoadMap.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 		this.buttonChangePage.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
@@ -137,6 +145,9 @@ public class HomeView extends Application implements Observer {
 		this.buttonValidateAddCourier.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 		this.buttonDeleteDelivery = new Button("Supprimer une livraison");
 		this.buttonDeleteDelivery.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
+		this.buttonSaveMap.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
+		this.dateValidateButton = new Button("Valider");
+		this.dateValidateButton.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 
 		
 		this.courierName = new TextField();
@@ -207,10 +218,66 @@ public class HomeView extends Application implements Observer {
 		datePicker.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("Load another couriers file");
+				System.out.println("date about to be changed");
 			}
 			
 		});
+		dateValidateButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				System.out.println("date picker validated");
+				LocalDate localDate = datePicker.getValue();
+				Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+				alert.setTitle("Changements non enregistrés");
+				alert.setContentText("Voulez-vous sauvegarder vos changements?");
+				alert.getButtonTypes().clear();
+				alert.getButtonTypes().add(ButtonType.YES);
+				alert.getButtonTypes().add(ButtonType.NO);
+				Button noButton = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
+				noButton.setStyle("-fx-background-color: #BFD1E5; ");
+				Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
+				yesButton.setStyle("-fx-background-color: #BFD1E5; ");
+				noButton.setDefaultButton(true);
+				yesButton.setDefaultButton(false);
+				Optional<ButtonType> result = alert.showAndWait();
+				if (result.isPresent() && result.get() == ButtonType.YES) {
+					System.out.println("YES!!!!!");
+					saveCouriers();
+				
+				} else if (result.isPresent() && result.get() == ButtonType.NO) {
+					System.out.println("NO!!!!!");
+					
+				} else {
+					System.out.println("Come back to the page");
+				}
+				//maybe clear listView
+				map.setMapDate(localDate);
+				courierItems.clear();
+				listViewCouriers.getItems().clear();
+				map.getCouriers().clear();
+				//re-init?
+				try {
+					loadCouriers();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					createMap(map);
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		});
+
 	}
 
 	public void createMap(Map map) throws MalformedURLException, FileNotFoundException {
@@ -247,6 +314,7 @@ public class HomeView extends Application implements Observer {
 			for (MapLayer layer : this.mapPolygoneMarkerLayers) {
 				this.mapView.removeLayer(layer);
 			}
+			
 			this.mapPolygoneMarkerLayers.clear();
 			
 			//add tours
@@ -320,7 +388,8 @@ public class HomeView extends Application implements Observer {
 			this.vBoxMap.getChildren().add(chosenDayLabel);			
 			// create a date picker
 	        
-			this.vBoxMap.getChildren().add(datePicker);	
+			vBoxMap.getChildren().add(datePicker);	
+			vBoxMap.getChildren().add(dateValidateButton);	
 			
 			this.treeView = new TreeView();
 			this.courierItems.clear();
@@ -418,6 +487,7 @@ public class HomeView extends Application implements Observer {
 			this.vBoxiIntentedTours.getChildren().add(hboxAddCourier);
 			this.vBoxiIntentedTours.getChildren().add(buttonDeleteDelivery);			
 			this.vBoxiIntentedTours.getChildren().add(buttonLoadMap);
+			this.vBoxiIntentedTours.getChildren().add(buttonSaveMap);
 			this.vBoxiIntentedTours.setSpacing(10);
 			
 			// Add children to the root
@@ -617,6 +687,7 @@ public class HomeView extends Application implements Observer {
 			}
 		});
 		
+<<<<<<< HEAD
 		treeView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -703,7 +774,22 @@ public class HomeView extends Application implements Observer {
 		});
 
 	}
+=======
+		buttonSaveMap.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				saveCouriers();
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setTitle("Itinéraires enregistrés");
+				alert.setContentText("Vos itinéraires ont été enregistrés avec succès!");
+				alert.showAndWait();
+				
+				}
+			}
+>>>>>>> cc204c0b68c1744acc4ac0bb328d5876dd1cfecc
 	
+	);}
+
 	public void clearScreen()
 	{
 		vBoxMap.getChildren().clear();
@@ -809,7 +895,7 @@ public class HomeView extends Application implements Observer {
 
 	protected void saveCouriers() {
 		LocalDate date = this.map.getMapDate();
-		String path = "loadedDeliveries/" + date + ".json";
+		String path = "loadedDeliveries/" + this.map.getMapName()+"-"+date + ".json";
 
 		JSONArray listeCouriersJson = new JSONArray();
 
@@ -883,7 +969,12 @@ public class HomeView extends Application implements Observer {
 	public ListView<Courier> loadCouriers()
 			throws org.json.simple.parser.ParseException, FileNotFoundException, IOException {
 		ListView<Courier> couriersAL = new ListView<Courier>();
-		String fileName = "loadedDeliveries/" + this.map.getMapDate() + ".json";
+		ListView<Courier> listViewItemsToIterateOver = new ListView<>();
+		for(int i = 0; i< this.listViewCouriers.getItems().size();i++) {
+			listViewItemsToIterateOver.getItems().add(i, this.listViewCouriers.getItems().get(i));
+		}
+		ArrayList<Courier> couriers = new ArrayList<>();
+		String fileName = "loadedDeliveries/" + this.map.getMapName() +"-"+this.map.getMapDate() + ".json";
 
 		File f = new File(fileName);
 		if (f.exists() && !f.isDirectory()) {
@@ -901,9 +992,10 @@ public class HomeView extends Application implements Observer {
 				JSONObject JsonCourier = JsonCouriers.getJSONObject(i);
 				String courierName = JsonCourier.getString("name");
 				int speed = JsonCourier.getInt("speed");
-
+				int idCourier = JsonCourier.getInt("id");
+				
 				// Creation of the courier
-				Courier courier = new Courier(courierName);
+				Courier courier = new Courier(courierName, idCourier);
 				courier.setSpeed(speed);
 
 				// Get the tour of the current courier
@@ -963,14 +1055,78 @@ public class HomeView extends Application implements Observer {
 				tour.setEndDate(localDateEnd);
 				tour.setStartDate(localDateStart);
 				courier.setTour(tour);
+				couriers.add(courier);
+				
+				for(Courier item : listViewItemsToIterateOver.getItems()) {
+					System.out.println("item name"+item.getName());
+					System.out.println("courier name "+courier.getName());
+					if(item.getName() == courier.getName()) {
+
+						int id = listViewItemsToIterateOver.getItems().stream().filter(courierItem -> item.getName() == courierItem.getName()).findFirst().orElse(null).getId();
+						this.listViewCouriers.getItems().set(id, courier) ;
+					}
+					else {
+						this.listViewCouriers.getItems().add(item);
+					}
+				}
 				couriersAL.getItems().add(courier);
 			}
+			this.map.setCouriers(couriers);
+			setListViewCouriers(couriersAL);
 			reader.close();
 		} else {
 			System.out.println("Aucun fichier existant : " + fileName);
+			ArrayList<Courier> couriersInit = new ArrayList<>();
+			for(Courier item : listViewItemsToIterateOver.getItems()) {
+				couriersInit.add(item);
+			}
+			this.map.setCouriers(couriersInit);
+		}
+		couriersAL = listViewItemsToIterateOver;
+		for(Courier courier : this.map.getCouriers()) {
+			System.out.println("COURIER DANS MAP "+ courier.getName());
+		}
+		for(Courier courier : couriersAL.getItems()) {
+			System.out.println("COURIER DANS listView "+ courier.getName());
 		}
 
 		return couriersAL;
+	}
+	
+	public ListView<Courier> initCouriers() {
+
+		File file = new File("./saveCouriers.txt");
+		this.listViewCouriers = new ListView<Courier>();
+
+		if (file.exists()) {
+			// Creating an object of BufferedReader class
+			BufferedReader br;
+			try {
+				br = new BufferedReader(new FileReader(file));
+				// Declaring a string variable
+				String st;
+				// Condition holds true till
+				try {
+
+					while ((st = br.readLine()) != null) {
+						// String[] arrSplit_2 = st.split(";");
+						// couriers.getItems().add(new Courier(arrSplit_2[0],
+						// Double.parseDouble(arrSplit_2[1])));
+						Courier courier = new Courier(st);
+						listViewCouriers.getItems().add(courier);
+						this.map.addCourier(courier);
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+		} else {
+			System.out.println(file.getPath() + " does not exist");
+		}
+		return listViewCouriers;
 	}
 
 }
