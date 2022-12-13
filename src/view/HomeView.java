@@ -687,7 +687,6 @@ public class HomeView extends Application implements Observer {
 			}
 		});
 		
-<<<<<<< HEAD
 		treeView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -772,10 +771,8 @@ public class HomeView extends Application implements Observer {
 				}
 			}
 		});
-
-	}
-=======
-		buttonSaveMap.setOnMouseClicked(new EventHandler<MouseEvent>() {
+	
+	buttonSaveMap.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				saveCouriers();
@@ -786,8 +783,6 @@ public class HomeView extends Application implements Observer {
 				
 				}
 			}
->>>>>>> cc204c0b68c1744acc4ac0bb328d5876dd1cfecc
-	
 	);}
 
 	public void clearScreen()
