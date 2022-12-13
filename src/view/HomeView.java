@@ -203,90 +203,6 @@ public class HomeView extends Application implements Observer {
 				}
 			}
 		});
-		
-		treeView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				for (MapLayer layer : lastToCurrentSelectedStepLayer) {
-					mapView.removeLayer(layer);
-				}
-				mapView.setZoom(mapView.getZoom()-0.001);
-				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
-				if (lastSelectedDelivery != null) {
-					MapLayer lastSelectedDeliveryLayer = pinLayers.get(lastSelectedDelivery.getId());
-					MapPoint position = ((CustomPinLayer) lastSelectedDeliveryLayer).getMapPoint();
-					mapView.removeLayer(lastSelectedDeliveryLayer);
-					pinLayers.remove(lastSelectedDelivery.getId());
-					try {
-						MapLayer blackPin = new CustomPinLayer(position, false);
-						pinLayers.put(lastSelectedDelivery.getId(), blackPin);
-						mapView.addLayer(blackPin);
-					} catch (MalformedURLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				if (selectedDelivery != null) {
-					lastToCurrentSelectedStepLayer.clear();
-					boolean deliveryFound = false;
-					ArrayList<MapPoint> points = new ArrayList<MapPoint>();
-					for(Courier c :map.getCouriers()) {
-						Tour tour = c.getTour();
-						for(int i = 0; i < tour.getDeliveries().size(); i++) {
-							if (tour.getDeliveries().get(i) == selectedDelivery) {
-								Intersection beginIntersection;
-								if(i-1<0) {
-									beginIntersection = map.getWarehouse();
-									points.add(new MapPoint(beginIntersection.getLatitude(), beginIntersection.getLongitude()));
-								} else {
-									beginIntersection = tour.getDeliveries().get(i-1).getDestination();
-								}
-								
-								for (int j = 0; j < tour.getTourSteps().size(); j++) {
-									if (deliveryFound == true && tour.getTourSteps().get(j)!= selectedDelivery.getDestination()) {
-										double x2 = tour.getTourSteps().get(j).getLongitude();
-										double y2 = tour.getTourSteps().get(j).getLatitude();
-										points.add(new MapPoint(y2, x2));
-									}
-									if (tour.getTourSteps().get(j)== selectedDelivery.getDestination()) {
-										double x2 = tour.getTourSteps().get(j).getLongitude();
-										double y2 = tour.getTourSteps().get(j).getLatitude();
-										points.add(new MapPoint(y2, x2));
-										break;
-									}
-									if (deliveryFound == false && tour.getTourSteps().get(j) == beginIntersection) {
-										deliveryFound = true;
-										double x2 = tour.getTourSteps().get(j).getLongitude();
-										double y2 = tour.getTourSteps().get(j).getLatitude();
-										points.add(new MapPoint(y2, x2));
-									}
-								}
-								
-								MapLayer layer = new CustomPolygoneMarkerLayer(points, mapView, Color.RED, 5);
-								lastToCurrentSelectedStepLayer.add(layer);
-								mapView.addLayer(layer);
-								break;
-							}
-						}
-					}
-					//Pin
-					lastSelectedDelivery = selectedDelivery;
-					MapLayer layer = pinLayers.get(selectedDelivery.getId());
-					MapPoint position = ((CustomPinLayer) layer).getMapPoint();
-					mapView.removeLayer(layer);
-					pinLayers.remove(selectedDelivery.getId());
-					try {
-						MapLayer newLayer = new CustomPinLayer(position, true);
-						mapView.addLayer(newLayer);
-						pinLayers.put(selectedDelivery.getId(), newLayer);
-					} catch (MalformedURLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					mapView.setZoom(mapView.getZoom()-0.001);
-				}
-			}
-		});
 					
 		datePicker.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
@@ -562,13 +478,13 @@ public class HomeView extends Application implements Observer {
 					{	
 						clearScreen();
 						createMap(map);
+						mapView.setZoom(mapView.getZoom()-0.001);
 					} 
 					catch (FileNotFoundException | MalformedURLException e)
 					{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					mapView.setZoom(mapView.getZoom()-0.001);
 				}
 			}	
 		});
@@ -644,57 +560,144 @@ public class HomeView extends Application implements Observer {
 		buttonLoadMap.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
+				if(startPage == false) {
+					Alert alert = new Alert(Alert.AlertType.WARNING);
+					alert.setTitle("Attention");
+					alert.setContentText("Voulez-vous enregistrer vos modifications avant de charger une nouvelle carte ?");
+					alert.getButtonTypes().clear();
+					alert.getButtonTypes().add(ButtonType.YES);
+					alert.getButtonTypes().add(ButtonType.NO);
+					Button noButton = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
+					noButton.setStyle("-fx-background-color: #BFD1E5; ");
+					Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
+					yesButton.setStyle("-fx-background-color: #BFD1E5; ");
+					noButton.setDefaultButton(true);
+					yesButton.setDefaultButton(false);
+					Optional<ButtonType> result = alert.showAndWait();
+					if (result.get() == ButtonType.YES) {		
+						//TODO : SAVE TOURS
+					}
+				}
+				map.resetMap();
 				try {
-					if(startPage == false) {
-						Alert alert = new Alert(Alert.AlertType.WARNING);
-						alert.setTitle("Attention");
-						alert.setContentText("Voulez-vous enregistrer vos modifications avant de charger une nouvelle carte ?");
-						alert.getButtonTypes().clear();
-						alert.getButtonTypes().add(ButtonType.YES);
-						alert.getButtonTypes().add(ButtonType.NO);
-						Button noButton = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
-						noButton.setStyle("-fx-background-color: #BFD1E5; ");
-						Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
-						yesButton.setStyle("-fx-background-color: #BFD1E5; ");
-						noButton.setDefaultButton(true);
-						yesButton.setDefaultButton(false);
-						Optional<ButtonType> result = alert.showAndWait();
-						if (result.get() == ButtonType.YES) {		
-							//TODO : SAVE TOURS
-						}
-					}
-					map.resetMap();
 					XMLdeserializer.load(map, stage);
-					clearScreen();
-					/*vBoxMap.getChildren().clear();
-					vBoxiIntentedTours.getChildren().clear();
-					vBoxAddCourier.getChildren().clear();
-					vBoxHome.getChildren().clear();
-					hBox.getChildren().clear();*/
+				} catch (ParserConfigurationException | SAXException | IOException | ExceptionXML e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				clearScreen();
+				/*vBoxMap.getChildren().clear();
+				vBoxiIntentedTours.getChildren().clear();
+				vBoxAddCourier.getChildren().clear();
+				vBoxHome.getChildren().clear();
+				hBox.getChildren().clear();*/
 
-					if(map.getIsLoaded())
-					{
-						//map.setMapLoaded();
-						for (Courier c : map.getCouriers()) {
-							c.getTour().clearTourSteps();
-							c.getTour().clearDeliveries();
-							c.getTour().getDeliveries().clear();
-						}
-	
-						mapView = new MapView();
-						double latAverage = (map.getLatitudeMin() + map.getLatitudeMax()) / 2;
-						double longAverage = (map.getLongitudeMin() + map.getLongitudeMax()) / 2;
-						MapPoint mapPoint = new MapPoint(latAverage, longAverage);
-						mapView.setZoom(14);
-						mapView.setCenter(mapPoint);
+				if(map.getIsLoaded())
+				{
+					//map.setMapLoaded();
+					for (Courier c : map.getCouriers()) {
+						c.getTour().clearTourSteps();
+						c.getTour().clearDeliveries();
+						c.getTour().getDeliveries().clear();
 					}
+
+					mapView = new MapView();
+					double latAverage = (map.getLatitudeMin() + map.getLatitudeMax()) / 2;
+					double longAverage = (map.getLongitudeMin() + map.getLongitudeMax()) / 2;
+					MapPoint mapPoint = new MapPoint(latAverage, longAverage);
+					mapView.setZoom(14);
+					mapView.setCenter(mapPoint);
+				}
+				try {
 					createMap(map);
-				} catch (ParserConfigurationException | SAXException | IOException | ExceptionXML e) {
+				} catch (MalformedURLException | FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				}
+			}
+		});
+		
+		treeView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				for (MapLayer layer : lastToCurrentSelectedStepLayer) {
+					mapView.removeLayer(layer);
+				}
+				mapView.setZoom(mapView.getZoom()-0.001);
+				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
+				System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS : "+selectedDelivery);
+				if (lastSelectedDelivery != null) {
+					MapLayer lastSelectedDeliveryLayer = pinLayers.get(lastSelectedDelivery.getId());
+					MapPoint position = ((CustomPinLayer) lastSelectedDeliveryLayer).getMapPoint();
+					mapView.removeLayer(lastSelectedDeliveryLayer);
+					pinLayers.remove(lastSelectedDelivery.getId());
+					try {
+						MapLayer blackPin = new CustomPinLayer(position, false);
+						pinLayers.put(lastSelectedDelivery.getId(), blackPin);
+						mapView.addLayer(blackPin);
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				if (selectedDelivery != null) {
+					lastToCurrentSelectedStepLayer.clear();
+					boolean deliveryFound = false;
+					ArrayList<MapPoint> points = new ArrayList<MapPoint>();
+					for(Courier c :map.getCouriers()) {
+						Tour tour = c.getTour();
+						for(int i = 0; i < tour.getDeliveries().size(); i++) {
+							if (tour.getDeliveries().get(i) == selectedDelivery) {
+								Intersection beginIntersection;
+								if(i-1<0) {
+									beginIntersection = map.getWarehouse();
+									points.add(new MapPoint(beginIntersection.getLatitude(), beginIntersection.getLongitude()));
+								} else {
+									beginIntersection = tour.getDeliveries().get(i-1).getDestination();
+								}
+								
+								for (int j = 0; j < tour.getTourSteps().size(); j++) {
+									if (deliveryFound == true && tour.getTourSteps().get(j)!= selectedDelivery.getDestination()) {
+										double x2 = tour.getTourSteps().get(j).getLongitude();
+										double y2 = tour.getTourSteps().get(j).getLatitude();
+										points.add(new MapPoint(y2, x2));
+									}
+									if (tour.getTourSteps().get(j)== selectedDelivery.getDestination()) {
+										double x2 = tour.getTourSteps().get(j).getLongitude();
+										double y2 = tour.getTourSteps().get(j).getLatitude();
+										points.add(new MapPoint(y2, x2));
+										break;
+									}
+									if (deliveryFound == false && tour.getTourSteps().get(j) == beginIntersection) {
+										deliveryFound = true;
+										double x2 = tour.getTourSteps().get(j).getLongitude();
+										double y2 = tour.getTourSteps().get(j).getLatitude();
+										points.add(new MapPoint(y2, x2));
+									}
+								}
+								
+								MapLayer layer = new CustomPolygoneMarkerLayer(points, mapView, Color.RED, 5);
+								lastToCurrentSelectedStepLayer.add(layer);
+								mapView.addLayer(layer);
+								break;
+							}
+						}
+					}
+					//Pin
+					lastSelectedDelivery = selectedDelivery;
+					MapLayer layer = pinLayers.get(selectedDelivery.getId());
+					MapPoint position = ((CustomPinLayer) layer).getMapPoint();
+					mapView.removeLayer(layer);
+					pinLayers.remove(selectedDelivery.getId());
+					try {
+						MapLayer newLayer = new CustomPinLayer(position, true);
+						mapView.addLayer(newLayer);
+						pinLayers.put(selectedDelivery.getId(), newLayer);
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					mapView.setZoom(mapView.getZoom()-0.001);
 				}
 			}
 		});
