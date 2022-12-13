@@ -646,6 +646,7 @@ public class HomeView extends Application implements Observer {
 					Optional<ButtonType> result = alert.showAndWait();
 					if (result.get() == ButtonType.YES) {		
 						//TODO : SAVE TOURS
+						saveCouriers();
 					}
 				}
 				map.resetMap();
@@ -679,8 +680,15 @@ public class HomeView extends Application implements Observer {
 					mapView.setCenter(mapPoint);
 				}
 				try {
+					loadCouriers();
 					createMap(map);
 				} catch (MalformedURLException | FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
