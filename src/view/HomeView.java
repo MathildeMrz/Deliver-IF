@@ -255,6 +255,8 @@ public class HomeView extends Application implements Observer {
 				courierItems.clear();
 				listViewCouriers.getItems().clear();
 				map.getCouriers().clear();
+				clearScreen();
+
 				//re-init?
 				try {
 					loadCouriers();
@@ -1085,17 +1087,11 @@ public class HomeView extends Application implements Observer {
 		} else {
 			System.out.println("Aucun fichier existant : " + fileName);
 			ArrayList<Courier> couriersInit = new ArrayList<>();
-			for(Courier item : listViewItemsToIterateOver.getItems()) {
+			couriersAL = initCouriers();
+			for(Courier item : couriersAL.getItems()) {
 				couriersInit.add(item);
 			}
 			this.map.setCouriers(couriersInit);
-		}
-		couriersAL = listViewItemsToIterateOver;
-		for(Courier courier : this.map.getCouriers()) {
-			System.out.println("COURIER DANS MAP "+ courier.getName());
-		}
-		for(Courier courier : couriersAL.getItems()) {
-			System.out.println("COURIER DANS listView "+ courier.getName());
 		}
 
 		return couriersAL;
