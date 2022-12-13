@@ -692,8 +692,8 @@ public class HomeView extends Application implements Observer {
 						MapPoint mapPoint = new MapPoint(latAverage, longAverage);
 						mapView.setZoom(14);
 						mapView.setCenter(mapPoint);
-						createMap(map);
 					}
+					createMap(map);
 				} catch (ParserConfigurationException | SAXException | IOException | ExceptionXML e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
