@@ -36,10 +36,11 @@ public class Map extends Observable {
 		this.couriers = new ArrayList<Courier>();//During load function
 		this.warehouse = null;
 		this.isLoaded = false;
-		latitudeMin = Float.MAX_VALUE;
-		latitudeMax = 0;
-		longitudeMin = Float.MAX_VALUE;
-		longitudeMax = 0;
+		this.latitudeMin = Float.MAX_VALUE;
+		this.latitudeMax = 0;
+		this.longitudeMin = Float.MAX_VALUE;
+		this.longitudeMax = 0;
+		this.mapDate = LocalDate.now();
 	}
 	
 	public void addWarehouse(Long intersectionID) {
