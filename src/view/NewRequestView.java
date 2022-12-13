@@ -27,6 +27,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -40,6 +41,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Callback;
 import model.Courier;
 import model.CustomCircleMarkerLayer;
 import model.Delivery;
@@ -105,6 +107,9 @@ public class NewRequestView extends Application implements Observer {
 		this.stage = stage;
 		this.stage.setWidth(width);
 		this.stage.setHeight(height);
+		/*Creation of the background*/
+		this.background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
+		this.background = new Background(background_fill);
 		this.clicked = false;
 		this.seeIntersection = false;
 		this.closestIntersection = new Intersection();
@@ -121,14 +126,19 @@ public class NewRequestView extends Application implements Observer {
 		this.couriers.getSelectionModel().select(0); //valeur par défaut affichée 
 		this.requestedCourier = couriers.getSelectionModel().getSelectedItem(); //valeur par défaut pour le livreur de la livraison
 		
+
+		
 		/*Creation of the labels*/
-		this.labelSelectCourier = new Label("Sélectionner un livreur");
-		this.labelSelectCourier.setStyle("-fx-background-color:rgba(85, 255, 68,0.7);");
+		this.labelSelectCourier = new Label("2.b Sélectionner un livreur");
+		this.labelSelectCourier.setPadding(new Insets(2));
+		this.labelSelectCourier.setStyle("-fx-font-size: 15;" + "-fx-background-color:rgba(255, 255, 86, 1.00);");
 		this.labelSelectCourier.setVisible(false);
-		this.selectLocation = new Label("Sélectionner la destination de la nouvelle livraison (en cliquant sur la carte)");
-		this.selectLocation.setStyle("-fx-background-color:rgba(85, 255, 68,0.7);");
-		this.labelSelectTimeWindow = new Label("Sélectionner une plage horaire");
-		this.labelSelectTimeWindow.setStyle("-fx-background-color:rgba(85, 255, 68,0.7);");
+		this.selectLocation = new Label("1. Sélectionner la destination de la nouvelle livraison (en cliquant sur la carte)");
+		this.selectLocation.setPadding(new Insets(2));
+		this.selectLocation.setStyle("-fx-font-size: 15;" + "-fx-background-color:rgba(255, 255, 86, 1.00);");
+		this.labelSelectTimeWindow = new Label("2.a Sélectionner une plage \n horaire");
+		this.labelSelectTimeWindow.setPadding(new Insets(2));
+		this.labelSelectTimeWindow.setStyle("-fx-font-size: 15;" + "-fx-background-color:rgba(255, 255, 86, 1.00);");
 		this.labelSelectTimeWindow.setVisible(false);		
 		
 		/*Creation of the buttons*/
@@ -141,10 +151,6 @@ public class NewRequestView extends Application implements Observer {
 		this.buttonChangePage.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 		this.buttonSeeIntersections = new Button("Voir les intersections");
 		this.buttonSeeIntersections.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
-			
-		/*Creation of the background*/
-		this.background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
-		this.background = new Background(background_fill);
 		
 		/* Creation of the datePicker */
 		this.date = new DatePicker();
@@ -208,8 +214,11 @@ public class NewRequestView extends Application implements Observer {
 					labelSelectTimeWindow.setVisible(true);
 					getMapView().setZoom(getMapView().getZoom()+0.001);
 					buttonValidate.setMouseTransparent(false);
+					/*Courier selection*/
+					labelSelectCourier.setVisible(true);
 					couriers.setMouseTransparent(false);
 					requestedCourier = map.getBestCourierAvalaibility(closestIntersection, requestedStartingTimeWindow);
+					couriers.getSelectionModel().select(requestedCourier);
 					display();
 				}
 				clicked = true;
@@ -327,6 +336,7 @@ public class NewRequestView extends Application implements Observer {
 			if(newValue!=null)
 			{
 				requestedStartingTimeWindow = newValue;
+				System.out.println("requestedStartingTimeWindow value ="+requestedStartingTimeWindow);
 				bestCourierAvailable = map.getBestCourierAvalaibility(closestIntersection, requestedStartingTimeWindow);
 				bestCourierProx = map.getBestCourierProximity(closestIntersection, requestedStartingTimeWindow);
 				requestedCourier = bestCourierAvailable;
@@ -340,12 +350,12 @@ public class NewRequestView extends Application implements Observer {
 				//couriers = new ListView<Courier>();
 				if(bestCourierProx != bestCourierAvailable)
 				{
-					newCouriers.getItems().add(bestCourierProx);
 					newCouriers.getItems().add(bestCourierAvailable);
+					newCouriers.getItems().add(bestCourierProx);
 				}
 				else
 				{
-					newCouriers.getItems().add(bestCourierProx);
+					newCouriers.getItems().add(bestCourierAvailable);
 				}
 				for (Courier c : couriersTmp.getItems())
 				{
@@ -355,6 +365,7 @@ public class NewRequestView extends Application implements Observer {
 					}
 				}
 				couriers = newCouriers;
+				couriers.getSelectionModel().select(0); 
 				vBoxCouriers.getChildren().add(couriers);
 				vBoxCouriers.getChildren().add(buttonChangePage);
 				vBoxCouriers.getChildren().add(buttonValidate);
@@ -366,8 +377,6 @@ public class NewRequestView extends Application implements Observer {
 			{
 				System.out.println("time window modifications : "+c.toString());
 			}
-			labelSelectTimeWindow.setVisible(false);
-			labelSelectCourier.setVisible(true);
 			try {
 				buttonCourier();
 			} catch (Exception e1) {
@@ -441,6 +450,9 @@ public class NewRequestView extends Application implements Observer {
 		/* vBox Treeview */
         VBox vBoxTreeView = new VBox();
         //vBoxTreeView.prefWidthProperty().bind(hbox.widthProperty().multiply(0.25));
+        treeview.getRoot().getChildren().forEach(t ->{
+        	((TreeItem)t).setExpanded(false);
+        });
         vBoxTreeView.getChildren().add(treeview);
         vBoxTreeView.setPadding(new Insets(90, 20, 20, 20));
         vBoxTreeView.prefWidthProperty().bind(hbox.widthProperty().multiply(0.30));
@@ -448,6 +460,7 @@ public class NewRequestView extends Application implements Observer {
 		/* vBoxCouriers */
 		vBoxCouriers = new VBox();
 		//this.buttonValidate.setMouseTransparent(true);
+		vBoxCouriers.setPadding(new Insets(5, 0, 0, 0));
 		vBoxCouriers.getChildren().add(labelSelectTimeWindow);
 		vBoxCouriers.getChildren().add(timeWindow);		
 		vBoxCouriers.getChildren().add(labelSelectCourier);
@@ -465,6 +478,7 @@ public class NewRequestView extends Application implements Observer {
 		vBoxMap.setMaxWidth(this.width / 1.6);
 		vBoxMap.prefWidthProperty().bind(hbox.widthProperty().multiply(0.60));		
 		vBoxMap.getChildren().add(selectLocation);
+		vBoxMap.getChildren().add(new Label(""));
 		vBoxMap.getChildren().add(this.mapView);
 
 		/*if (couriers.getItems().size() != 0) {

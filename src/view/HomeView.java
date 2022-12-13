@@ -104,13 +104,13 @@ public class HomeView extends Application implements Observer {
 	private VBox vBoxiIntentedTours;
 	private VBox vBoxAddCourier;
 	private HBox hBox;
-	private Button buttonCancelAddCourier;
 	private Button buttonValidateAddCourier;
 	private TextField courierName;
 	private VBox vBoxHome;
 	private Scene scene;
 	private Delivery lastAddedDelivery;
 	private Courier lastAddedDeliveryCourier;
+	private HBox hboxAddCourier;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -134,7 +134,6 @@ public class HomeView extends Application implements Observer {
 		this.buttonLoadMap = new Button("Sélectionner une carte");
 		this.buttonAddCourier = new Button("Ajouter un livreur");
 		this.buttonChangePage = new Button("Nouvelle livraison");
-		this.buttonCancelAddCourier = new Button("Annuler");
 		this.buttonValidateAddCourier = new Button("Ajouter");	
 		this.buttonLoadMap.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 		this.buttonChangePage.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
@@ -159,6 +158,13 @@ public class HomeView extends Application implements Observer {
 		this.vBoxHome = new VBox();	
 		this.vBoxHome.setBackground(background);
 		this.hBox = new HBox();		
+		this.hboxAddCourier = new HBox();
+		this.hboxAddCourier.getChildren().add(this.buttonAddCourier);
+		this.hboxAddCourier.getChildren().add(this.courierName);
+		this.hboxAddCourier.getChildren().add(this.buttonValidateAddCourier);
+
+		this.buttonValidateAddCourier.setVisible(false);
+		this.courierName.setVisible(false);
 		
 		this.scene = new Scene(this.hBox, 2000, 2000);		
 
@@ -409,6 +415,7 @@ public class HomeView extends Application implements Observer {
 			deliveriesOfTheDayLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
 
 			this.vBoxiIntentedTours.getChildren().add(deliveriesOfTheDayLabel);
+			//this.vBoxiIntentedTours.getChildren().add(hboxAddCourier);
 			this.vBoxMap.getChildren().add(this.mapView);
 			Label chosenDayLabel = new Label("Date courante : "+this.map.getMapDate().toString());	
 			this.vBoxMap.getChildren().add(chosenDayLabel);			
@@ -518,7 +525,7 @@ public class HomeView extends Application implements Observer {
 		
 			this.vBoxiIntentedTours.getChildren().add(treeView);
 			this.vBoxiIntentedTours.getChildren().add(this.buttonChangePage);
-			this.vBoxiIntentedTours.getChildren().add(buttonAddCourier);
+			this.vBoxiIntentedTours.getChildren().add(hboxAddCourier);
 			this.vBoxiIntentedTours.getChildren().add(buttonLoadMap);
 			this.vBoxiIntentedTours.setSpacing(10);
 			
@@ -563,59 +570,27 @@ public class HomeView extends Application implements Observer {
 		
 		this.buttonAddCourier.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
-			public void handle(MouseEvent event) {			
-				hBox.getChildren().clear();				
-				VBox vBoxTitle = new VBox();				
-				Label labelAddCourier = new Label("Ajout d'un nouveau livreur");
-				labelAddCourier.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
-
-				InputStream inputCourier = this.getClass().getResourceAsStream("/Resources/Logo_deliverif.png");
-				Image imageLogo = new Image(inputCourier, 100, 150, false, false);
-				ImageView imageViewCourier = new ImageView(imageLogo);
-				vBoxTitle.getChildren().add(labelAddCourier);
-				vBoxTitle.getChildren().add(imageViewCourier);
-				vBoxTitle.setAlignment(Pos.CENTER);
+			public void handle(MouseEvent event) {	
+				/*System.out.println("Iciiii ouii");
+				System.out.println("Laa non");
+				buttonValidateAddCourier.setVisible(true);
+				courierName.setVisible(true);
+				courierName.setText("");*/
 				
-				Label labelInstructionAddCourier = new Label("Entrer le nom du nouveau livreur");
-				HBox hboxButtonsAddCourier = new HBox();
-				hboxButtonsAddCourier.getChildren().add(buttonCancelAddCourier);
-				hboxButtonsAddCourier.getChildren().add(buttonValidateAddCourier);
-				
-				//Espacement en largeur
-				hboxButtonsAddCourier.setAlignment(Pos.CENTER);
-				hboxButtonsAddCourier.setSpacing(50);
-				hBox.setSpacing(100);
-
-				vBoxAddCourier.getChildren().add(vBoxTitle);
-				vBoxAddCourier.getChildren().add(labelInstructionAddCourier);
-				vBoxAddCourier.getChildren().add(courierName);
-				vBoxAddCourier.getChildren().add(hboxButtonsAddCourier);
-				vBoxAddCourier.setAlignment(Pos.CENTER);
-				
-				//Espacement en hauteur
-				vBoxAddCourier.setSpacing(7);
-
-				hBox.getChildren().add(vBoxAddCourier);
-				hBox.setAlignment(Pos.CENTER);
-			}
-		});
-		
-		this.buttonCancelAddCourier.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {				
-				//Retour à la page de base
-				hBox.getChildren().clear();
-				vBoxMap.getChildren().clear();
-				vBoxiIntentedTours.getChildren().clear();
-				vBoxAddCourier.getChildren().clear();
-				hBox.setAlignment(null);
-			
-				try {
-					display();
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if(buttonValidateAddCourier.isVisible() == true)
+				{
+					System.out.println("Laa ouii");
+					buttonValidateAddCourier.setVisible(false);
+					courierName.setVisible(false);					
+					
 				}
+				else
+				{
+					System.out.println("Laa non");
+					buttonValidateAddCourier.setVisible(true);
+					courierName.setVisible(true);
+					courierName.setText("");
+				}			
 			}
 		});
 		
@@ -627,26 +602,23 @@ public class HomeView extends Application implements Observer {
 				if( !(courierName.getText() == null) && !(courierName.getText().trim().isEmpty()))
 				{
 					Courier newCourier = new Courier(courierName.getText());
-					System.out.println("avant qu'On ajoute le livreur");
-					
+					map.addCourier(newCourier);
 					listViewCouriers.getItems().add(newCourier);
-					System.out.println("On ajoute le livreur");
-					
-				}
-				
-				//Retour à la page de base
-				hBox.getChildren().clear();
-				vBoxMap.getChildren().clear();
-				vBoxiIntentedTours.getChildren().clear();		
-				vBoxAddCourier.getChildren().clear();
-				hBox.setAlignment(null);				
+					buttonValidateAddCourier.setVisible(false);
+					courierName.setVisible(false);
+					courierName.setText("");
+				}					
 				try {
-					System.out.println("On appelle bien le display");
+					vBoxMap.getChildren().clear();
+					vBoxiIntentedTours.getChildren().clear();
+					vBoxAddCourier.getChildren().clear();
+					vBoxHome.getChildren().clear();	
+					hBox.getChildren().clear();	
 					display();
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}					
+				}			
 			}
 		});
 		
