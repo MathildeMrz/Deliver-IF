@@ -247,6 +247,8 @@ public class HomeView extends Application implements Observer {
 				//maybe clear listView
 				map.setMapDate(localDate);
 				courierItems.clear();
+				listViewCouriers.getItems().clear();
+				map.getCouriers().clear();
 				//re-init?
 				try {
 					loadCouriers();
