@@ -30,7 +30,7 @@ public class Dijkstra {
 	private Intersection ptDepart;
 
 	/**
-	 * Initialise les différentes map et conteneurs avant de lancer run()
+	 * Initialise le plan et le graph à parcourir avant de lancer l'algorithme de plus courts chemins()
 	 * 
 	 * @param lePlan
 	 * @param pointDepart
@@ -67,7 +67,7 @@ public class Dijkstra {
 	}
 
 	/**
-	 * Execute la méthode de Dijkstra
+	 * Execute l'algorithme de Dijkstra
 	 */
 	public void run() {
 		// On continue tant que l'on a des intersections grises
@@ -147,6 +147,9 @@ public class Dijkstra {
 
 	}
 
+	/**
+	 * Execute le relachement d'un arc : vérifier si son cout est bien minimal ou pas
+	 */
 	public void relacher(Intersection si, Intersection sj) {
 
 		List<Segment> lesSegments = si.getOutSections();
@@ -180,6 +183,11 @@ public class Dijkstra {
 		}
 	}
 
+	/**
+	 * Obtenir le chemin depuis le point de départ (attribut de la classe) jusqu'à l'intersection d'id idDestination
+	 *  @param idDestination : id de l'Intersection de destination
+	 *  @return l'itinéraire entre l'Intersection de départ l'Intersection de destination
+	 */
 	public Path getItinerary(Long idDestination) {
 
 		if (lePlan.getNodes().containsKey(idDestination)) {

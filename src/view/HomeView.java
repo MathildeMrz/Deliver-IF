@@ -190,7 +190,6 @@ public class HomeView extends Application implements Observer {
 				noButton.setDefaultButton(true);
 				yesButton.setDefaultButton(false);
 				Optional<ButtonType> result = alert.showAndWait();
-				System.out.println(result.get());
 				if(result.get() != null)
 				{
 					if(result.get() == ButtonType.YES)
@@ -225,9 +224,10 @@ public class HomeView extends Application implements Observer {
 		treeView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("add red pin");
+				for (MapLayer layer : lastToCurrentSelectedStepLayer) {
+					mapView.removeLayer(layer);
+				}
 				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
-				System.out.println(selectedDelivery);
 				if (lastSelectedDelivery != null) {
 					MapPoint position = ((CustomPinLayer) lastSelectedDeliveryLayer).getMapPoint();
 					mapView.removeLayer(lastSelectedDeliveryLayer);
@@ -241,9 +241,6 @@ public class HomeView extends Application implements Observer {
 					}
 				}
 				if (selectedDelivery != null) {
-					for (MapLayer layer : lastToCurrentSelectedStepLayer) {
-						mapView.removeLayer(layer);
-					}
 					lastToCurrentSelectedStepLayer.clear();
 					boolean deliveryFound = false;
 					ArrayList<MapPoint> points = new ArrayList<MapPoint>();
@@ -653,6 +650,24 @@ public class HomeView extends Application implements Observer {
 			@Override
 			public void handle(MouseEvent event) {
 				try {
+					if(startPage == false) {
+						Alert alert = new Alert(Alert.AlertType.WARNING);
+						alert.setTitle("Attention");
+						alert.setContentText("Voulez-vous enregistrer vos modifications avant de charger une nouvelle carte ?");
+						alert.getButtonTypes().clear();
+						alert.getButtonTypes().add(ButtonType.YES);
+						alert.getButtonTypes().add(ButtonType.NO);
+						Button noButton = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
+						noButton.setStyle("-fx-background-color: #BFD1E5; ");
+						Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
+						yesButton.setStyle("-fx-background-color: #BFD1E5; ");
+						noButton.setDefaultButton(true);
+						yesButton.setDefaultButton(false);
+						Optional<ButtonType> result = alert.showAndWait();
+						if (result.get() == ButtonType.YES) {		
+							//TODO : SAVE TOURS
+						}
+					}
 					map.resetMap();
 					XMLdeserializer.load(map, stage);
 					vBoxMap.getChildren().clear();
@@ -676,27 +691,8 @@ public class HomeView extends Application implements Observer {
 						MapPoint mapPoint = new MapPoint(latAverage, longAverage);
 						mapView.setZoom(14);
 						mapView.setCenter(mapPoint);
-	
 					}
-					if(startPage == false)
-					{
-						if (JOptionPane.showConfirmDialog(null, "Vos tournées ne seront pas enregistrées", "Confirmation", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)
-						{		
-							//retour page accueil
-							//map.setIsLoaded(false);
-							createMap(map);
-						}
-						else
-						{
-							//SAVE TOURS
-							map.setIsLoaded(false);
-							createMap(map);
-						}
-					}
-					else
-					{
-						createMap(map);
-					}
+					createMap(map);
 				} catch (ParserConfigurationException | SAXException | IOException | ExceptionXML e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
