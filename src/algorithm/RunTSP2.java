@@ -93,6 +93,10 @@ public class RunTSP2 extends Observable {
 				System.out.println("TSP sans solution");
 			}
 	}
+	
+	public boolean getSolutionTrouvee(){
+		return this.solutionTrouvee;
+	}
 
 
 }

@@ -771,8 +771,8 @@ public class HomeView extends Application implements Observer {
 				}
 			}
 		});
-	
-	buttonSaveMap.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+		buttonSaveMap.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				saveCouriers();
@@ -780,10 +780,9 @@ public class HomeView extends Application implements Observer {
 				alert.setTitle("Itinéraires enregistrés");
 				alert.setContentText("Vos itinéraires ont été enregistrés avec succès!");
 				alert.showAndWait();
-				
-				}
 			}
-	);}
+		});
+	}
 
 	public void clearScreen()
 	{
