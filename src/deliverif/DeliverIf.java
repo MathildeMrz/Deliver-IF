@@ -140,7 +140,7 @@ public class DeliverIf extends Application {
 				try {
 
 					while ((st = br.readLine()) != null) {
-						controller.addCourier(st, listViewCouriers);
+						controller.addCourierWithName(st, listViewCouriers);
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block

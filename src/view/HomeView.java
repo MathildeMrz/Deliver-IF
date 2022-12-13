@@ -66,7 +66,6 @@ import model.Delivery;
 import model.Intersection;
 import model.Map;
 import model.Tour;
-import model.Segment;
 import observer.Observable;
 import observer.Observer;
 import xml.ExceptionXML;
@@ -86,7 +85,7 @@ public class HomeView extends Application implements Observer {
 	private HashMap<Integer, MapLayer> pinLayers;
 	private Delivery lastSelectedDelivery;
 	private MapLayer lastSelectedDeliveryLayer;
-	private NewRequestView nr;
+	private NewRequestView newRequestView;
 	private BackgroundFill background_fill;
 	private Background background;
 	private Button buttonLoadMap;
@@ -107,7 +106,6 @@ public class HomeView extends Application implements Observer {
 	private VBox vBoxHome;
 	private Scene scene;
 	private Delivery lastAddedDelivery;
-	private Courier lastAddedDeliveryCourier;
 	private HBox hboxAddCourier;
 	
 	@Override
@@ -166,12 +164,9 @@ public class HomeView extends Application implements Observer {
 		this.scene = new Scene(this.hBox, 2000, 2000);		
 
 		createMap(this.map);
-		
-		//this.scene = new Scene(hBox, 2000, 2000);
-		//this.stage.setScene(scene);
 
-		/*Mouse listeners*/		
-			
+
+		/*Mouse listeners*/				
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent e) {
@@ -192,30 +187,16 @@ public class HomeView extends Application implements Observer {
 				{
 					if(result.get() == ButtonType.YES)
 					{
-						System.out.println("YES!!!!!");
 						saveCouriers();
 						Platform.exit();
 						System.exit(0);
 					}
 					else if(result.get() == ButtonType.NO)
 					{
-						System.out.println("NO!!!!!");
 						Platform.exit();
 						System.exit(0);
 					}
 				}
-				/*if (result.isPresent() && result.get() == ButtonType.YES) {
-					System.out.println("YES!!!!!");
-					saveCouriers();
-					Platform.exit();
-					System.exit(0);
-				} else if (result.get() == ButtonType.CLOSE) {
-					System.out.println("Come back to the page");
-				} else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
-					System.out.println("NO!!!!!");
-					Platform.exit();
-					System.exit(0);
-				}*/
 			}
 		});
 		
@@ -299,8 +280,7 @@ public class HomeView extends Application implements Observer {
 				}
 			}
 		});
-		
-				
+					
 		datePicker.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -308,8 +288,6 @@ public class HomeView extends Application implements Observer {
 			}
 			
 		});
-		
-
 	}
 
 	public void createMap(Map map) throws MalformedURLException, FileNotFoundException {
@@ -322,12 +300,9 @@ public class HomeView extends Application implements Observer {
 			MapLayer mapLayerWareHouse = new CustomCircleMarkerLayer(mapPointWareHouse, 7,
 					javafx.scene.paint.Color.RED);
 			this.mapView.addLayer(mapLayerWareHouse);
-			
-			System.out.println("Create map");
 
 			// add deliveries
 			for (Courier c : this.map.getCouriers()) {
-				System.out.println(c.toString());
 				for (Delivery d : c.getTour().getDeliveries()) {
 					float latDestination = d.getDestination().getLatitude();
 					float longDestination = d.getDestination().getLongitude();
@@ -366,7 +341,6 @@ public class HomeView extends Application implements Observer {
 			// add mapBorders
 			ArrayList<MapPoint> borderPoints = new ArrayList<MapPoint>();
 			double longMin = this.map.getLongitudeMin();
-			System.out.println(longMin);
 			double longMax = this.map.getLongitudeMax();
 			double latMin = this.map.getLatitudeMin();
 			double latMax = this.map.getLatitudeMax();
@@ -421,10 +395,8 @@ public class HomeView extends Application implements Observer {
 			this.treeView = new TreeView();
 			this.courierItems.clear();
 			this.rootItem.getChildren().clear();
-			//Scene scene = new Scene(this.hBox, 2000, 2000);
 			scene.setRoot(this.hBox);
-			//this.stage.setScene(scene);
-	
+
 			for (Courier c : listViewCouriers.getItems())
 			{
 				System.out.println("Il y a "+listViewCouriers.getItems().size()+ " livreurs dans la liste view");
@@ -508,9 +480,7 @@ public class HomeView extends Application implements Observer {
 				timeWindows.add(timeWindow11);	
 
 				courierItem.getChildren().addAll(timeWindows);
-				courierItems.add(courierItem);		
-				
-				System.out.println("Il y a "+courierItems.size() +" courierItems");				
+				courierItems.add(courierItem);					
 			}
 			this.rootItem.setExpanded(true);
 			
@@ -533,8 +503,6 @@ public class HomeView extends Application implements Observer {
 			this.treeView.setRoot(rootItem);
 			
 			this.vBoxiIntentedTours.setSpacing(10);
-			
-
 
 			this.stage.setScene(scene);
 
@@ -546,7 +514,7 @@ public class HomeView extends Application implements Observer {
 		} 
 		else 
 		{
-			System.out.println("Affichage grenouille");
+			//Retour page accueil
 			InputStream inputLogo = this.getClass().getResourceAsStream("/Resources/logo_deliverif.png");
 			Image imageLogo = new Image(inputLogo, 100, 150, false, false);
 			ImageView imageViewLogo = new ImageView(imageLogo);
@@ -568,7 +536,6 @@ public class HomeView extends Application implements Observer {
 			public void handle(MouseEvent event) {					
 				if(buttonValidateAddCourier.isVisible() == true)
 				{
-					System.out.println("Laa ouii");
 					buttonValidateAddCourier.setVisible(false);
 					courierName.setVisible(false);					
 					
@@ -588,9 +555,7 @@ public class HomeView extends Application implements Observer {
 				
 				if( !(courierName.getText() == null) && !(courierName.getText().trim().isEmpty()))
 				{
-					Courier newCourier = new Courier(courierName.getText());
-					map.addCourier(newCourier);
-					listViewCouriers.getItems().add(newCourier);
+					controller.addCourierWithName(courierName.getText(), listViewCouriers);
 					buttonValidateAddCourier.setVisible(false);
 					courierName.setVisible(false);
 					courierName.setText("");
@@ -619,15 +584,15 @@ public class HomeView extends Application implements Observer {
 				Platform.runLater(new Runnable() {
 					public void run() {
 						try {
-							nr.setController(controller);
-							nr.setListViewCouriers(listViewCouriers);
-							nr.setHeight(height);
-							nr.setWidth(width);
-							nr.setMap(map);
-							nr.setMapView(mapView);
-							nr.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
-							nr.setTreeview(treeView);
-							nr.start(stage);
+							newRequestView.setController(controller);
+							newRequestView.setListViewCouriers(listViewCouriers);
+							newRequestView.setHeight(height);
+							newRequestView.setWidth(width);
+							newRequestView.setMap(map);
+							newRequestView.setMapView(mapView);
+							newRequestView.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
+							newRequestView.setTreeview(treeView);
+							newRequestView.start(stage);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -696,31 +661,12 @@ public class HomeView extends Application implements Observer {
 
 	}
 
-	/*public void TSP(Tour tour) {
-		List<Intersection> sommets = new ArrayList<Intersection>();
-		sommets.add(map.getWarehouse());
-		for (Delivery d : tour.getDeliveries()) {
-			sommets.add(d.getDestination());
-		}
-		System.out.println("Debut TSP");
-		RunTSP testTSP = new RunTSP(sommets.size(), sommets, map, tour);
-		testTSP.start();
-		System.out.println("Fin TSP");
-	}*/
 	public void TSP(Tour tour) {
 		List<Intersection> sommets = new ArrayList<Intersection>();
 		sommets.add(map.getWarehouse());
 		int debut =12;
 		for (Delivery d : tour.getDeliveries()) {
 			sommets.add(d.getDestination());
-			/*System.out.print(d.getDestination().getId()+ " ");
-			ArrayList <Segment> t= (d.getDestination().getOutSections());
-			System.out.println("les outsections de ce point :");
-			if(t.size()!=0) {
-				for(Segment s:t) {
-					System.out.print(s.getDestination().getId()+ " ");
-				}
-			}*/
 			System.out.println();
 			if(d.getStartTime()<debut) {
 				debut=d.getStartTime();
@@ -728,11 +674,8 @@ public class HomeView extends Application implements Observer {
 		}
 		LocalDate tourStartDate=tour.getStartDate().toLocalDate();
 		tour.setStartDate(tourStartDate.atTime(debut,0,0));
-		System.out.println("Debut de la tournée à" + tour.getStartDate());
-		System.out.println("Debut TSP");
 		RunTSP2 testTSP = new RunTSP2(map.getWarehouse(),tour.getDeliveries().size()+1, sommets, map, tour);
 		testTSP.start();
-		System.out.println("Fin TSP");
 	}
 
 	public Map getMap() {
@@ -798,10 +741,6 @@ public class HomeView extends Application implements Observer {
 	public void setLastAddedDelivery(Delivery delivery) {
 		this.lastAddedDelivery = delivery;
 	}
-	
-	public void setLastAddedDeliveryCourier(Courier courier) {
-		this.lastAddedDeliveryCourier = courier;
-	}
 
 	public void initMapPolygoneMarkerLayers() {
 		this.mapPolygoneMarkerLayers = new ArrayList<MapLayer>();
@@ -814,17 +753,14 @@ public class HomeView extends Application implements Observer {
 	@Override
 	public void update(Observable observed, Object arg) {
 		// TODO Auto-generated method stub
-		if (arg instanceof Delivery) {
-//			deliveries.getItems().add((Delivery) arg);
-		}
 	}
 	
 	public NewRequestView getNr() {
-		return nr;
+		return newRequestView;
 	}
 
 	public void setNr(NewRequestView nr) {
-		this.nr = nr;
+		this.newRequestView = nr;
 	}
 
 
@@ -837,7 +773,6 @@ public class HomeView extends Application implements Observer {
 
 		// For each courier
 		for (Courier courier : this.map.getCouriers()) {
-			System.out.println("I save one courier");
 
 			JSONObject courierJson = new JSONObject();
 			courierJson.put("id", courier.getId());
@@ -936,17 +871,13 @@ public class HomeView extends Application implements Observer {
 				JSONArray JsonIntersections = JsonTour.getJSONArray("tourSteps");
 				ArrayList<Intersection> tourSteps = new ArrayList<Intersection>();
 
-				System.out.println(courier.getName() + " a " + JsonIntersections.length() + " intersections");
-
 				// For each intersection in the tour
 				for (int j = 0; j < JsonIntersections.length(); j++) {
-					System.out.println("Intersection");
 
 					JSONObject JsonIntersection = JsonIntersections.getJSONObject(j);
 					long intersectionId = JsonIntersection.getLong("id");
 
 					if (this.map.getNodes().containsKey(intersectionId)) {
-						System.out.println("Youpi");
 						tourSteps.add(this.map.getNodes().get(intersectionId));
 						break;
 					}
@@ -960,8 +891,6 @@ public class HomeView extends Application implements Observer {
 				JSONArray JsonDeliveries = JsonTour.getJSONArray("deliveries");
 
 				ArrayList<Delivery> deliveries = new ArrayList<Delivery>();
-
-				System.out.println(courier.getName() + " a " + JsonDeliveries.length() + " livraisons");
 
 				// For each delivery in the Tour
 				for (int m = 0; m < JsonDeliveries.length(); m++) {
@@ -979,7 +908,6 @@ public class HomeView extends Application implements Observer {
 					long deliveryIntersectionId = JsonDeliveryIntersection.getLong("id");
 
 					if (this.map.getNodes().containsKey(deliveryIntersectionId)) {
-						System.out.println("Youpii");
 						Delivery delivery = new Delivery(deliveryStartTime,
 								this.map.getNodes().get(deliveryIntersectionId), localTimeArrival, localTimeDelivery);
 						deliveries.add(delivery);
@@ -989,18 +917,12 @@ public class HomeView extends Application implements Observer {
 					}
 				}
 				Tour tour = new Tour();
-				System.out.println(courier.getName() + " 2 a " + tour.getDeliveries().size() + " deliveries");
-				System.out.println("Test1 : " + tour.getDeliveries().size());
 				tour.setTourSteps(tourSteps);
-				System.out.println("Test2 : " + tour.getDeliveries().size());
-				System.out.println(courier.getName() + " 1 a " + tour.getDeliveries().size() + " deliveries");
-
 				tour.setDeliveries(deliveries);
 				tour.setEndDate(localDateEnd);
 				tour.setStartDate(localDateStart);
 				courier.setTour(tour);
 				couriersAL.getItems().add(courier);
-				// this.map.addCourier(courier);
 			}
 			reader.close();
 		} else {

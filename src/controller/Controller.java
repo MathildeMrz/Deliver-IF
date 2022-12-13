@@ -20,9 +20,10 @@ public class Controller {
 		return courier.getTour().addDelivery(closerIntersection, date, timeWindow);
 	}
 	
-	public void addCourier(String name, ListView<Courier> listView) {
+	public void addCourierWithName(String name, ListView<Courier> listView) {
 		Courier courier = new Courier(name);
 		this.map.addCourier(courier);
 		listView.getItems().add(courier);
 	}
+
 }
