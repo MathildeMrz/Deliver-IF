@@ -105,6 +105,7 @@ public class HomeView extends Application implements Observer {
 	private VBox vBoxAddCourier;
 	private HBox hBox;
 	private Button buttonValidateAddCourier;
+	private Button buttonDeleteDelivery;
 	private TextField courierName;
 	private VBox vBoxHome;
 	private Scene scene;
@@ -128,7 +129,7 @@ public class HomeView extends Application implements Observer {
 		
 		this.background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
 		this.background = new Background(background_fill);
-		this.buttonLoadMap = new Button("Sélectionner une carte");
+		this.buttonLoadMap = new Button("Ouvrir une autre carte");
 		this.buttonAddCourier = new Button("Ajouter un livreur");
 		this.buttonChangePage = new Button("Nouvelle livraison");
 		this.buttonValidateAddCourier = new Button("Ajouter");	
@@ -136,7 +137,10 @@ public class HomeView extends Application implements Observer {
 		this.buttonChangePage.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 		this.buttonAddCourier.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 		this.buttonValidateAddCourier.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
+		this.buttonDeleteDelivery = new Button("Supprimer une livraison");
+		this.buttonDeleteDelivery.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 
+		
 		this.courierName = new TextField();
 		this.courierName.setPromptText("Nom du livreur");
 		
@@ -304,6 +308,14 @@ public class HomeView extends Application implements Observer {
 			MapLayer mapLayerWareHouse = new CustomCircleMarkerLayer(mapPointWareHouse, 7,
 					javafx.scene.paint.Color.RED);
 			this.mapView.addLayer(mapLayerWareHouse);
+					
+			for(MapLayer layer: this.pinLayers.values()) {
+				mapView.removeLayer(layer);
+			}
+			lastSelectedDelivery = null;
+			lastSelectedDeliveryLayer = null;
+		
+			pinLayers.clear();
 
 			// add deliveries
 			for (Courier c : this.map.getCouriers()) {
@@ -403,7 +415,6 @@ public class HomeView extends Application implements Observer {
 
 			for (Courier c : listViewCouriers.getItems())
 			{
-				System.out.println("Il y a "+listViewCouriers.getItems().size()+ " livreurs dans la liste view");
 				// Nom du courier de la tournée
 				Label labelCourier = new Label(c.getName());
 				Color colorCourier = c.getColor();
@@ -487,22 +498,17 @@ public class HomeView extends Application implements Observer {
 				courierItems.add(courierItem);					
 			}
 			this.rootItem.setExpanded(true);
-			
-			this.courierItems.forEach(t -> {
-				System.out.println("TreeItem -> "+t.toString());
-			});
-		
+					
 			this.vBoxiIntentedTours.getChildren().add(treeView);
 			this.vBoxiIntentedTours.getChildren().add(this.buttonChangePage);
 			this.vBoxiIntentedTours.getChildren().add(hboxAddCourier);
+			this.vBoxiIntentedTours.getChildren().add(buttonDeleteDelivery);			
 			this.vBoxiIntentedTours.getChildren().add(buttonLoadMap);
 			this.vBoxiIntentedTours.setSpacing(10);
 			
 			// Add children to the root
 			this.rootItem.getChildren().addAll(courierItems);
-			System.out.println("2) Il y a "+courierItems.size() +" courierItems");				
-			System.out.println("2) Il y a "+this.rootItem.getChildren().size() +" this.rootItem.getChildren()");				
-
+		
 			// Set the Root Node
 			this.treeView.setRoot(rootItem);
 			
@@ -535,6 +541,151 @@ public class HomeView extends Application implements Observer {
 
 		this.stage.show();
 		
+		this.buttonDeleteDelivery.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {	
+				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
+			
+				if(selectedDelivery != null)
+				{
+					for (MapLayer layer : lastToCurrentSelectedStepLayer) {
+						mapView.removeLayer(layer);
+					}
+					lastToCurrentSelectedStepLayer.clear();
+					
+					mapView.removeLayer(lastSelectedDeliveryLayer);
+					
+					//Remove red pin
+					/*MapLayer layer = pinLayers.get(selectedDelivery.getId());
+					
+					mapView.removeLayer(lastSelectedDeliveryLayer);
+					pinLayers.remove(lastSelectedDelivery.getId());
+					lastSelectedDeliveryLayer = null;
+					lastSelectedDelivery = null;
+					
+					mapView.removeLayer(layer);*/
+					//pinLayers.remove(selectedDelivery.getId());
+									
+					//Remove black pin
+					//pinLayers.remove(selectedDelivery.getId());
+				
+					controller.deleteDelivery(selectedDelivery);
+					treeItemToDelivery.remove(selectedDelivery);
+						
+					try 
+					{
+						
+						clearScreen();
+						createMap(map);
+					} 
+					catch (FileNotFoundException | MalformedURLException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					mapView.setZoom(mapView.getZoom()-0.001);
+				}
+			}
+			
+		});
+		
+		this.buttonDeleteDelivery.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {	
+				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
+			
+				if(selectedDelivery != null)
+				{
+					for (MapLayer layer : lastToCurrentSelectedStepLayer) {
+						mapView.removeLayer(layer);
+					}
+					lastToCurrentSelectedStepLayer.clear();
+					
+					mapView.removeLayer(lastSelectedDeliveryLayer);
+					
+					//Remove red pin
+					/*MapLayer layer = pinLayers.get(selectedDelivery.getId());
+					
+					mapView.removeLayer(lastSelectedDeliveryLayer);
+					pinLayers.remove(lastSelectedDelivery.getId());
+					lastSelectedDeliveryLayer = null;
+					lastSelectedDelivery = null;
+					
+					mapView.removeLayer(layer);*/
+					//pinLayers.remove(selectedDelivery.getId());
+									
+					//Remove black pin
+					//pinLayers.remove(selectedDelivery.getId());
+				
+					controller.deleteDelivery(selectedDelivery);
+					treeItemToDelivery.remove(selectedDelivery);
+						
+					try 
+					{
+						
+						clearScreen();
+						createMap(map);
+					} 
+					catch (FileNotFoundException | MalformedURLException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					mapView.setZoom(mapView.getZoom()-0.001);
+				}
+			}
+			
+		});
+		
+		this.buttonDeleteDelivery.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {	
+				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
+			
+				if(selectedDelivery != null)
+				{
+					for (MapLayer layer : lastToCurrentSelectedStepLayer) {
+						mapView.removeLayer(layer);
+					}
+					lastToCurrentSelectedStepLayer.clear();
+					
+					mapView.removeLayer(lastSelectedDeliveryLayer);
+					
+					//Remove red pin
+					/*MapLayer layer = pinLayers.get(selectedDelivery.getId());
+					
+					mapView.removeLayer(lastSelectedDeliveryLayer);
+					pinLayers.remove(lastSelectedDelivery.getId());
+					lastSelectedDeliveryLayer = null;
+					lastSelectedDelivery = null;
+					
+					mapView.removeLayer(layer);*/
+					//pinLayers.remove(selectedDelivery.getId());
+									
+					//Remove black pin
+					//pinLayers.remove(selectedDelivery.getId());
+				
+					controller.deleteDelivery(selectedDelivery);
+					treeItemToDelivery.remove(selectedDelivery);
+						
+					try 
+					{
+						
+						clearScreen();
+						createMap(map);
+					} 
+					catch (FileNotFoundException | MalformedURLException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					mapView.setZoom(mapView.getZoom()-0.001);
+				}
+			}
+			
+		});
+
+		
 		this.buttonAddCourier.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {					
@@ -565,11 +716,7 @@ public class HomeView extends Application implements Observer {
 					courierName.setText("");
 				}					
 				try {
-					vBoxMap.getChildren().clear();
-					vBoxiIntentedTours.getChildren().clear();
-					vBoxAddCourier.getChildren().clear();
-					vBoxHome.getChildren().clear();	
-					hBox.getChildren().clear();	
+					clearScreen();
 					display();
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
@@ -630,11 +777,12 @@ public class HomeView extends Application implements Observer {
 					}
 					map.resetMap();
 					XMLdeserializer.load(map, stage);
-					vBoxMap.getChildren().clear();
+					clearScreen();
+					/*vBoxMap.getChildren().clear();
 					vBoxiIntentedTours.getChildren().clear();
 					vBoxAddCourier.getChildren().clear();
 					vBoxHome.getChildren().clear();
-					hBox.getChildren().clear();
+					hBox.getChildren().clear();*/
 
 					if(map.getIsLoaded())
 					{
@@ -664,22 +812,18 @@ public class HomeView extends Application implements Observer {
 		});
 
 	}
-
+	
+	public void clearScreen()
+	{
+		vBoxMap.getChildren().clear();
+		vBoxiIntentedTours.getChildren().clear();
+		vBoxAddCourier.getChildren().clear();
+		vBoxHome.getChildren().clear();	
+		hBox.getChildren().clear();	
+	}
+	
 	public void TSP(Tour tour) {
-		List<Intersection> sommets = new ArrayList<Intersection>();
-		sommets.add(map.getWarehouse());
-		int debut =12;
-		for (Delivery d : tour.getDeliveries()) {
-			sommets.add(d.getDestination());
-			System.out.println();
-			if(d.getStartTime()<debut) {
-				debut=d.getStartTime();
-			}
-		}
-		LocalDate tourStartDate=tour.getStartDate().toLocalDate();
-		tour.setStartDate(tourStartDate.atTime(debut,0,0));
-		RunTSP2 testTSP = new RunTSP2(map.getWarehouse(),tour.getDeliveries().size()+1, sommets, map, tour);
-		testTSP.start();
+		this.controller.TSP(tour);
 	}
 
 	public Map getMap() {
@@ -769,7 +913,6 @@ public class HomeView extends Application implements Observer {
 
 
 	protected void saveCouriers() {
-		System.out.println("Save couriers");
 		LocalDate date = this.map.getMapDate();
 		String path = "loadedDeliveries/" + date + ".json";
 
@@ -853,7 +996,6 @@ public class HomeView extends Application implements Observer {
 			JSONParser parser = new JSONParser();
 			Reader reader = new FileReader(fileName);
 			Object obj = parser.parse(reader);
-			System.out.println("obj : " + obj);
 
 			JSONArray JsonCouriers = new JSONArray(obj.toString());
 

@@ -36,7 +36,6 @@ public class CompleteGraph2 implements Graph {
 		for (Delivery d: tour.getDeliveries()) {
 			deliveries.add(d);
 			Intersection.add(d.getDestination());
-			//System.out.println(d.getDestination().getId());
 		}
 
 		cost = new double[nbVertices][nbVertices];
@@ -51,15 +50,12 @@ public class CompleteGraph2 implements Graph {
 		        if (i == j) cost[i][j] = -1;
 		        else {
 		        	Dijkstra djikstra= new Dijkstra(lePlan,this.Intersection.get(i)) ;
-		        	//System.out.println("Debut Dijkstra");
 		        	djikstra.run();
-		        	//System.out.println("Fin Dijkstra");
-		        	//cost[i][j] = djikstra.getCoutIntersection(this.Intersection.get(j).getId());
-		        	//System.out.println("cost[i][j] : "+cost[i][j]);
+		        	
 		        	//NEW
 		        	cost[i][j] = djikstra.getCoutIntersection(this.Intersection.get(j).getId())*3.6/15;//pour avoir les secondes
 		        	//END NEW
-		        	System.out.println("cost[i][j] : "+cost[i][j]);
+		        	//System.out.println("cost[i][j] : "+cost[i][j]);
 		        	
 		        	/*enregistrer l'itineraire*/
 		        	path[i][j]=djikstra.getItinerary(this.Intersection.get(j).getId());
@@ -87,7 +83,6 @@ public class CompleteGraph2 implements Graph {
 							{
 								finalHourDeliveryStart= deliveryStartLapsString+":00:00";
 							}
-							//System.out.println("la valeur du string pour "+ i +" = " + finalHourDeliveryStart);
 							String finalHourTourStart="0";
 							if(tour.getStartDate().getHour()==8 || tour.getStartDate().getHour()==9)
 							{
@@ -101,8 +96,7 @@ public class CompleteGraph2 implements Graph {
 							LocalTime timeOfTourStart = LocalTime.parse(finalHourTourStart, DateTimeFormatter.ISO_TIME);
 							timeLapsStart[i] = (int) ChronoUnit.SECONDS.between(timeOfTourStart/*de la plage horaire de la tournée*/, timeOfDeliveryStart/*debut de la plage horaire du delivery */);
 							timeLapsEnd[i] = (int) ChronoUnit.SECONDS.between(timeOfTourStart/*de la plage horaire de la tournée*/, timeOfDeliveryStart.plusHours(1)/*fin de la plage horaire du delivery */);
-							//System.out.println("timeLapsStart["+i+"]="+timeLapsStart[i]);
-							//System.out.println("timeLapsEnd["+i+"]="+timeLapsEnd[i]);
+		
 							
 						}
 						else {
