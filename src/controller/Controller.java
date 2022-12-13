@@ -5,23 +5,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 import algorithm.RunTSP2;
-import javafx.stage.Stage;
+import javafx.scene.control.ListView;
 import model.Courier;
 import model.Delivery;
 import model.Intersection;
 import model.Map;
 import model.Tour;
 
-public class ControllerAddDelivery {
+public class Controller {
 	private Map map;	
 
-	public ControllerAddDelivery(Stage stage, Map map)
+	public Controller(Map map)
 	{
 		this.map= map;
 	}
 
 	public Delivery addDelivery(Intersection closerIntersection, LocalDate date, int timeWindow, Courier courier) {
 		return courier.getTour().addDelivery(closerIntersection, date, timeWindow);
+	}
+	
+	public void addCourierWithName(String name, ListView<Courier> listView) {
+		Courier courier = new Courier(name);
+		this.map.addCourier(courier);
+		listView.getItems().add(courier);
+	}
+	
+	public Intersection getClosestIntersection(float latitude, float longitude, long idIntersection) {
+		 return map.getClosestIntersection(latitude, longitude, idIntersection);
 	}
 	
 	public void TSP(Tour tour) {
@@ -62,4 +72,5 @@ public class ControllerAddDelivery {
 			}
 		}
 	}
+
 }

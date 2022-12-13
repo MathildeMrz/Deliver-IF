@@ -1,17 +1,15 @@
 package algorithm;
 
-import model.Intersection;
-import model.Tour;
-import model.Segment;
-import model.Delivery;
-import model.Path;
-import model.Map;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.time.temporal.ChronoUnit;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import model.Delivery;
+import model.Intersection;
+import model.Map;
+import model.Path;
+import model.Tour;
 
 public class CompleteGraph2 implements Graph {
 	int nbVertices;
@@ -23,9 +21,12 @@ public class CompleteGraph2 implements Graph {
 	private int [] timeLapsEnd;
 	
 	/**
-	 * Create a complete directed graph such that each edge has a weight within [MIN_COST,MAX_COST]
-	 * @param nbVertices
-	 */
+	 * Create a complete directed graph such that each edge has a weight that corresponds to the time spent by the courier between the two nodes in seconds (knowing that his speed is 15 km/h).
+	 * @param warehouse : Intersection corresponding to the warehouse
+	 * @param nbVertices : number of nodes that should the graph have
+	 * @param tour : the tour corresponding to one courier and one day
+	 * @param lePlan : the map corresponding to the tour
+	 * */
 	public CompleteGraph2(Intersection warehouse, int nbVertices,Tour tour, Map lePlan){
 		this.nbVertices = nbVertices;
 		this.Intersection= new ArrayList<Intersection>();
@@ -35,7 +36,6 @@ public class CompleteGraph2 implements Graph {
 		for (Delivery d: tour.getDeliveries()) {
 			deliveries.add(d);
 			Intersection.add(d.getDestination());
-			//System.out.println(d.getDestination().getId());
 		}
 
 		cost = new double[nbVertices][nbVertices];
@@ -50,14 +50,12 @@ public class CompleteGraph2 implements Graph {
 		        if (i == j) cost[i][j] = -1;
 		        else {
 		        	Dijkstra djikstra= new Dijkstra(lePlan,this.Intersection.get(i)) ;
-		        	//System.out.println("Debut Dijkstra");
 		        	djikstra.run();
-		        	//System.out.println("Fin Dijkstra");
-		        	//cost[i][j] = djikstra.getCoutIntersection(this.Intersection.get(j).getId());
-		        	//System.out.println("cost[i][j] : "+cost[i][j]);
+		        	
 		        	//NEW
 		        	cost[i][j] = djikstra.getCoutIntersection(this.Intersection.get(j).getId())*3.6/15;//pour avoir les secondes
 		        	//END NEW
+		        	//System.out.println("cost[i][j] : "+cost[i][j]);
 		        	
 		        	/*enregistrer l'itineraire*/
 		        	path[i][j]=djikstra.getItinerary(this.Intersection.get(j).getId());
@@ -85,7 +83,6 @@ public class CompleteGraph2 implements Graph {
 							{
 								finalHourDeliveryStart= deliveryStartLapsString+":00:00";
 							}
-							//System.out.println("la valeur du string pour "+ i +" = " + finalHourDeliveryStart);
 							String finalHourTourStart="0";
 							if(tour.getStartDate().getHour()==8 || tour.getStartDate().getHour()==9)
 							{
@@ -99,8 +96,7 @@ public class CompleteGraph2 implements Graph {
 							LocalTime timeOfTourStart = LocalTime.parse(finalHourTourStart, DateTimeFormatter.ISO_TIME);
 							timeLapsStart[i] = (int) ChronoUnit.SECONDS.between(timeOfTourStart/*de la plage horaire de la tournée*/, timeOfDeliveryStart/*debut de la plage horaire du delivery */);
 							timeLapsEnd[i] = (int) ChronoUnit.SECONDS.between(timeOfTourStart/*de la plage horaire de la tournée*/, timeOfDeliveryStart.plusHours(1)/*fin de la plage horaire du delivery */);
-							//System.out.println("timeLapsStart["+i+"]="+timeLapsStart[i]);
-							//System.out.println("timeLapsEnd["+i+"]="+timeLapsEnd[i]);
+		
 							
 						}
 						else {

@@ -2,6 +2,8 @@ package model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -131,7 +133,7 @@ public class Tour extends Observable {
 				+ ", intersections=" + tourSteps + "]";
 	}
 	
-	public void addDelivery(Intersection closerIntersection, LocalDate date, int timeWindow)
+	public Delivery addDelivery(Intersection closerIntersection, LocalDate date, int timeWindow)
 	{
 		//StartDate = timeWindow la plus tôt d'une Delivery
 		if(this.startDate.getHour() > timeWindow)
@@ -142,6 +144,8 @@ public class Tour extends Observable {
 		Delivery delivery = new Delivery(timeWindow, closerIntersection, startDelivery);
 	    deliveries.add(delivery);
 		notifyObservers(delivery);
+		deliveries.sort(Comparator.comparing(Delivery::getStartTime));
+		return delivery;
 	}	
 
 	

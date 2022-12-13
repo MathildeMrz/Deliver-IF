@@ -17,7 +17,14 @@ public class XMLfileOpener extends FileFilter {// Singleton
 		if (instance == null) instance = new XMLfileOpener();
 		return instance;
 	}
-
+	
+	/**
+	 * Ouvre une fenetre pour le choix d'un fichier
+	 * @param read ouverture en lecture ou en ecriture
+	 * @param stage
+	 * @return le fichier choisi
+	 * @throws ExceptionXML
+	 */
  	public File open(boolean read, Stage stage) throws ExceptionXML{
  		File file;
  		FileChooser fileChooserXML = new FileChooser();

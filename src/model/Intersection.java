@@ -10,9 +10,9 @@ public class Intersection extends Observable {
 	private ArrayList<Segment> outSections = new ArrayList<Segment>();
 	
 	public Intersection()
-	{
-		
+	{	
 	}
+	
 	public Intersection(long id, float latitude, float longitude) {
 		this.id = id;
 		this.latitude = latitude;

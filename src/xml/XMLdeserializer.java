@@ -20,7 +20,7 @@ import model.Segment;
 
 public class XMLdeserializer {
 	/**
-	 * Open an XML file and create plan from this file
+	 * Ouvre une fichier XML et cree une carte a partir de ce fichier
 	 * @param plan the plan to create from the file
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
@@ -66,6 +66,13 @@ public class XMLdeserializer {
         	throw new ExceptionXML("Wrong format");
 	}
 	
+	/**
+	 * Cree chaque element de la carte
+	 * @param noeudDOMRacine
+	 * @param plan
+	 * @throws ExceptionXML
+	 * @throws NumberFormatException
+	 */
     private static void buildFromDOMXML(Element noeudDOMRacine, Map plan) throws ExceptionXML, NumberFormatException{
        	NodeList intersectionList = noeudDOMRacine.getElementsByTagName("intersection");
        	for (int i = 0; i < intersectionList.getLength(); i++) {
@@ -80,7 +87,13 @@ public class XMLdeserializer {
           	createSegment((Element) segmentList.item(i), plan);
        	}
     }
-    
+    	/**
+    	 * Cree une intersection
+    	 * @param elt
+    	 * @param plan
+    	 * @return
+    	 * @throws ExceptionXML
+    	 */
     private static Intersection createIntersection(Element elt, Map plan) throws ExceptionXML{
     	long id = Long.parseLong(elt.getAttribute("id"));
    		float latitude = Float.parseFloat(elt.getAttribute("latitude"));
@@ -104,7 +117,12 @@ public class XMLdeserializer {
    		Intersection i = new Intersection(id, latitude, longitude);
    		return i;
     }
-    
+    	/**
+    	 * Cree un segment
+    	 * @param elt
+    	 * @param plan
+    	 * @throws ExceptionXML
+    	 */
     private static void createSegment(Element elt, Map plan) throws ExceptionXML{
    		long origin = Long.parseLong(elt.getAttribute("origin"));
    		long dest = Long.parseLong(elt.getAttribute("destination"));

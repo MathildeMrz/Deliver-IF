@@ -34,8 +34,14 @@ public interface Graph {
 	 */
 	public abstract double [][] getTableCost();
 	
+	/** 
+	 * @return the table of Laps of start times
+	 */
 	public int [] getTimeLapsStart();
 	
+	/** 
+	 * @return the table of Laps of end times
+	 */
 	public int [] getTimeLapsEnd() ;
 
 }

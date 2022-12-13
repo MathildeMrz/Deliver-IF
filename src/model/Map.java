@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import observer.Observable;
+import java.time.temporal.*;
+import java.lang.Math;
+
 
 public class Map extends Observable {
 	private HashMap<Long, Intersection> nodes;
@@ -27,15 +30,6 @@ public class Map extends Observable {
 
 	private String mapName;
 
-	
-	public LocalDate getMapDate() {
-		return mapDate;
-	}
-
-	public void setMapDate(LocalDate mapDate) {
-		this.mapDate = mapDate;
-	}
-	
 	public Map() {
 		this.nodes  = new HashMap<Long,Intersection>();
 		this.destinations  = new ArrayList<Intersection>();//During load function
@@ -68,6 +62,14 @@ public class Map extends Observable {
 		return couriers;
 	}
 	
+	public LocalDate getMapDate() {
+		return mapDate;
+	}
+
+	public void setMapDate(LocalDate mapDate) {
+		this.mapDate = mapDate;
+	}
+	
 	public void setCouriers(ArrayList<Courier> couriers) {
 		this.couriers = couriers;
 	}
@@ -89,6 +91,9 @@ public class Map extends Observable {
 		return "Plan [nodes=" + nodes + ", warehouse=" + warehouse + "]";
 	}
 	
+	/**
+	 * Permet de remettre à 0 tous les attributs d'une carte, pour en charger une autre
+	 */
 	public void resetMap() {
 		this.nodes.clear();
 		this.destinations.clear();
@@ -140,27 +145,82 @@ public class Map extends Observable {
 	public boolean getIsLoaded() {
 		return isLoaded;
 	}
+	
+	public void setIsLoaded(boolean loaded) {
+		this.isLoaded = loaded;
+	}
 
 	public void setMapLoaded() {
 		this.isLoaded = true;
 	}
 	
-	public Intersection getClosestIntersection(float latitude, float longitude)
+	/**
+	 * Retourne l'intersection existante la plus proche de la carte par rapport aux coordonnees passees en parametre
+	 * @param latitude la latitude du point
+	 * @param longitude	la longitude du point
+	 * @return l'intersection la plus proche
+	 */
+	public Intersection getClosestIntersection(float latitude, float longitude, long idIntersection)
 	{
 		float minimumDistance = Float.MAX_VALUE;
 		Intersection closerIntersection = null;
 		for(Intersection i : this.nodes.values())
 	     {
+			if(i.getId()!=idIntersection) {
+				
 			 float dist = (float) Math.sqrt((i.getLatitude() - latitude) * (i.getLatitude() - latitude) + (i.getLongitude() - longitude) * (i.getLongitude() - longitude));
 	    	 
 	    	 if(dist < minimumDistance)
 	    	 {
 	    		 minimumDistance = dist;
 	    		 closerIntersection = i;
-	    		 System.out.println("closerIntersection changes");
 	    	 }
+			}
 	     }
 		return closerIntersection;
 	}
+	
+	public Courier getBestCourierAvalaibility(Intersection inter, int timeWindow) {
+	   	 Courier bestCourier = this.couriers.get(0);
+	   	 int tempsLibre = 0;
+	   	 for(Courier c : this.couriers) {
+	   		 for(Delivery del : c.getTour().getDeliveries()) {
+	   			 if((del.getStartTime() == timeWindow + 1) && (del.getArrival().until(del.getDeliveryTime(), ChronoUnit.MINUTES) > tempsLibre)) {
+	   				 bestCourier = c;
+	   				 tempsLibre = (int) del.getArrival().until(del.getDeliveryTime(), ChronoUnit.MINUTES);
+	   			 }
+	   		 }
+	   	 }
+	   	 if(tempsLibre != 0)
+	   	 {return bestCourier;}
+	   	 else {
+	   		 int nbMinDelivery = 1;
+	   		 for(Courier c: this.couriers) {
+	   			 int nbDelivery = c.getTour().getDeliveries().size();
+	   			 if(nbDelivery > 0 && nbDelivery < nbMinDelivery) {
+	   				 nbMinDelivery = nbDelivery;
+	   				 bestCourier = c;
+	   			 }
+	   		 }
+	   	 }
+	   	 System.out.println("Best courier available : "+bestCourier.toString());
+	   	 return bestCourier;
+	    }
+	    
+	    public Courier getBestCourierProximity(Intersection inter, int timeWindow) {
+	   	 Courier bestCourier = couriers.get(0);
+	   	 Float distMin = Float.MAX_VALUE;
+	   	 for(Courier c: this.couriers) {
+	   		 for(Intersection i: c.getTour().getTourSteps()) {
+	   			 float dist = (float) Math.hypot(Math.abs(inter.getLongitude() - i.getLongitude()), Math.abs(inter.getLatitude() - i.getLatitude()));
+	   			 if(dist<distMin) {
+	   				 distMin = dist;
+	   				 bestCourier = c;
+	   			 }
+	   		 }
+	   	 }
+	   	 return bestCourier;
+	    }
+
 	
 }

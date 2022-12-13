@@ -1,6 +1,5 @@
 package algorithm;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -12,7 +11,6 @@ public class TSP2 extends TSP1 {
 		
 		//Récupérer le cout minimal parmis les couts du sommet courant vers les sommets non visités
 		
-		//System.out.println("JE SUIS TSP2 TQT");
 		double minCurrentPoint = Double.MAX_VALUE;
 		for(Integer i : unvisited) {
 			if(cost[currentVertex][i] <minCurrentPoint) {
