@@ -18,10 +18,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import javax.swing.JOptionPane;
 import javax.xml.parsers.ParserConfigurationException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,7 +29,7 @@ import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 import algorithm.RunTSP2;
-import controller.ControllerAddDelivery;
+import controller.Controller;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -68,7 +66,6 @@ import model.Delivery;
 import model.Intersection;
 import model.Map;
 import model.Tour;
-import model.Segment;
 import observer.Observable;
 import observer.Observer;
 import xml.ExceptionXML;
@@ -77,7 +74,7 @@ import xml.XMLdeserializer;
 public class HomeView extends Application implements Observer {
 
 	private Map map;
-	private ControllerAddDelivery controller;
+	private Controller controller;
 	private int width;
 	private int height;
 	private ListView<Courier> listViewCouriers;
@@ -88,7 +85,7 @@ public class HomeView extends Application implements Observer {
 	private HashMap<Integer, MapLayer> pinLayers;
 	private Delivery lastSelectedDelivery;
 	private MapLayer lastSelectedDeliveryLayer;
-	private NewRequestView nr;
+	private NewRequestView newRequestView;
 	private BackgroundFill background_fill;
 	private Background background;
 	private Button buttonLoadMap;
@@ -110,7 +107,6 @@ public class HomeView extends Application implements Observer {
 	private VBox vBoxHome;
 	private Scene scene;
 	private Delivery lastAddedDelivery;
-	private Courier lastAddedDeliveryCourier;
 	private HBox hboxAddCourier;
 	
 	@Override
@@ -121,7 +117,6 @@ public class HomeView extends Application implements Observer {
 		for (Courier c : this.map.getCouriers()) {
 			c.getTour().addObserver(this);
 		}
-		this.controller = new ControllerAddDelivery(this.stage, this.map);
 
 		/* Resize the window */
 		stage.setWidth(width);
@@ -173,12 +168,9 @@ public class HomeView extends Application implements Observer {
 		this.scene = new Scene(this.hBox, 2000, 2000);		
 
 		createMap(this.map);
-		
-		//this.scene = new Scene(hBox, 2000, 2000);
-		//this.stage.setScene(scene);
 
-		/*Mouse listeners*/		
-			
+
+		/*Mouse listeners*/				
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent e) {
@@ -195,44 +187,31 @@ public class HomeView extends Application implements Observer {
 				noButton.setDefaultButton(true);
 				yesButton.setDefaultButton(false);
 				Optional<ButtonType> result = alert.showAndWait();
-				System.out.println(result.get());
 				if(result.get() != null)
 				{
 					if(result.get() == ButtonType.YES)
 					{
-						System.out.println("YES!!!!!");
 						saveCouriers();
 						Platform.exit();
 						System.exit(0);
 					}
 					else if(result.get() == ButtonType.NO)
 					{
-						System.out.println("NO!!!!!");
 						Platform.exit();
 						System.exit(0);
 					}
 				}
-				/*if (result.isPresent() && result.get() == ButtonType.YES) {
-					System.out.println("YES!!!!!");
-					saveCouriers();
-					Platform.exit();
-					System.exit(0);
-				} else if (result.get() == ButtonType.CLOSE) {
-					System.out.println("Come back to the page");
-				} else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
-					System.out.println("NO!!!!!");
-					Platform.exit();
-					System.exit(0);
-				}*/
 			}
 		});
 		
 		treeView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("add red pin");
+				for (MapLayer layer : lastToCurrentSelectedStepLayer) {
+					mapView.removeLayer(layer);
+				}
+				mapView.setZoom(mapView.getZoom()-0.001);
 				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
-				System.out.println(selectedDelivery);
 				if (lastSelectedDelivery != null) {
 					MapPoint position = ((CustomPinLayer) lastSelectedDeliveryLayer).getMapPoint();
 					mapView.removeLayer(lastSelectedDeliveryLayer);
@@ -246,9 +225,6 @@ public class HomeView extends Application implements Observer {
 					}
 				}
 				if (selectedDelivery != null) {
-					for (MapLayer layer : lastToCurrentSelectedStepLayer) {
-						mapView.removeLayer(layer);
-					}
 					lastToCurrentSelectedStepLayer.clear();
 					boolean deliveryFound = false;
 					ArrayList<MapPoint> points = new ArrayList<MapPoint>();
@@ -308,8 +284,7 @@ public class HomeView extends Application implements Observer {
 				}
 			}
 		});
-		
-				
+					
 		datePicker.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -317,8 +292,6 @@ public class HomeView extends Application implements Observer {
 			}
 			
 		});
-		
-
 	}
 
 	public void createMap(Map map) throws MalformedURLException, FileNotFoundException {
@@ -331,9 +304,7 @@ public class HomeView extends Application implements Observer {
 			MapLayer mapLayerWareHouse = new CustomCircleMarkerLayer(mapPointWareHouse, 7,
 					javafx.scene.paint.Color.RED);
 			this.mapView.addLayer(mapLayerWareHouse);
-			
-			System.out.println("Create map");
-			
+					
 			for(MapLayer layer: this.pinLayers.values()) {
 				mapView.removeLayer(layer);
 			}
@@ -344,7 +315,6 @@ public class HomeView extends Application implements Observer {
 
 			// add deliveries
 			for (Courier c : this.map.getCouriers()) {
-				System.out.println(c.toString());
 				for (Delivery d : c.getTour().getDeliveries()) {
 					float latDestination = d.getDestination().getLatitude();
 					float longDestination = d.getDestination().getLongitude();
@@ -383,7 +353,6 @@ public class HomeView extends Application implements Observer {
 			// add mapBorders
 			ArrayList<MapPoint> borderPoints = new ArrayList<MapPoint>();
 			double longMin = this.map.getLongitudeMin();
-			System.out.println(longMin);
 			double longMax = this.map.getLongitudeMax();
 			double latMin = this.map.getLatitudeMin();
 			double latMax = this.map.getLatitudeMax();
@@ -439,11 +408,9 @@ public class HomeView extends Application implements Observer {
 			this.courierItems.clear();
 			this.rootItem.getChildren().clear();
 			scene.setRoot(this.hBox);
-			//this.stage.setScene(scene);
-	
+
 			for (Courier c : listViewCouriers.getItems())
 			{
-				System.out.println("Il y a "+listViewCouriers.getItems().size()+ " livreurs dans la liste view");
 				// Nom du courier de la tournée
 				Label labelCourier = new Label(c.getName());
 				Color colorCourier = c.getColor();
@@ -524,16 +491,10 @@ public class HomeView extends Application implements Observer {
 				timeWindows.add(timeWindow11);	
 
 				courierItem.getChildren().addAll(timeWindows);
-				courierItems.add(courierItem);		
-				
-				System.out.println("Il y a "+courierItems.size() +" courierItems");				
+				courierItems.add(courierItem);					
 			}
 			this.rootItem.setExpanded(true);
-			
-			this.courierItems.forEach(t -> {
-				System.out.println("TreeItem -> "+t.toString());
-			});
-		
+					
 			this.vBoxiIntentedTours.getChildren().add(treeView);
 			this.vBoxiIntentedTours.getChildren().add(this.buttonChangePage);
 			this.vBoxiIntentedTours.getChildren().add(hboxAddCourier);
@@ -543,15 +504,11 @@ public class HomeView extends Application implements Observer {
 			
 			// Add children to the root
 			this.rootItem.getChildren().addAll(courierItems);
-			System.out.println("2) Il y a "+courierItems.size() +" courierItems");				
-			System.out.println("2) Il y a "+this.rootItem.getChildren().size() +" this.rootItem.getChildren()");				
-
+		
 			// Set the Root Node
 			this.treeView.setRoot(rootItem);
 			
 			this.vBoxiIntentedTours.setSpacing(10);
-			
-
 
 			this.stage.setScene(scene);
 
@@ -563,7 +520,7 @@ public class HomeView extends Application implements Observer {
 		} 
 		else 
 		{
-			System.out.println("Affichage grenouille");
+			//Retour page accueil
 			InputStream inputLogo = this.getClass().getResourceAsStream("/Resources/logo_deliverif.png");
 			Image imageLogo = new Image(inputLogo, 100, 150, false, false);
 			ImageView imageViewLogo = new ImageView(imageLogo);
@@ -610,7 +567,6 @@ public class HomeView extends Application implements Observer {
 				
 					controller.deleteDelivery(selectedDelivery);
 					treeItemToDelivery.remove(selectedDelivery);
-					System.out.println("Delivery deleted");
 						
 					try 
 					{
@@ -629,25 +585,114 @@ public class HomeView extends Application implements Observer {
 			
 		});
 		
-		this.buttonAddCourier.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		this.buttonDeleteDelivery.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {	
-				/*System.out.println("Iciiii ouii");
-				System.out.println("Laa non");
-				buttonValidateAddCourier.setVisible(true);
-				courierName.setVisible(true);
-				courierName.setText("");*/
+				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
+			
+				if(selectedDelivery != null)
+				{
+					for (MapLayer layer : lastToCurrentSelectedStepLayer) {
+						mapView.removeLayer(layer);
+					}
+					lastToCurrentSelectedStepLayer.clear();
+					
+					mapView.removeLayer(lastSelectedDeliveryLayer);
+					
+					//Remove red pin
+					/*MapLayer layer = pinLayers.get(selectedDelivery.getId());
+					
+					mapView.removeLayer(lastSelectedDeliveryLayer);
+					pinLayers.remove(lastSelectedDelivery.getId());
+					lastSelectedDeliveryLayer = null;
+					lastSelectedDelivery = null;
+					
+					mapView.removeLayer(layer);*/
+					//pinLayers.remove(selectedDelivery.getId());
+									
+					//Remove black pin
+					//pinLayers.remove(selectedDelivery.getId());
 				
+					controller.deleteDelivery(selectedDelivery);
+					treeItemToDelivery.remove(selectedDelivery);
+						
+					try 
+					{
+						
+						clearScreen();
+						createMap(map);
+					} 
+					catch (FileNotFoundException | MalformedURLException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					mapView.setZoom(mapView.getZoom()-0.001);
+				}
+			}
+			
+		});
+		
+		this.buttonDeleteDelivery.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {	
+				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
+			
+				if(selectedDelivery != null)
+				{
+					for (MapLayer layer : lastToCurrentSelectedStepLayer) {
+						mapView.removeLayer(layer);
+					}
+					lastToCurrentSelectedStepLayer.clear();
+					
+					mapView.removeLayer(lastSelectedDeliveryLayer);
+					
+					//Remove red pin
+					/*MapLayer layer = pinLayers.get(selectedDelivery.getId());
+					
+					mapView.removeLayer(lastSelectedDeliveryLayer);
+					pinLayers.remove(lastSelectedDelivery.getId());
+					lastSelectedDeliveryLayer = null;
+					lastSelectedDelivery = null;
+					
+					mapView.removeLayer(layer);*/
+					//pinLayers.remove(selectedDelivery.getId());
+									
+					//Remove black pin
+					//pinLayers.remove(selectedDelivery.getId());
+				
+					controller.deleteDelivery(selectedDelivery);
+					treeItemToDelivery.remove(selectedDelivery);
+						
+					try 
+					{
+						
+						clearScreen();
+						createMap(map);
+					} 
+					catch (FileNotFoundException | MalformedURLException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					mapView.setZoom(mapView.getZoom()-0.001);
+				}
+			}
+			
+		});
+
+		
+		this.buttonAddCourier.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {					
 				if(buttonValidateAddCourier.isVisible() == true)
 				{
-					System.out.println("Laa ouii");
 					buttonValidateAddCourier.setVisible(false);
 					courierName.setVisible(false);					
 					
 				}
 				else
 				{
-					System.out.println("Laa non");
 					buttonValidateAddCourier.setVisible(true);
 					courierName.setVisible(true);
 					courierName.setText("");
@@ -658,13 +703,10 @@ public class HomeView extends Application implements Observer {
 		this.buttonValidateAddCourier.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("Avant l'ajout");
 				
 				if( !(courierName.getText() == null) && !(courierName.getText().trim().isEmpty()))
 				{
-					Courier newCourier = new Courier(courierName.getText());
-					map.addCourier(newCourier);
-					listViewCouriers.getItems().add(newCourier);
+					controller.addCourierWithName(courierName.getText(), listViewCouriers);
 					buttonValidateAddCourier.setVisible(false);
 					courierName.setVisible(false);
 					courierName.setText("");
@@ -689,15 +731,15 @@ public class HomeView extends Application implements Observer {
 				Platform.runLater(new Runnable() {
 					public void run() {
 						try {
-							nr.setController(controller);
-							nr.setListViewCouriers(listViewCouriers);
-							nr.setHeight(height);
-							nr.setWidth(width);
-							nr.setMap(map);
-							nr.setMapView(mapView);
-							nr.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
-							nr.setTreeview(treeView);
-							nr.start(stage);
+							newRequestView.setController(controller);
+							newRequestView.setListViewCouriers(listViewCouriers);
+							newRequestView.setHeight(height);
+							newRequestView.setWidth(width);
+							newRequestView.setMap(map);
+							newRequestView.setMapView(mapView);
+							newRequestView.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
+							newRequestView.setTreeview(treeView);
+							newRequestView.start(stage);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -711,6 +753,24 @@ public class HomeView extends Application implements Observer {
 			@Override
 			public void handle(MouseEvent event) {
 				try {
+					if(startPage == false) {
+						Alert alert = new Alert(Alert.AlertType.WARNING);
+						alert.setTitle("Attention");
+						alert.setContentText("Voulez-vous enregistrer vos modifications avant de charger une nouvelle carte ?");
+						alert.getButtonTypes().clear();
+						alert.getButtonTypes().add(ButtonType.YES);
+						alert.getButtonTypes().add(ButtonType.NO);
+						Button noButton = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
+						noButton.setStyle("-fx-background-color: #BFD1E5; ");
+						Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
+						yesButton.setStyle("-fx-background-color: #BFD1E5; ");
+						noButton.setDefaultButton(true);
+						yesButton.setDefaultButton(false);
+						Optional<ButtonType> result = alert.showAndWait();
+						if (result.get() == ButtonType.YES) {		
+							//TODO : SAVE TOURS
+						}
+					}
 					map.resetMap();
 					XMLdeserializer.load(map, stage);
 					clearScreen();
@@ -735,27 +795,8 @@ public class HomeView extends Application implements Observer {
 						MapPoint mapPoint = new MapPoint(latAverage, longAverage);
 						mapView.setZoom(14);
 						mapView.setCenter(mapPoint);
-	
 					}
-					if(startPage == false)
-					{
-						if (JOptionPane.showConfirmDialog(null, "Vos tournées ne seront pas enregistrées", "Confirmation", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)
-						{		
-							//retour page accueil
-							//map.setIsLoaded(false);
-							createMap(map);
-						}
-						else
-						{
-							//SAVE TOURS
-							map.setIsLoaded(false);
-							createMap(map);
-						}
-					}
-					else
-					{
-						createMap(map);
-					}
+					createMap(map);
 				} catch (ParserConfigurationException | SAXException | IOException | ExceptionXML e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -789,11 +830,11 @@ public class HomeView extends Application implements Observer {
 		this.map = map;
 	}
 
-	public ControllerAddDelivery getController() {
+	public Controller getController() {
 		return controller;
 	}
 
-	public void setController(ControllerAddDelivery controller) {
+	public void setController(Controller controller) {
 		this.controller = controller;
 	}
 
@@ -844,10 +885,6 @@ public class HomeView extends Application implements Observer {
 	public void setLastAddedDelivery(Delivery delivery) {
 		this.lastAddedDelivery = delivery;
 	}
-	
-	public void setLastAddedDeliveryCourier(Courier courier) {
-		this.lastAddedDeliveryCourier = courier;
-	}
 
 	public void initMapPolygoneMarkerLayers() {
 		this.mapPolygoneMarkerLayers = new ArrayList<MapLayer>();
@@ -860,22 +897,18 @@ public class HomeView extends Application implements Observer {
 	@Override
 	public void update(Observable observed, Object arg) {
 		// TODO Auto-generated method stub
-		if (arg instanceof Delivery) {
-//			deliveries.getItems().add((Delivery) arg);
-		}
 	}
 	
 	public NewRequestView getNr() {
-		return nr;
+		return newRequestView;
 	}
 
 	public void setNr(NewRequestView nr) {
-		this.nr = nr;
+		this.newRequestView = nr;
 	}
 
 
 	protected void saveCouriers() {
-		System.out.println("Save couriers");
 		LocalDate date = this.map.getMapDate();
 		String path = "loadedDeliveries/" + date + ".json";
 
@@ -883,7 +916,6 @@ public class HomeView extends Application implements Observer {
 
 		// For each courier
 		for (Courier courier : this.map.getCouriers()) {
-			System.out.println("I save one courier");
 
 			JSONObject courierJson = new JSONObject();
 			courierJson.put("id", courier.getId());
@@ -960,7 +992,6 @@ public class HomeView extends Application implements Observer {
 			JSONParser parser = new JSONParser();
 			Reader reader = new FileReader(fileName);
 			Object obj = parser.parse(reader);
-			System.out.println("obj : " + obj);
 
 			JSONArray JsonCouriers = new JSONArray(obj.toString());
 
@@ -982,17 +1013,13 @@ public class HomeView extends Application implements Observer {
 				JSONArray JsonIntersections = JsonTour.getJSONArray("tourSteps");
 				ArrayList<Intersection> tourSteps = new ArrayList<Intersection>();
 
-				System.out.println(courier.getName() + " a " + JsonIntersections.length() + " intersections");
-
 				// For each intersection in the tour
 				for (int j = 0; j < JsonIntersections.length(); j++) {
-					System.out.println("Intersection");
 
 					JSONObject JsonIntersection = JsonIntersections.getJSONObject(j);
 					long intersectionId = JsonIntersection.getLong("id");
 
 					if (this.map.getNodes().containsKey(intersectionId)) {
-						System.out.println("Youpi");
 						tourSteps.add(this.map.getNodes().get(intersectionId));
 						break;
 					}
@@ -1006,8 +1033,6 @@ public class HomeView extends Application implements Observer {
 				JSONArray JsonDeliveries = JsonTour.getJSONArray("deliveries");
 
 				ArrayList<Delivery> deliveries = new ArrayList<Delivery>();
-
-				System.out.println(courier.getName() + " a " + JsonDeliveries.length() + " livraisons");
 
 				// For each delivery in the Tour
 				for (int m = 0; m < JsonDeliveries.length(); m++) {
@@ -1025,7 +1050,6 @@ public class HomeView extends Application implements Observer {
 					long deliveryIntersectionId = JsonDeliveryIntersection.getLong("id");
 
 					if (this.map.getNodes().containsKey(deliveryIntersectionId)) {
-						System.out.println("Youpii");
 						Delivery delivery = new Delivery(deliveryStartTime,
 								this.map.getNodes().get(deliveryIntersectionId), localTimeArrival, localTimeDelivery);
 						deliveries.add(delivery);
@@ -1035,18 +1059,12 @@ public class HomeView extends Application implements Observer {
 					}
 				}
 				Tour tour = new Tour();
-				System.out.println(courier.getName() + " 2 a " + tour.getDeliveries().size() + " deliveries");
-				System.out.println("Test1 : " + tour.getDeliveries().size());
 				tour.setTourSteps(tourSteps);
-				System.out.println("Test2 : " + tour.getDeliveries().size());
-				System.out.println(courier.getName() + " 1 a " + tour.getDeliveries().size() + " deliveries");
-
 				tour.setDeliveries(deliveries);
 				tour.setEndDate(localDateEnd);
 				tour.setStartDate(localDateStart);
 				courier.setTour(tour);
 				couriersAL.getItems().add(courier);
-				// this.map.addCourier(courier);
 			}
 			reader.close();
 		} else {

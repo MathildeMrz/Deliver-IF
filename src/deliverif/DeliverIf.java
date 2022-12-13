@@ -1,4 +1,4 @@
-package view;
+package deliverif;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,22 +12,24 @@ import com.gluonhq.attach.util.Services;
 import com.gluonhq.attach.util.impl.ServiceFactory;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
-import controller.ControllerAddDelivery;
+import controller.Controller;
 import javafx.application.Application;
 import javafx.scene.control.ListView;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Courier;
 import model.Map;
+import view.HomeView;
+import view.NewRequestView;
 
-public class Window extends Application {
+public class DeliverIf extends Application {
 	private Map map;
-	private ControllerAddDelivery controller;
+	private Controller controller;
 	private int width;
 	private int height;
 	private ListView<Courier> listViewCouriers;
-	private HomeView mv;
-	private NewRequestView nr;
+	private HomeView homeView;
+	private NewRequestView newRequestView;
 
 	public static void main(String[] args) throws Exception {
 
@@ -81,6 +83,7 @@ public class Window extends Application {
 		this.height = (int) Screen.getPrimary().getVisualBounds().getHeight();
 		this.map = new Map();
 		this.map.setMapDate(LocalDate.now());
+		this.controller = new Controller(this.map);
 		this.listViewCouriers = initCouriers();
 
 		/* Définit la plate-forme pour éviter "javafx.platform is not defined" */
@@ -106,21 +109,19 @@ public class Window extends Application {
 		/* Centre la carte sur le point */
 		mapView.setCenter(mapPoint);
 
-		this.mv = new HomeView();
-		this.mv.initMapPolygoneMarkerLayers();
-		this.mv.initLastToCurrentSelectedStepLayer();
-		this.mv.setListViewCouriers(listViewCouriers);
-		this.mv.setController(this.controller);
-		this.mv.setHeight(this.height);
-		this.mv.setWidth(this.width);
-		this.mv.setMap(this.map);
-		System.out.println("this.map " + this.map);
-		this.mv.setMapView(mapView);
-		this.nr = new NewRequestView();
-		this.nr.setOurMapView(mv);
-		this.mv.setNr(nr);
-		this.mv.start(new Stage());
-
+		this.homeView = new HomeView();
+		this.homeView.initMapPolygoneMarkerLayers();
+		this.homeView.initLastToCurrentSelectedStepLayer();
+		this.homeView.setListViewCouriers(listViewCouriers);
+		this.homeView.setController(this.controller);
+		this.homeView.setHeight(this.height);
+		this.homeView.setWidth(this.width);
+		this.homeView.setMap(this.map);
+		this.homeView.setMapView(mapView);
+		this.newRequestView = new NewRequestView();
+		this.newRequestView.setOurMapView(homeView);
+		this.homeView.setNr(newRequestView);
+		this.homeView.start(new Stage());
 	}
 
 	public ListView<Courier> initCouriers() {
@@ -139,12 +140,7 @@ public class Window extends Application {
 				try {
 
 					while ((st = br.readLine()) != null) {
-						// String[] arrSplit_2 = st.split(";");
-						// couriers.getItems().add(new Courier(arrSplit_2[0],
-						// Double.parseDouble(arrSplit_2[1])));
-						Courier courier = new Courier(st);
-						listViewCouriers.getItems().add(courier);
-						this.map.addCourier(courier);
+						controller.addCourierWithName(st, listViewCouriers);
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block

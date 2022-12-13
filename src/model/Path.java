@@ -37,8 +37,5 @@ public class Path {
 	public void setDestination(Intersection destination) {
 		this.destination = destination;
 	}
-	
-	
-	
 
 }

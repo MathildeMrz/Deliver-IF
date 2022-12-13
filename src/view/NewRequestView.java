@@ -14,7 +14,7 @@ import org.json.JSONObject;
 import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
-import controller.ControllerAddDelivery;
+import controller.Controller;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -27,7 +27,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -40,7 +39,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javafx.util.Callback;
 import model.Courier;
 import model.CustomCircleMarkerLayer;
 import model.Delivery;
@@ -54,7 +52,7 @@ import observer.Observer;
 public class NewRequestView extends Application implements Observer {
 
 	private Map map;
-	private ControllerAddDelivery controller;
+	private Controller controller;
 	private int width;
 	private int height;
 	private ListView<Courier> couriers;
@@ -125,8 +123,6 @@ public class NewRequestView extends Application implements Observer {
 		this.couriers.getSelectionModel().select(0); //valeur par défaut affichée 
 		this.requestedCourier = couriers.getSelectionModel().getSelectedItem(); //valeur par défaut pour le livreur de la livraison
 		
-
-		
 		/*Creation of the labels*/
 		this.labelSelectCourier = new Label("2.b Sélectionner un livreur");
 		this.labelSelectCourier.setPadding(new Insets(2));
@@ -146,7 +142,7 @@ public class NewRequestView extends Application implements Observer {
 		this.buttonValidate.setMouseTransparent(true);
 		this.buttonChangePoint = new Button("Changer le point de livraison");
 		this.buttonChangePoint.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
-		this.buttonChangePage = new Button("Map view");
+		this.buttonChangePage = new Button("Annuler la livraison");
 		this.buttonChangePage.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 		this.buttonSeeIntersections = new Button("Voir les intersections");
 		this.buttonSeeIntersections.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
@@ -177,14 +173,11 @@ public class NewRequestView extends Application implements Observer {
 					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
 						getMapView().removeLayer(customCircleMarkerLayer);
 					}
-					System.out.println("Come back to the page");
 					buttonSeeIntersections.setText("Voir les intersections");
 					seeIntersection = false;
-				}
+				}			
 				getMapView().setZoom(getMapView().getZoom()-0.001);
-				display();
 			}
-			
 		});
 		
 		this.mapView.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -197,10 +190,10 @@ public class NewRequestView extends Application implements Observer {
 					MapPoint mp = mapView.getMapPosition(requestedX, requestedY);
 					float latitude = (float) mp.getLatitude();
 					float longitude = (float) mp.getLongitude();
-					closestIntersection = map.getClosestIntersection(latitude, longitude, -1);
+					closestIntersection = controller.getClosestIntersection(latitude, longitude, -1);
 					if(closestIntersection.getOutSections().size() == 0)
 					{
-						closestIntersection = map.getClosestIntersection(closestIntersection.getLatitude(), closestIntersection.getLongitude(),closestIntersection.getId());
+						closestIntersection = controller.getClosestIntersection(closestIntersection.getLatitude(), closestIntersection.getLongitude(), closestIntersection.getId());
 					}
 					MapPoint mapPointPin = new MapPoint(closestIntersection.getLatitude(), closestIntersection.getLongitude());
 					newDelivery = new CustomCircleMarkerLayer(mapPointPin, 6, javafx.scene.paint.Color.BLUE);
@@ -225,7 +218,6 @@ public class NewRequestView extends Application implements Observer {
 		// Listener for updating the checkout date w.r.t check in date
 		this.date.valueProperty().addListener((ov, oldValue, newValue) -> {
 			requestedDate = newValue.plusDays(noOfDaysToAdd);
-			System.out.println("You clicked: " + requestedDate);
 		});
 
 		this.buttonChangePoint.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -233,12 +225,8 @@ public class NewRequestView extends Application implements Observer {
 			public void handle(MouseEvent event) {
 				clicked = false;
 				mapView.removeLayer(newDelivery);
-				//timeWindow.getSelectionModel().select(0); //valeur par défaut affichée
 				timeWindow.setMouseTransparent(true);
 				timeWindow.setStyle(null);
-				//requestedStartingTimeWindow = timeWindow.getItems().get(0);	//valeur par défaut pour la timeWindow de la livraison
-				//couriers.getSelectionModel().select(0); //valeur par défaut affichée 
-				//requestedCourier = couriers.getSelectionModel().getSelectedItem(); //valeur par défaut pour le livreur de la livraison
 				couriers.setMouseTransparent(true);
 				labelSelectTimeWindow.setVisible(false);
 				labelSelectCourier.setVisible(false);
@@ -300,14 +288,12 @@ public class NewRequestView extends Application implements Observer {
 				Optional<ButtonType> result = alert.showAndWait();
 				if (result.isPresent() && result.get() == ButtonType.YES)
 				{
-					System.out.println("YES!!!!!");
 					saveCouriers();
 					Platform.exit();
 					System.exit(0);
 				} 
 				else if (result.isPresent() && result.get() == ButtonType.NO)
 				{
-					System.out.println("NO!!!!!");
 					Platform.exit();
 					System.exit(0);
 				} 
@@ -318,22 +304,10 @@ public class NewRequestView extends Application implements Observer {
 			}
 		});
 		
-		/*this.couriers.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent event) {
-				System.out.println("requestedCourier :" + couriers.getSelectionModel().getSelectedItem());
-				requestedCourier = couriers.getSelectionModel().getSelectedItem();
-			}
-		});*/
-		
 		this.timeWindow.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-			System.out.println("old value :" + oldValue);
-			System.out.println("requestedStartingTimeWindow :" + newValue);
 			if(newValue!=null)
 			{
 				requestedStartingTimeWindow = newValue;
-				System.out.println("requestedStartingTimeWindow value ="+requestedStartingTimeWindow);
 				bestCourierAvailable = map.getBestCourierAvalaibility(closestIntersection, requestedStartingTimeWindow);
 				bestCourierProx = map.getBestCourierProximity(closestIntersection, requestedStartingTimeWindow);
 				requestedCourier = bestCourierAvailable;
@@ -344,7 +318,6 @@ public class NewRequestView extends Application implements Observer {
 				vBoxCouriers.getChildren().remove(buttonChangePoint);
 				ListView<Courier> couriersTmp = couriers;
 				ListView<Courier> newCouriers = new ListView<Courier>();
-				//couriers = new ListView<Courier>();
 				if(bestCourierProx != bestCourierAvailable)
 				{
 					newCouriers.getItems().add(bestCourierAvailable);
@@ -389,19 +362,6 @@ public class NewRequestView extends Application implements Observer {
 				System.out.println("Mettre à jour les couriers disponibles");
 			}
 		});
-		
-		/*this.couriers.itemsProperty().addListener((obs, old, current) -> {
-			System.out.println("requestedCourier : " + current.toString());
-			System.out.println("old value : "+old.toString());
-			//requestedCourier = couriers.getSelectionModel().getSelectedItem();
-			System.out.println("Bouton valider appuyable");
-			buttonSeeIntersections.setText("Voir les intersections");
-			for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
-					getMapView().removeLayer(customCircleMarkerLayer);
-			}
-			seeIntersection = false; 
-			
-		});*/
 		buttonCourier();
 	}
 	
@@ -429,7 +389,6 @@ public class NewRequestView extends Application implements Observer {
 				}
 			});
 			
-			System.out.println("Bouton valider appuyable");
 			buttonSeeIntersections.setText("Voir les intersections");
 			for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
 					getMapView().removeLayer(customCircleMarkerLayer);
@@ -456,7 +415,6 @@ public class NewRequestView extends Application implements Observer {
 
 		/* vBoxCouriers */
 		vBoxCouriers = new VBox();
-		//this.buttonValidate.setMouseTransparent(true);
 		vBoxCouriers.setPadding(new Insets(5, 0, 0, 0));
 		vBoxCouriers.getChildren().add(labelSelectTimeWindow);
 		vBoxCouriers.getChildren().add(timeWindow);		
@@ -513,7 +471,6 @@ public class NewRequestView extends Application implements Observer {
 						ourMapView.setMapView(mapView);
 						ourMapView.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
 						ourMapView.setLastAddedDelivery(delivery);
-						ourMapView.setLastAddedDeliveryCourier(requestedCourier);
 						ourMapView.start(stage);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -551,11 +508,11 @@ public class NewRequestView extends Application implements Observer {
 		this.map = map;
 	}
 
-	public ControllerAddDelivery getController() {
+	public Controller getController() {
 		return controller;
 	}
 
-	public void setController(ControllerAddDelivery controller) {
+	public void setController(Controller controller) {
 		this.controller = controller;
 	}
 
@@ -685,7 +642,6 @@ public class NewRequestView extends Application implements Observer {
 			}
 			File pathAsFile = new File("loadedDeliveries");
 			if (!Files.isDirectory(Paths.get("loadedDeliveries"))) {
-				System.out.println("HERE!!!!!!");
 				pathAsFile.mkdir();
 			}
 			try (PrintWriter out = new PrintWriter(new FileWriter(path))) {
