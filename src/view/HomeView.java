@@ -80,11 +80,15 @@ public class HomeView extends Application implements Observer {
 	private ListView<Courier> listViewCouriers;
 	private Stage stage;
 	private MapView mapView;
+	
+	private HashMap<TreeItem, Delivery> treeItemToDelivery;
+	private HashMap<Integer, MapLayer> pinLayers;
 	private ArrayList<MapLayer> mapPolygoneMarkerLayers;
 	private ArrayList<MapLayer> lastToCurrentSelectedStepLayer;
-	private HashMap<Integer, MapLayer> pinLayers;
+//	private MapLayer lastSelectedDeliveryLayer;
 	private Delivery lastSelectedDelivery;
-	private MapLayer lastSelectedDeliveryLayer;
+	private Delivery lastAddedDelivery;
+	
 	private NewRequestView newRequestView;
 	private BackgroundFill background_fill;
 	private Background background;
@@ -95,7 +99,6 @@ public class HomeView extends Application implements Observer {
 	private ArrayList<TreeItem> courierItems;
 	private DatePicker datePicker;
 	private boolean startPage;
-	private HashMap<TreeItem, Delivery> treeItemToDelivery;
 	private Button buttonChangePage;
 	private VBox vBoxMap;
 	private VBox vBoxiIntentedTours;
@@ -105,7 +108,6 @@ public class HomeView extends Application implements Observer {
 	private TextField courierName;
 	private VBox vBoxHome;
 	private Scene scene;
-	private Delivery lastAddedDelivery;
 	private HBox hboxAddCourier;
 	
 	@Override
@@ -122,7 +124,7 @@ public class HomeView extends Application implements Observer {
 		stage.setHeight(height);
 		this.pinLayers = new HashMap<Integer, MapLayer>();
 		this.lastSelectedDelivery = null;
-		this.lastSelectedDeliveryLayer = null;
+//		this.lastSelectedDeliveryLayer = null;
 		
 		this.background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
 		this.background = new Background(background_fill);
@@ -209,6 +211,7 @@ public class HomeView extends Application implements Observer {
 				mapView.setZoom(mapView.getZoom()-0.001);
 				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
 				if (lastSelectedDelivery != null) {
+					MapLayer lastSelectedDeliveryLayer = pinLayers.get(lastSelectedDelivery.getId());
 					MapPoint position = ((CustomPinLayer) lastSelectedDeliveryLayer).getMapPoint();
 					mapView.removeLayer(lastSelectedDeliveryLayer);
 					try {
@@ -263,15 +266,16 @@ public class HomeView extends Application implements Observer {
 							}
 						}
 					}
-
+					//Pin
+					lastSelectedDelivery = selectedDelivery;
 					MapLayer layer = pinLayers.get(selectedDelivery.getId());
 					MapPoint position = ((CustomPinLayer) layer).getMapPoint();
 					mapView.removeLayer(layer);
+					pinLayers.remove(selectedDelivery.getId());
 					try {
-						lastSelectedDeliveryLayer = new CustomPinLayer(position, true);
-						mapView.addLayer(lastSelectedDeliveryLayer);
-						lastSelectedDelivery = selectedDelivery;
-						pinLayers.remove(selectedDelivery.getId());
+						MapLayer newLayer = new CustomPinLayer(position, true);
+						mapView.addLayer(newLayer);
+						pinLayers.put(selectedDelivery.getId(), newLayer);
 					} catch (MalformedURLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
