@@ -25,7 +25,7 @@ public class Window extends Application {
 	private ControllerAddDelivery controller;
 	private int width;
 	private int height;
-	private ListView<Courier> listViewCouriers;
+	//private ListView<Courier> listViewCouriers;
 	private HomeView mv;
 	private NewRequestView nr;
 
@@ -81,7 +81,7 @@ public class Window extends Application {
 		this.height = (int) Screen.getPrimary().getVisualBounds().getHeight();
 		this.map = new Map();
 		this.map.setMapDate(LocalDate.now());
-		this.listViewCouriers = initCouriers();
+		//this.listViewCouriers = initCouriers();
 
 		/* Définit la plate-forme pour éviter "javafx.platform is not defined" */
 		System.setProperty("javafx.platform", "desktop");
@@ -108,7 +108,7 @@ public class Window extends Application {
 
 		this.mv = new HomeView();
 		this.mv.initMapPolygoneMarkerLayers();
-		this.mv.setListViewCouriers(listViewCouriers);
+		//this.mv.setListViewCouriers(listViewCouriers);
 		this.mv.setController(this.controller);
 		this.mv.setHeight(this.height);
 		this.mv.setWidth(this.width);
@@ -119,10 +119,9 @@ public class Window extends Application {
 		this.nr.setOurMapView(mv);
 		this.mv.setNr(nr);
 		this.mv.start(new Stage());
-
 	}
 
-	public ListView<Courier> initCouriers() {
+	/*public ListView<Courier> initCouriers() {
 
 		File file = new File("./saveCouriers.txt");
 		this.listViewCouriers = new ListView<Courier>();
@@ -156,6 +155,6 @@ public class Window extends Application {
 			System.out.println(file.getPath() + " does not exist");
 		}
 		return listViewCouriers;
-	}
+	}*/
 
 }

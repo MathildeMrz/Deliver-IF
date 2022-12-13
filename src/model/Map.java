@@ -16,7 +16,15 @@ public class Map extends Observable {
 	private float longitudeMin;
 	private float longitudeMax;	
 	private LocalDate mapDate;
-	private int mapSize;
+	
+	public String getMapName() {
+		return mapName;
+	}
+
+	public void setMapName(String mapName) {
+		this.mapName = mapName;
+	}
+
 	private String mapName;
 
 	
@@ -91,6 +99,12 @@ public class Map extends Observable {
 		this.isLoaded = false;
 	}
 
+	public void resetNodes() {
+		this.nodes.clear();
+	}
+	public void resetDestinations() {
+		this.destinations.clear();
+	}
 	public float getLatitudeMin() {
 		return latitudeMin;
 	}

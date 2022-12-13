@@ -22,7 +22,17 @@ public class Courier extends Observable {
 		this.name = name;
 		this.speed = SPEED_COURIER;
 		this.tour = new Tour();
-		this.travelColor = ColorsList.get(this.id);
+		this.travelColor = ColorsList.get(this.id%10);
+		System.out.println("Id courier : "+this.id);
+		System.out.println("name courier : "+this.name);
+	}
+	public Courier(String name, int id)
+	{
+		this.id = id;
+		this.name = name;
+		this.speed = SPEED_COURIER;
+		this.tour = new Tour();
+		this.travelColor = ColorsList.get(this.id%10);
 		System.out.println("Id courier : "+this.id);
 		System.out.println("name courier : "+this.name);
 	}

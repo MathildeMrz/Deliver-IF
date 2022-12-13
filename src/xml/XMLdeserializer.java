@@ -39,6 +39,13 @@ public class XMLdeserializer {
 	        	buildFromDOMXML(root, plan);
 	        	System.out.println("Temps d'exécution (ms) : "+ (System.currentTimeMillis()-start));
 	        	plan.setMapLoaded();
+	        	String fname = xml.getName();
+	        	int pos = fname.lastIndexOf(".");
+	        	if (pos > 0) {
+	        	    fname = fname.substring(0, pos);
+	        	}
+	        	plan.setMapName(fname);
+	        	System.out.println(plan.getMapName());
 	        }
 	        //else
 	        	//throw new ExceptionXML("Wrong format");
