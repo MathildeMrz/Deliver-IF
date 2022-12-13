@@ -123,9 +123,7 @@ public class HomeView extends Application implements Observer {
 		/* Resize the window */
 		stage.setWidth(width);
 		stage.setHeight(height);
-		this.pinLayers = new HashMap<Integer, MapLayer>();
 		this.lastSelectedDelivery = null;
-//		this.lastSelectedDeliveryLayer = null;
 		
 		this.background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
 		this.background = new Background(background_fill);
@@ -218,6 +216,7 @@ public class HomeView extends Application implements Observer {
 					MapLayer lastSelectedDeliveryLayer = pinLayers.get(lastSelectedDelivery.getId());
 					MapPoint position = ((CustomPinLayer) lastSelectedDeliveryLayer).getMapPoint();
 					mapView.removeLayer(lastSelectedDeliveryLayer);
+					pinLayers.remove(lastSelectedDelivery.getId());
 					try {
 						MapLayer blackPin = new CustomPinLayer(position, false);
 						pinLayers.put(lastSelectedDelivery.getId(), blackPin);
@@ -313,7 +312,6 @@ public class HomeView extends Application implements Observer {
 				mapView.removeLayer(layer);
 			}
 			lastSelectedDelivery = null;
-			lastSelectedDeliveryLayer = null;
 		
 			pinLayers.clear();
 
@@ -553,28 +551,15 @@ public class HomeView extends Application implements Observer {
 					}
 					lastToCurrentSelectedStepLayer.clear();
 					
-					mapView.removeLayer(lastSelectedDeliveryLayer);
-					
-					//Remove red pin
-					/*MapLayer layer = pinLayers.get(selectedDelivery.getId());
-					
-					mapView.removeLayer(lastSelectedDeliveryLayer);
-					pinLayers.remove(lastSelectedDelivery.getId());
-					lastSelectedDeliveryLayer = null;
-					lastSelectedDelivery = null;
-					
-					mapView.removeLayer(layer);*/
-					//pinLayers.remove(selectedDelivery.getId());
-									
-					//Remove black pin
-					//pinLayers.remove(selectedDelivery.getId());
+					MapLayer pinLayerToRemove = pinLayers.get(selectedDelivery.getId());
+					mapView.removeLayer(pinLayerToRemove);
+					pinLayers.remove(selectedDelivery.getId());
 				
 					controller.deleteDelivery(selectedDelivery);
 					treeItemToDelivery.remove(selectedDelivery);
 						
 					try 
-					{
-						
+					{	
 						clearScreen();
 						createMap(map);
 					} 
@@ -585,104 +570,7 @@ public class HomeView extends Application implements Observer {
 					}
 					mapView.setZoom(mapView.getZoom()-0.001);
 				}
-			}
-			
-		});
-		
-		this.buttonDeleteDelivery.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {	
-				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
-			
-				if(selectedDelivery != null)
-				{
-					for (MapLayer layer : lastToCurrentSelectedStepLayer) {
-						mapView.removeLayer(layer);
-					}
-					lastToCurrentSelectedStepLayer.clear();
-					
-					mapView.removeLayer(lastSelectedDeliveryLayer);
-					
-					//Remove red pin
-					/*MapLayer layer = pinLayers.get(selectedDelivery.getId());
-					
-					mapView.removeLayer(lastSelectedDeliveryLayer);
-					pinLayers.remove(lastSelectedDelivery.getId());
-					lastSelectedDeliveryLayer = null;
-					lastSelectedDelivery = null;
-					
-					mapView.removeLayer(layer);*/
-					//pinLayers.remove(selectedDelivery.getId());
-									
-					//Remove black pin
-					//pinLayers.remove(selectedDelivery.getId());
-				
-					controller.deleteDelivery(selectedDelivery);
-					treeItemToDelivery.remove(selectedDelivery);
-						
-					try 
-					{
-						
-						clearScreen();
-						createMap(map);
-					} 
-					catch (FileNotFoundException | MalformedURLException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					mapView.setZoom(mapView.getZoom()-0.001);
-				}
-			}
-			
-		});
-		
-		this.buttonDeleteDelivery.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {	
-				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
-			
-				if(selectedDelivery != null)
-				{
-					for (MapLayer layer : lastToCurrentSelectedStepLayer) {
-						mapView.removeLayer(layer);
-					}
-					lastToCurrentSelectedStepLayer.clear();
-					
-					mapView.removeLayer(lastSelectedDeliveryLayer);
-					
-					//Remove red pin
-					/*MapLayer layer = pinLayers.get(selectedDelivery.getId());
-					
-					mapView.removeLayer(lastSelectedDeliveryLayer);
-					pinLayers.remove(lastSelectedDelivery.getId());
-					lastSelectedDeliveryLayer = null;
-					lastSelectedDelivery = null;
-					
-					mapView.removeLayer(layer);*/
-					//pinLayers.remove(selectedDelivery.getId());
-									
-					//Remove black pin
-					//pinLayers.remove(selectedDelivery.getId());
-				
-					controller.deleteDelivery(selectedDelivery);
-					treeItemToDelivery.remove(selectedDelivery);
-						
-					try 
-					{
-						
-						clearScreen();
-						createMap(map);
-					} 
-					catch (FileNotFoundException | MalformedURLException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					mapView.setZoom(mapView.getZoom()-0.001);
-				}
-			}
-			
+			}	
 		});
 
 		
@@ -911,6 +799,10 @@ public class HomeView extends Application implements Observer {
 		this.newRequestView = nr;
 	}
 
+	public void setPinLayersHashMap() {
+		this.pinLayers = new HashMap<Integer, MapLayer>();
+	}
+	
 
 	protected void saveCouriers() {
 		LocalDate date = this.map.getMapDate();
