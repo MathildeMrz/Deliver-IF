@@ -12,7 +12,13 @@ public class IteratorMin implements Iterator<Integer> {
 	private double [][] cost;
 	private Integer currentNode;
 	
-	
+	/**
+	 * Create an iterator that iterates to the candidate in a way to minimize the cost
+	 * @param unvisited : unvisited nodes by the TSP
+	 * @param cost : table of costs
+	 * @param currentNode : current node in the TSP
+	 * @param g : the graph used by the TSP
+	 * */
 	public IteratorMin(Collection<Integer> unvisited, double[][] cost, Integer currentNode,Graph g) {
 		//this.candidates = candidates;
 		this.cost = cost;

@@ -18,6 +18,14 @@ public class RunTSP2 extends Observable {
 	private boolean solutionTrouvee;
 	
 	
+	
+	/**
+	 * Create a TSP object and run it
+	 * @param warehouse : Intersection corresponding to the warehouse
+	 * @param nbVertices : number of Intersection objects in the tour
+	 * @param intersection : list of intersections corresponding to the delivery points composing the tour
+	 * @param lePlan : the map on which was added the delivery
+	 * */
 	public RunTSP2(Intersection warehouse, int nbVertices, List<Intersection> intersection,Map lePlan, Tour tour) {
 		this.nbVertices = nbVertices;
 		Intersection = intersection;

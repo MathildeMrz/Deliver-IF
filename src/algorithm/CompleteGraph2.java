@@ -21,9 +21,12 @@ public class CompleteGraph2 implements Graph {
 	private int [] timeLapsEnd;
 	
 	/**
-	 * Create a complete directed graph such that each edge has a weight within [MIN_COST,MAX_COST]
-	 * @param nbVertices
-	 */
+	 * Create a complete directed graph such that each edge has a weight that corresponds to the time spent by the courier between the two nodes in seconds (knowing that his speed is 15 km/h).
+	 * @param warehouse : Intersection corresponding to the warehouse
+	 * @param nbVertices : number of nodes that should the graph have
+	 * @param tour : the tour corresponding to one courier and one day
+	 * @param lePlan : the map corresponding to the tour
+	 * */
 	public CompleteGraph2(Intersection warehouse, int nbVertices,Tour tour, Map lePlan){
 		this.nbVertices = nbVertices;
 		this.Intersection= new ArrayList<Intersection>();
