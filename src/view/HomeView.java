@@ -105,6 +105,7 @@ public class HomeView extends Application implements Observer {
 	private VBox vBoxAddCourier;
 	private HBox hBox;
 	private Button buttonValidateAddCourier;
+	private Button buttonDeleteDelivery;
 	private TextField courierName;
 	private VBox vBoxHome;
 	private Scene scene;
@@ -131,7 +132,7 @@ public class HomeView extends Application implements Observer {
 		
 		this.background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
 		this.background = new Background(background_fill);
-		this.buttonLoadMap = new Button("Sélectionner une carte");
+		this.buttonLoadMap = new Button("Ouvrir une autre carte");
 		this.buttonAddCourier = new Button("Ajouter un livreur");
 		this.buttonChangePage = new Button("Nouvelle livraison");
 		this.buttonValidateAddCourier = new Button("Ajouter");	
@@ -139,7 +140,10 @@ public class HomeView extends Application implements Observer {
 		this.buttonChangePage.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 		this.buttonAddCourier.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 		this.buttonValidateAddCourier.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
+		this.buttonDeleteDelivery = new Button("Supprimer une livraison");
+		this.buttonDeleteDelivery.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 
+		
 		this.courierName = new TextField();
 		this.courierName.setPromptText("Nom du livreur");
 		
@@ -526,6 +530,7 @@ public class HomeView extends Application implements Observer {
 			this.vBoxiIntentedTours.getChildren().add(treeView);
 			this.vBoxiIntentedTours.getChildren().add(this.buttonChangePage);
 			this.vBoxiIntentedTours.getChildren().add(hboxAddCourier);
+			this.vBoxiIntentedTours.getChildren().add(buttonDeleteDelivery);			
 			this.vBoxiIntentedTours.getChildren().add(buttonLoadMap);
 			this.vBoxiIntentedTours.setSpacing(10);
 			
@@ -567,6 +572,40 @@ public class HomeView extends Application implements Observer {
 		}
 
 		this.stage.show();
+		
+		this.buttonDeleteDelivery.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {	
+				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
+				//boolean found = false;
+				Courier foundCourier = null;
+				if(selectedDelivery != null)
+				{
+					for(Courier c : map.getCouriers()) 
+					{
+						if(c.getTour().getDeliveries().contains(selectedDelivery))
+						{
+							c.getTour().getDeliveries().remove(selectedDelivery);
+							System.out.println("Delivery deleted");
+							break;
+						}				
+					}					
+					try {
+						vBoxMap.getChildren().clear();
+						vBoxiIntentedTours.getChildren().clear();
+						vBoxAddCourier.getChildren().clear();
+						vBoxHome.getChildren().clear();	
+						hBox.getChildren().clear();	
+						createMap(map);
+						display();
+					} catch (FileNotFoundException | MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			
+		});
 		
 		this.buttonAddCourier.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
@@ -722,31 +761,7 @@ public class HomeView extends Application implements Observer {
 		System.out.println("Fin TSP");
 	}*/
 	public void TSP(Tour tour) {
-		List<Intersection> sommets = new ArrayList<Intersection>();
-		sommets.add(map.getWarehouse());
-		int debut =12;
-		for (Delivery d : tour.getDeliveries()) {
-			sommets.add(d.getDestination());
-			/*System.out.print(d.getDestination().getId()+ " ");
-			ArrayList <Segment> t= (d.getDestination().getOutSections());
-			System.out.println("les outsections de ce point :");
-			if(t.size()!=0) {
-				for(Segment s:t) {
-					System.out.print(s.getDestination().getId()+ " ");
-				}
-			}*/
-			System.out.println();
-			if(d.getStartTime()<debut) {
-				debut=d.getStartTime();
-			}
-		}
-		LocalDate tourStartDate=tour.getStartDate().toLocalDate();
-		tour.setStartDate(tourStartDate.atTime(debut,0,0));
-		System.out.println("Debut de la tournée à" + tour.getStartDate());
-		System.out.println("Debut TSP");
-		RunTSP2 testTSP = new RunTSP2(map.getWarehouse(),tour.getDeliveries().size()+1, sommets, map, tour);
-		testTSP.start();
-		System.out.println("Fin TSP");
+		this.controller.TSP(tour);
 	}
 
 	public Map getMap() {
