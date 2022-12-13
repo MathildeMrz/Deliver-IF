@@ -158,7 +158,6 @@ public class Map extends Observable {
 	    	 {
 	    		 minimumDistance = dist;
 	    		 closerIntersection = i;
-	    		 System.out.println("closerIntersection changes");
 	    	 }
 			}
 	     }

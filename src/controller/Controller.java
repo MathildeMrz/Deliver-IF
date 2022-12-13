@@ -25,5 +25,9 @@ public class Controller {
 		this.map.addCourier(courier);
 		listView.getItems().add(courier);
 	}
+	
+	public Intersection getClosestIntersection(float latitude, float longitude, long idIntersection) {
+		 return map.getClosestIntersection(latitude, longitude, idIntersection);
+	}
 
 }
