@@ -51,4 +51,15 @@ public class ControllerAddDelivery {
 		testTSP.start();
 		System.out.println("Fin TSP");
 	}
+	
+	public void deleteDelivery(Delivery selectedDelivery)
+	{
+		for(Courier c : map.getCouriers()) 
+		{
+			if(c.getTour().getDeliveries().contains(selectedDelivery))
+			{
+				c.getTour().getDeliveries().remove(selectedDelivery);
+			}
+		}
+	}
 }

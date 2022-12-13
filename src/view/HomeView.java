@@ -333,6 +333,14 @@ public class HomeView extends Application implements Observer {
 			this.mapView.addLayer(mapLayerWareHouse);
 			
 			System.out.println("Create map");
+			
+			for(MapLayer layer: this.pinLayers.values()) {
+				mapView.removeLayer(layer);
+			}
+			lastSelectedDelivery = null;
+			lastSelectedDeliveryLayer = null;
+		
+			pinLayers.clear();
 
 			// add deliveries
 			for (Courier c : this.map.getCouriers()) {
@@ -430,7 +438,6 @@ public class HomeView extends Application implements Observer {
 			this.treeView = new TreeView();
 			this.courierItems.clear();
 			this.rootItem.getChildren().clear();
-			//Scene scene = new Scene(this.hBox, 2000, 2000);
 			scene.setRoot(this.hBox);
 			//this.stage.setScene(scene);
 	
@@ -577,31 +584,46 @@ public class HomeView extends Application implements Observer {
 			@Override
 			public void handle(MouseEvent event) {	
 				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
-				//boolean found = false;
-				Courier foundCourier = null;
+			
 				if(selectedDelivery != null)
 				{
-					for(Courier c : map.getCouriers()) 
+					for (MapLayer layer : lastToCurrentSelectedStepLayer) {
+						mapView.removeLayer(layer);
+					}
+					lastToCurrentSelectedStepLayer.clear();
+					
+					mapView.removeLayer(lastSelectedDeliveryLayer);
+					
+					//Remove red pin
+					/*MapLayer layer = pinLayers.get(selectedDelivery.getId());
+					
+					mapView.removeLayer(lastSelectedDeliveryLayer);
+					pinLayers.remove(lastSelectedDelivery.getId());
+					lastSelectedDeliveryLayer = null;
+					lastSelectedDelivery = null;
+					
+					mapView.removeLayer(layer);*/
+					//pinLayers.remove(selectedDelivery.getId());
+									
+					//Remove black pin
+					//pinLayers.remove(selectedDelivery.getId());
+				
+					controller.deleteDelivery(selectedDelivery);
+					treeItemToDelivery.remove(selectedDelivery);
+					System.out.println("Delivery deleted");
+						
+					try 
 					{
-						if(c.getTour().getDeliveries().contains(selectedDelivery))
-						{
-							c.getTour().getDeliveries().remove(selectedDelivery);
-							System.out.println("Delivery deleted");
-							break;
-						}				
-					}					
-					try {
-						vBoxMap.getChildren().clear();
-						vBoxiIntentedTours.getChildren().clear();
-						vBoxAddCourier.getChildren().clear();
-						vBoxHome.getChildren().clear();	
-						hBox.getChildren().clear();	
+						
+						clearScreen();
 						createMap(map);
-						display();
-					} catch (FileNotFoundException | MalformedURLException e) {
+					} 
+					catch (FileNotFoundException | MalformedURLException e)
+					{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					mapView.setZoom(mapView.getZoom()-0.001);
 				}
 			}
 			
@@ -648,11 +670,7 @@ public class HomeView extends Application implements Observer {
 					courierName.setText("");
 				}					
 				try {
-					vBoxMap.getChildren().clear();
-					vBoxiIntentedTours.getChildren().clear();
-					vBoxAddCourier.getChildren().clear();
-					vBoxHome.getChildren().clear();	
-					hBox.getChildren().clear();	
+					clearScreen();
 					display();
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
@@ -695,11 +713,12 @@ public class HomeView extends Application implements Observer {
 				try {
 					map.resetMap();
 					XMLdeserializer.load(map, stage);
-					vBoxMap.getChildren().clear();
+					clearScreen();
+					/*vBoxMap.getChildren().clear();
 					vBoxiIntentedTours.getChildren().clear();
 					vBoxAddCourier.getChildren().clear();
 					vBoxHome.getChildren().clear();
-					hBox.getChildren().clear();
+					hBox.getChildren().clear();*/
 
 					if(map.getIsLoaded())
 					{
@@ -748,18 +767,16 @@ public class HomeView extends Application implements Observer {
 		});
 
 	}
-
-	/*public void TSP(Tour tour) {
-		List<Intersection> sommets = new ArrayList<Intersection>();
-		sommets.add(map.getWarehouse());
-		for (Delivery d : tour.getDeliveries()) {
-			sommets.add(d.getDestination());
-		}
-		System.out.println("Debut TSP");
-		RunTSP testTSP = new RunTSP(sommets.size(), sommets, map, tour);
-		testTSP.start();
-		System.out.println("Fin TSP");
-	}*/
+	
+	public void clearScreen()
+	{
+		vBoxMap.getChildren().clear();
+		vBoxiIntentedTours.getChildren().clear();
+		vBoxAddCourier.getChildren().clear();
+		vBoxHome.getChildren().clear();	
+		hBox.getChildren().clear();	
+	}
+	
 	public void TSP(Tour tour) {
 		this.controller.TSP(tour);
 	}
