@@ -31,6 +31,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -175,10 +176,12 @@ public class NewRequestView extends Application implements Observer {
 					buttonSeeIntersections.setText("Voir les intersections");
 					seeIntersection = false;
 				}
-				getMapView().setZoom(getMapView().getZoom()-0.001);
 				display();
+				System.out.println(getMapView().getZoom());
+				
+				getMapView().setZoom(getMapView().getZoom()-0.001);
+				System.out.println(getMapView().getZoom());
 			}
-			
 		});
 		
 		this.mapView.setOnMouseClicked(new EventHandler<MouseEvent>() {
