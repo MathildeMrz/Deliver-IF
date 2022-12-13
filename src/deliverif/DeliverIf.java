@@ -121,6 +121,7 @@ public class DeliverIf extends Application {
 		this.newRequestView = new NewRequestView();
 		this.newRequestView.setOurMapView(homeView);
 		this.homeView.setNr(newRequestView);
+		this.homeView.setPinLayersHashMap();
 		this.homeView.start(new Stage());
 	}
 

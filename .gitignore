@@ -1,5 +1,6 @@
 /target/*
-.classpath
+*.classpath
 /target/
 /bin/*
 /bin/
+*.class
