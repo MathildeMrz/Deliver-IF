@@ -263,8 +263,6 @@ public class HomeView extends Application implements Observer {
 				courierItems.clear();
 				listViewCouriers.getItems().clear();
 				map.getCouriers().clear();
-				clearScreen();
-
 				//re-init?
 				
 				clearScreen();
@@ -660,7 +658,6 @@ public class HomeView extends Application implements Observer {
 					Optional<ButtonType> result = alert.showAndWait();
 					if (result.get() == ButtonType.YES) {		
 						//TODO : SAVE TOURS
-						saveCouriers();
 					}
 				}
 				map.resetMap();
@@ -694,22 +691,14 @@ public class HomeView extends Application implements Observer {
 					mapView.setCenter(mapPoint);
 				}
 				try {
-					loadCouriers();
 					createMap(map);
 				} catch (MalformedURLException | FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		});
 		
-//<<<<<<< HEAD
 		treeView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -797,8 +786,6 @@ public class HomeView extends Application implements Observer {
 			}
 		});
 
-	//}
-//=======
 		buttonSaveMap.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -807,12 +794,9 @@ public class HomeView extends Application implements Observer {
 				alert.setTitle("Itinéraires enregistrés");
 				alert.setContentText("Vos itinéraires ont été enregistrés avec succès!");
 				alert.showAndWait();
-				
-				}
 			}
-//>>>>>>> cc204c0b68c1744acc4ac0bb328d5876dd1cfecc
-	
-	);}
+		});
+	}
 
 	public void clearScreen()
 	{
@@ -1100,11 +1084,17 @@ public class HomeView extends Application implements Observer {
 		} else {
 			System.out.println("Aucun fichier existant : " + fileName);
 			ArrayList<Courier> couriersInit = new ArrayList<>();
-			couriersAL = initCouriers();
-			for(Courier item : couriersAL.getItems()) {
+			for(Courier item : listViewItemsToIterateOver.getItems()) {
 				couriersInit.add(item);
 			}
 			this.map.setCouriers(couriersInit);
+		}
+		couriersAL = listViewItemsToIterateOver;
+		for(Courier courier : this.map.getCouriers()) {
+			System.out.println("COURIER DANS MAP "+ courier.getName());
+		}
+		for(Courier courier : couriersAL.getItems()) {
+			System.out.println("COURIER DANS listView "+ courier.getName());
 		}
 
 		return couriersAL;
