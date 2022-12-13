@@ -459,7 +459,7 @@ public class NewRequestView extends Application implements Observer {
 				for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
 					getMapView().removeLayer(customCircleMarkerLayer);
 				}
-				if (requestedX != 0.0f && requestedY != 0.0f) {
+				if (requestedX != 0.0f && requestedY != 0.0f && map.getCouriers().size() != 0) {
 					Delivery delivery = controller.addDelivery(closestIntersection, requestedDate, requestedStartingTimeWindow,
 							requestedCourier);
 					try {
