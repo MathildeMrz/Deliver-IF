@@ -225,6 +225,7 @@ public class HomeView extends Application implements Observer {
 				for (MapLayer layer : lastToCurrentSelectedStepLayer) {
 					mapView.removeLayer(layer);
 				}
+				mapView.setZoom(mapView.getZoom()-0.001);
 				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
 				if (lastSelectedDelivery != null) {
 					MapPoint position = ((CustomPinLayer) lastSelectedDeliveryLayer).getMapPoint();
@@ -564,13 +565,7 @@ public class HomeView extends Application implements Observer {
 		
 		this.buttonAddCourier.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
-			public void handle(MouseEvent event) {	
-				/*System.out.println("Iciiii ouii");
-				System.out.println("Laa non");
-				buttonValidateAddCourier.setVisible(true);
-				courierName.setVisible(true);
-				courierName.setText("");*/
-				
+			public void handle(MouseEvent event) {					
 				if(buttonValidateAddCourier.isVisible() == true)
 				{
 					System.out.println("Laa ouii");
@@ -580,7 +575,6 @@ public class HomeView extends Application implements Observer {
 				}
 				else
 				{
-					System.out.println("Laa non");
 					buttonValidateAddCourier.setVisible(true);
 					courierName.setVisible(true);
 					courierName.setText("");
@@ -591,7 +585,6 @@ public class HomeView extends Application implements Observer {
 		this.buttonValidateAddCourier.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("Avant l'ajout");
 				
 				if( !(courierName.getText() == null) && !(courierName.getText().trim().isEmpty()))
 				{
