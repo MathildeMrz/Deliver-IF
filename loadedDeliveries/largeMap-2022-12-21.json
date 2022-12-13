@@ -1,0 +1,1 @@
+[{"id":4,"name":"Jean","speed":15,"tour":{"id":12,"startDate":"2022-12-13T08:00","endDate":"2022-12-13T08:15","tourSteps":[],"tourTimes":[{"time":"08:00"},{"time":"08:05"},{"time":"08:15"}],"deliveries":[{"id":1,"startTime":8,"arrival":"08:05","deliveryTime":"08:05","destination":{"id":2586814494}}]}}]

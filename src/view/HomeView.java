@@ -134,7 +134,7 @@ public class HomeView extends Application implements Observer {
 		
 		this.background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
 		this.background = new Background(background_fill);
-		this.buttonLoadMap = new Button("Ouvrir une autre carte");
+		this.buttonLoadMap = new Button("Ouvrir une carte");
 		this.buttonAddCourier = new Button("Ajouter un livreur");
 		this.buttonChangePage = new Button("Nouvelle livraison");
 		this.buttonSaveMap = new Button("Enregistrer un itinéraire");
@@ -155,6 +155,7 @@ public class HomeView extends Application implements Observer {
 		
 		this.datePicker = new DatePicker();	
 		this.datePicker.setStyle("-fx-background-color: #8c4817; ");
+		this.datePicker.setValue(map.getMapDate());
 		this.treeItemToDelivery = new HashMap<TreeItem, Delivery>();
 		/*TreeView*/
 		this.treeView = new TreeView();
@@ -333,10 +334,14 @@ public class HomeView extends Application implements Observer {
 				}
 				//maybe clear listView
 				map.setMapDate(localDate);
+				
 				courierItems.clear();
 				listViewCouriers.getItems().clear();
 				map.getCouriers().clear();
 				//re-init?
+				
+				clearScreen();
+				
 				try {
 					loadCouriers();
 				} catch (ParseException e) {
