@@ -204,7 +204,6 @@ public class Map extends Observable {
 	   			 }
 	   		 }
 	   	 }
-	   	System.out.println("Best courier prox : "+bestCourier.toString());
 	   	 return bestCourier;
 	    }
 

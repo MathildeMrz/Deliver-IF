@@ -31,7 +31,7 @@ import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 import algorithm.RunTSP2;
-import controller.ControllerAddDelivery;
+import controller.Controller;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -77,7 +77,7 @@ import xml.XMLdeserializer;
 public class HomeView extends Application implements Observer {
 
 	private Map map;
-	private ControllerAddDelivery controller;
+	private Controller controller;
 	private int width;
 	private int height;
 	private ListView<Courier> listViewCouriers;
@@ -120,7 +120,6 @@ public class HomeView extends Application implements Observer {
 		for (Courier c : this.map.getCouriers()) {
 			c.getTour().addObserver(this);
 		}
-		this.controller = new ControllerAddDelivery(this.stage, this.map);
 
 		/* Resize the window */
 		stage.setWidth(width);
@@ -757,11 +756,11 @@ public class HomeView extends Application implements Observer {
 		this.map = map;
 	}
 
-	public ControllerAddDelivery getController() {
+	public Controller getController() {
 		return controller;
 	}
 
-	public void setController(ControllerAddDelivery controller) {
+	public void setController(Controller controller) {
 		this.controller = controller;
 	}
 
