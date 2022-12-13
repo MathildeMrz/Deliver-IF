@@ -1,15 +1,20 @@
 package view;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -258,6 +263,8 @@ public class HomeView extends Application implements Observer {
 				courierItems.clear();
 				listViewCouriers.getItems().clear();
 				map.getCouriers().clear();
+				clearScreen();
+
 				//re-init?
 				
 				clearScreen();
@@ -591,6 +598,7 @@ public class HomeView extends Application implements Observer {
 				if( !(courierName.getText() == null) && !(courierName.getText().trim().isEmpty()))
 				{
 					controller.addCourierWithName(courierName.getText(), listViewCouriers);
+					
 					buttonValidateAddCourier.setVisible(false);
 					courierName.setVisible(false);
 					courierName.setText("");
@@ -1074,8 +1082,7 @@ public class HomeView extends Application implements Observer {
 				couriers.add(courier);
 				
 				for(Courier item : listViewItemsToIterateOver.getItems()) {
-					System.out.println("item name"+item.getName());
-					System.out.println("courier name "+courier.getName());
+					
 					if(item.getName() == courier.getName()) {
 
 						int id = listViewItemsToIterateOver.getItems().stream().filter(courierItem -> item.getName() == courierItem.getName()).findFirst().orElse(null).getId();
@@ -1093,17 +1100,11 @@ public class HomeView extends Application implements Observer {
 		} else {
 			System.out.println("Aucun fichier existant : " + fileName);
 			ArrayList<Courier> couriersInit = new ArrayList<>();
-			for(Courier item : listViewItemsToIterateOver.getItems()) {
+			couriersAL = initCouriers();
+			for(Courier item : couriersAL.getItems()) {
 				couriersInit.add(item);
 			}
 			this.map.setCouriers(couriersInit);
-		}
-		couriersAL = listViewItemsToIterateOver;
-		for(Courier courier : this.map.getCouriers()) {
-			System.out.println("COURIER DANS MAP "+ courier.getName());
-		}
-		for(Courier courier : couriersAL.getItems()) {
-			System.out.println("COURIER DANS listView "+ courier.getName());
 		}
 
 		return couriersAL;
