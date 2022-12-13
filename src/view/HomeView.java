@@ -241,6 +241,7 @@ public class HomeView extends Application implements Observer {
 				noButton.setDefaultButton(true);
 				yesButton.setDefaultButton(false);
 				Optional<ButtonType> result = alert.showAndWait();
+				map.setMapDate(localDate);
 				if (result.isPresent() && result.get() == ButtonType.YES) {
 					System.out.println("YES!!!!!");
 					saveCouriers();
@@ -711,6 +712,7 @@ public class HomeView extends Application implements Observer {
 				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
 				System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS : "+selectedDelivery);
 				if (lastSelectedDelivery != null) {
+					System.out.println("LastSelected delivery loop");
 					MapLayer lastSelectedDeliveryLayer = pinLayers.get(lastSelectedDelivery.getId());
 					MapPoint position = ((CustomPinLayer) lastSelectedDeliveryLayer).getMapPoint();
 					mapView.removeLayer(lastSelectedDeliveryLayer);
@@ -725,6 +727,7 @@ public class HomeView extends Application implements Observer {
 					}
 				}
 				if (selectedDelivery != null) {
+					System.out.println("Selected delivery loop non null");
 					lastToCurrentSelectedStepLayer.clear();
 					boolean deliveryFound = false;
 					ArrayList<MapPoint> points = new ArrayList<MapPoint>();
