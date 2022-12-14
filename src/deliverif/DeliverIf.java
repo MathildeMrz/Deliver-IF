@@ -25,10 +25,10 @@ import view.NewRequestView;
 public class DeliverIf extends Application {
 	private Map map;
 	private Controller controller;
-	private int width;
-	private int height;
+	private int widthScreen; 
+	private int heightScreen; 
 	private ListView<Courier> listViewCouriers;
-	private HomeView homeView;
+	private HomeView homeView; 
 	private NewRequestView newRequestView;
 
 	public static void main(String[] args) throws Exception {
@@ -79,8 +79,11 @@ public class DeliverIf extends Application {
 
 	@Override
 	public void start(Stage arg0) throws Exception {
-		this.width = (int) Screen.getPrimary().getVisualBounds().getWidth();
-		this.height = (int) Screen.getPrimary().getVisualBounds().getHeight();
+		
+		//get width and height from our screen
+		this.widthScreen = (int) Screen.getPrimary().getVisualBounds().getWidth();
+		this.heightScreen = (int) Screen.getPrimary().getVisualBounds().getHeight();
+		
 		this.map = new Map();
 		this.map.setMapDate(LocalDate.now());
 		this.controller = new Controller(this.map);
@@ -115,8 +118,8 @@ public class DeliverIf extends Application {
 		this.homeView.initLastToCurrentSelectedStepLayer();
 		this.homeView.setListViewCouriers(listViewCouriers);
 		this.homeView.setController(this.controller);
-		this.homeView.setHeight(this.height);
-		this.homeView.setWidth(this.width);
+		this.homeView.setHeight(this.heightScreen);
+		this.homeView.setWidth(this.widthScreen);
 		this.homeView.setMap(this.map);
 		this.homeView.setMapView(mapView);
 		this.newRequestView = new NewRequestView();

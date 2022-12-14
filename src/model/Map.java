@@ -168,6 +168,7 @@ public class Map extends Observable {
 		return closerIntersection;
 	}
 	
+	//TODO documentation
 	public Courier getBestCourierAvalaibility(Intersection inter, int timeWindow) {
 	   	 Courier bestCourier = this.couriers.get(0);
 	   	 int tempsLibre = 0;

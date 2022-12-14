@@ -80,16 +80,16 @@ public class HomeView extends Application implements Observer {
 
 	private Map map;
 	private Controller controller;
-	private int width;
-	private int height;
-	private ListView<Courier> listViewCouriers;
+	private int width; 
+	private int height; 
+	private ListView<Courier> listViewCouriers; //View of the courier to select when new request
 	private Stage stage;
 	private MapView mapView;
-	private HashMap<TreeItem, Delivery> treeItemToDelivery;
-	private HashMap<Integer, MapLayer> pinLayers;
-	private ArrayList<MapLayer> mapPolygoneMarkerLayers;
-	private ArrayList<MapLayer> lastToCurrentSelectedStepLayer;
-	private Delivery lastSelectedDelivery;
+	private HashMap<TreeItem, Delivery> treeItemToDelivery; //Find a delivery with his associated tree item
+	private HashMap<Integer, MapLayer> pinLayers; //Find a pinLayer with the id of the associated delivery
+	private ArrayList<MapLayer> mapPolygoneMarkerLayers; //Layers of all the courier's tour
+	private ArrayList<MapLayer> lastToCurrentSelectedStepLayer; //Layers of the red path between selected delivery and the previous one
+	private Delivery lastSelectedDelivery; 
 	private Delivery lastAddedDelivery;
 	private NewRequestView newRequestView;
 	private BackgroundFill background_fill;
@@ -97,25 +97,29 @@ public class HomeView extends Application implements Observer {
 	private Button buttonLoadMap;
 	private Button buttonAddCourier;
 	private Button buttonSaveMap;
+	private Button buttonChangePage;
 	private Button dateValidateButton;
+	private Button buttonValidateAddCourier;
+	private Button buttonDeleteDelivery;
 	private TreeView treeView;
 	private TreeItem rootItem;
 	private ArrayList<TreeItem> courierItems;
 	private DatePicker datePicker;
 	private boolean startPage;
-	private Button buttonChangePage;
-	private VBox vBoxMap;
+	private VBox vBoxMap; 
 	private VBox vBoxiIntentedTours;
 	private VBox vBoxAddCourier;
 	private HBox hBox;
-	private Button buttonValidateAddCourier;
-	private Button buttonDeleteDelivery;
 	private TextField courierName;
 	private VBox vBoxHome;
 	private Scene scene;
 	private HBox hboxAddCourier;
 	private Label deleteDeliveryInstructions;
 
+	/**
+	 * Initialize Map attributes
+	 * @param stage : stage of our screen
+	 */
 	@Override
 	public void start(Stage stage) throws Exception {
 		if (listViewCouriers == null) {
@@ -123,15 +127,17 @@ public class HomeView extends Application implements Observer {
 		}
 		/* Init attributes */
 		this.stage = stage;
+		
+		//Add observers to be notify when a courier has a new delivery and his tour is updated
 		for (Courier c : this.map.getCouriers()) {
 			c.getTour().addObserver(this);
 		}
 
-		/* Resize the window */
+		// Resize the window 
 		stage.setWidth(width);
 		stage.setHeight(height);
-		this.lastSelectedDelivery = null;
 
+		// Set buttons and style and textFields
 		this.background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
 		this.background = new Background(background_fill);
 		this.buttonLoadMap = new Button("Ouvrir une carte");
@@ -163,6 +169,8 @@ public class HomeView extends Application implements Observer {
 		datePicker.setEditable(false);
 		this.datePicker.setStyle("-fx-background-color: #8c4817; ");
 		this.datePicker.setValue(map.getMapDate());
+		
+		//Init the treeView with all couriers and their tour
 		this.treeItemToDelivery = new HashMap<TreeItem, Delivery>();
 		/* TreeView */
 		this.treeView = new TreeView();
@@ -170,6 +178,8 @@ public class HomeView extends Application implements Observer {
 		this.rootItem = new TreeItem("Livraisons pour chaque livreur");
 		// ArrayList of TreeItem Couriers
 		this.courierItems = new ArrayList<TreeItem>();
+		
+		
 		this.vBoxMap = new VBox();
 		this.vBoxiIntentedTours = new VBox();
 		this.vBoxAddCourier = new VBox();
@@ -186,9 +196,12 @@ public class HomeView extends Application implements Observer {
 
 		this.scene = new Scene(this.hBox, 2000, 2000);
 		Platform.setImplicitExit(false);
+		this.lastSelectedDelivery = null;
 		createMap(this.map);
 
 		/* Mouse listeners */
+		
+		//Alert with a pop-up when we close the window to save new changes
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent e) {
@@ -203,13 +216,16 @@ public class HomeView extends Application implements Observer {
 					Optional<ButtonType> result = alert.showAndWait();
 					if (result.get() != null) {
 						if (result.get() == buttonOk) {
+							//We save new changes
 							saveCouriers();
 							Platform.exit();
 							System.exit(0);
 						}else if (result.get() == buttonNo) {
+							//We exit without saving new changes
 							Platform.exit();
 							System.exit(0);
 						} else if (result.get() == buttonCancel) {
+							//We go back to page
 							e.consume();
 						}
 					}
@@ -217,6 +233,7 @@ public class HomeView extends Application implements Observer {
 			}
 		});
 
+		//TODO documentation and comments
 		dateValidateButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -274,14 +291,28 @@ public class HomeView extends Application implements Observer {
 					alert.showAndWait();
 				}
 			}
-		
 		});
-
 	}
 
+	/**
+	 * Create map and add all layers to the map
+	 * @param map : map to create and display
+	 */
 	public void createMap(Map map) throws MalformedURLException, FileNotFoundException {
 
 		if (this.map.getIsLoaded()) {
+			
+			//remove previous layers
+			for (MapLayer layer : this.pinLayers.values()) {
+				mapView.removeLayer(layer);
+			}
+			lastSelectedDelivery = null;
+			pinLayers.clear();
+			for (MapLayer layer : this.mapPolygoneMarkerLayers) {
+				this.mapView.removeLayer(layer);
+			}
+			this.mapPolygoneMarkerLayers.clear();
+			
 			// Add warehouse
 			MapPoint mapPointWareHouse = new MapPoint(map.getWarehouse().getLatitude(),
 					map.getWarehouse().getLongitude());
@@ -289,14 +320,7 @@ public class HomeView extends Application implements Observer {
 					javafx.scene.paint.Color.RED);
 			this.mapView.addLayer(mapLayerWareHouse);
 
-			for (MapLayer layer : this.pinLayers.values()) {
-				mapView.removeLayer(layer);
-			}
-			lastSelectedDelivery = null;
-
-			pinLayers.clear();
-
-			// add deliveries
+			// Add a pin for all deliveries for each courier
 			for (Courier c : this.map.getCouriers()) {
 				for (Delivery d : c.getTour().getDeliveries()) {
 					float latDestination = d.getDestination().getLatitude();
@@ -308,32 +332,24 @@ public class HomeView extends Application implements Observer {
 				}
 			}
 
-			for (MapLayer layer : this.mapPolygoneMarkerLayers) {
-				this.mapView.removeLayer(layer);
-			}
-
-			this.mapPolygoneMarkerLayers.clear();
-
-			// add tours
+			// Add tours of each courier
 			for (Courier c : this.map.getCouriers()) {
 				Tour tour = c.getTour();
 				if (tour.getDeliveries().size() != 0) {
 					TSP(tour);
 					ArrayList<MapPoint> points = new ArrayList<MapPoint>();
-
 					for (int i = 0; i < tour.getTourSteps().size(); i++) {
 						double x1 = tour.getTourSteps().get(i).getLongitude();
 						double y1 = tour.getTourSteps().get(i).getLatitude();
 						points.add(new MapPoint(y1, x1));
 					}
-
 					MapLayer layer = new CustomPolygoneMarkerLayer(points, this.mapView, c.getColor(), 4);
 					mapPolygoneMarkerLayers.add(layer);
 					this.mapView.addLayer(layer);
 				}
 			}
 
-			// add mapBorders
+			// Add map borders
 			ArrayList<MapPoint> borderPoints = new ArrayList<MapPoint>();
 			double longMin = this.map.getLongitudeMin();
 			double longMax = this.map.getLongitudeMax();
@@ -350,16 +366,18 @@ public class HomeView extends Application implements Observer {
 			this.mapView.addLayer(border);
 
 		}
-		display();
+		displayHomePage();
 	}
 
-	public void display() throws FileNotFoundException {
+	/**
+	 * Display home page
+	 */
+	public void displayHomePage() throws FileNotFoundException {
 
 		/* HBox */
 		hBox.setBackground(background);
 
 		/* VBoxMap */
-
 		this.vBoxMap.setPadding(new Insets(20, 20, 20, 20));
 		this.vBoxMap.setMaxHeight(this.height - 40);
 		this.vBoxMap.setMaxWidth(this.width / 1.6);
@@ -372,20 +390,21 @@ public class HomeView extends Application implements Observer {
 		this.vBoxiIntentedTours.setMaxWidth(this.width / 1.6);
 		this.vBoxiIntentedTours.prefWidthProperty().bind(hBox.widthProperty().multiply(0.45));
 
-		// Parcours de chaque tournée
 		if (this.map.getIsLoaded()) {
-			Label deliveriesOfTheDayLabel = new Label("Livreurs du jour : ");
-			deliveriesOfTheDayLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
-
+			
+			// Create a datePicker
 			this.vBoxiIntentedTours.getChildren().add(deliveriesOfTheDayLabel);
 			this.vBoxMap.getChildren().add(this.mapView);
 			Label chosenDayLabel = new Label("Date courante : " + this.map.getMapDate().toString());
 			this.vBoxMap.getChildren().add(chosenDayLabel);
-			// create a date picker
-
 			vBoxMap.getChildren().add(datePicker);
 			vBoxMap.getChildren().add(dateValidateButton);
+			
+			// TreeView title
+			Label deliveriesOfTheDayLabel = new Label("Livreurs du jour : ");
+			deliveriesOfTheDayLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
 
+			// Create TreeView
 			this.treeView = new TreeView();
 			this.courierItems.clear();
 			this.rootItem.getChildren().clear();
@@ -587,7 +606,7 @@ public class HomeView extends Application implements Observer {
 				}
 				try {
 					clearScreen();
-					display();
+					displayHomePage();
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
