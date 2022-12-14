@@ -392,6 +392,10 @@ public class HomeView extends Application implements Observer {
 
 		if (this.map.getIsLoaded()) {
 			
+			// TreeView title
+			Label deliveriesOfTheDayLabel = new Label("Livreurs du jour : ");
+			deliveriesOfTheDayLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
+			
 			// Create a datePicker
 			this.vBoxiIntentedTours.getChildren().add(deliveriesOfTheDayLabel);
 			this.vBoxMap.getChildren().add(this.mapView);
@@ -399,10 +403,6 @@ public class HomeView extends Application implements Observer {
 			this.vBoxMap.getChildren().add(chosenDayLabel);
 			vBoxMap.getChildren().add(datePicker);
 			vBoxMap.getChildren().add(dateValidateButton);
-			
-			// TreeView title
-			Label deliveriesOfTheDayLabel = new Label("Livreurs du jour : ");
-			deliveriesOfTheDayLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
 
 			// Create TreeView
 			this.treeView = new TreeView();
