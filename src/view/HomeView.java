@@ -1,20 +1,15 @@
 package view;
 
+import java.awt.Event;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -25,18 +20,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.xml.sax.SAXException;
+
 import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
-import algorithm.RunTSP2;
+
 import controller.Controller;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -45,6 +42,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
@@ -92,7 +90,6 @@ public class HomeView extends Application implements Observer {
 	private HashMap<Integer, MapLayer> pinLayers;
 	private ArrayList<MapLayer> mapPolygoneMarkerLayers;
 	private ArrayList<MapLayer> lastToCurrentSelectedStepLayer;
-//	private MapLayer lastSelectedDeliveryLayer;
 	private Delivery lastSelectedDelivery;
 	private Delivery lastAddedDelivery;
 	private NewRequestView newRequestView;
@@ -151,7 +148,7 @@ public class HomeView extends Application implements Observer {
 				+ " -fx-border-radius: 8px;" + " -fx-border-color: #000000;" + "-fx-background-radius: 8px;");
 		this.buttonValidateAddCourier.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;"
 				+ " -fx-border-radius: 8px;" + " -fx-border-color: #000000;" + "-fx-background-radius: 8px;");
-		this.buttonDeleteDelivery = new Button("Supprimer une livraison");
+		this.buttonDeleteDelivery = new Button("Supprimer la livraison");
 		this.buttonDeleteDelivery.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;"
 				+ " -fx-border-radius: 8px;" + " -fx-border-color: #000000;" + "-fx-background-radius: 8px;");
 		this.buttonSaveMap.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;"
@@ -184,39 +181,37 @@ public class HomeView extends Application implements Observer {
 		this.hboxAddCourier.getChildren().add(this.courierName);
 		this.hboxAddCourier.getChildren().add(this.buttonValidateAddCourier);
 		this.deleteDeliveryInstructions = new Label("Cliquer sur une livraison dans la vue textuelle avant de cliquer sur le bouton supprimer");
-
 		this.buttonValidateAddCourier.setVisible(false);
 		this.courierName.setVisible(false);
 
 		this.scene = new Scene(this.hBox, 2000, 2000);
-
+		Platform.setImplicitExit(false);
 		createMap(this.map);
 
 		/* Mouse listeners */
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent e) {
-				Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-				alert.setTitle("Changements non enregistrés");
-				alert.setContentText("Voulez-vous sauvegarder vos changements?");
-				alert.getButtonTypes().clear();
-				alert.getButtonTypes().add(ButtonType.YES);
-				alert.getButtonTypes().add(ButtonType.NO);
-				Button noButton = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
-				noButton.setStyle("-fx-background-color: #BFD1E5; ");
-				Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
-				yesButton.setStyle("-fx-background-color: #BFD1E5; ");
-				noButton.setDefaultButton(true);
-				yesButton.setDefaultButton(false);
-				Optional<ButtonType> result = alert.showAndWait();
-				if (result.get() != null) {
-					if (result.get() == ButtonType.YES) {
-						saveCouriers();
-						Platform.exit();
-						System.exit(0);
-					} else if (result.get() == ButtonType.NO) {
-						Platform.exit();
-						System.exit(0);
+				if(startPage == false) {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Changements non enregistrés");
+					alert.setHeaderText("Voulez-vous sauvegarder vos changements?");
+					ButtonType buttonOk = new ButtonType("Oui");
+					ButtonType buttonNo = new ButtonType("Non");
+					ButtonType buttonCancel = new ButtonType("Annuler");
+					alert.getButtonTypes().setAll(buttonOk, buttonNo, buttonCancel);
+					Optional<ButtonType> result = alert.showAndWait();
+					if (result.get() != null) {
+						if (result.get() == buttonOk) {
+							saveCouriers();
+							Platform.exit();
+							System.exit(0);
+						}else if (result.get() == buttonNo) {
+							Platform.exit();
+							System.exit(0);
+						} else if (result.get() == buttonCancel) {
+							e.consume();
+						}
 					}
 				}
 			}
@@ -232,57 +227,54 @@ public class HomeView extends Application implements Observer {
 		dateValidateButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("date picker validated");
 				LocalDate localDate = datePicker.getValue();
 				if (localDate != null) {
-					Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+					Alert alert = new Alert(AlertType.WARNING);
 					alert.setTitle("Changements non enregistrés");
-					alert.setContentText("Voulez-vous sauvegarder vos changements?");
-					alert.getButtonTypes().clear();
-					alert.getButtonTypes().add(ButtonType.YES);
-					alert.getButtonTypes().add(ButtonType.NO);
-					Button noButton = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
-					noButton.setStyle("-fx-background-color: #BFD1E5; ");
-					Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
-					yesButton.setStyle("-fx-background-color: #BFD1E5; ");
-					noButton.setDefaultButton(true);
-					yesButton.setDefaultButton(false);
+					alert.setHeaderText("Voulez-vous sauvegarder vos changements?");
+					ButtonType buttonOk = new ButtonType("Oui");
+					ButtonType buttonNo = new ButtonType("Non");
+					ButtonType buttonCancel = new ButtonType("Annuler");
+					alert.getButtonTypes().setAll(buttonOk, buttonNo, buttonCancel);
 					Optional<ButtonType> result = alert.showAndWait();
-					if (result.isPresent() && result.get() == ButtonType.YES) {
-						System.out.println("YES!!!!!");
-						saveCouriers();
-
-					} else if (result.isPresent() && result.get() == ButtonType.NO) {
-						System.out.println("NO!!!!!");
-
-					} else {
-						System.out.println("Come back to the page");
-					}
-					// maybe clear listView
-					map.setMapDate(localDate);
-					courierItems.clear();
-					listViewCouriers.getItems().clear();
-					map.getCouriers().clear();
-					clearScreen();
-
-					// re-init?
-					try {
-						loadCouriers();
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					try {
-						createMap(map);
-					} catch (MalformedURLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					if(result.isPresent() && result.get() == buttonCancel) {
+						datePicker.setValue(map.getMapDate());
+					}else {
+						if (result.isPresent() && result.get() == buttonOk) {
+							System.out.println("YES!!!!!");
+							saveCouriers();
+						}
+					
+						// maybe clear listView
+						for (MapLayer layer : lastToCurrentSelectedStepLayer) {
+							mapView.removeLayer(layer);
+						}
+						lastToCurrentSelectedStepLayer.clear();
+						map.setMapDate(localDate);
+						courierItems.clear();
+						listViewCouriers.getItems().clear();
+						map.getCouriers().clear();
+						clearScreen();
+	
+						// re-init?
+						try {
+							loadCouriers();
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						try {
+							createMap(map);
+						} catch (MalformedURLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (FileNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 				else {
@@ -650,72 +642,73 @@ public class HomeView extends Application implements Observer {
 		buttonLoadMap.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
+				boolean loadNewMap = false;
 				if (startPage == false) {
-					Alert alert = new Alert(Alert.AlertType.WARNING);
-					alert.setTitle("Attention");
-					alert.setContentText(
-							"Voulez-vous enregistrer vos modifications avant de charger une nouvelle carte ?");
-					alert.getButtonTypes().clear();
-					alert.getButtonTypes().add(ButtonType.YES);
-					alert.getButtonTypes().add(ButtonType.NO);
-					Button noButton = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
-					noButton.setStyle("-fx-background-color: #BFD1E5; ");
-					Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
-					yesButton.setStyle("-fx-background-color: #BFD1E5; ");
-					noButton.setDefaultButton(true);
-					yesButton.setDefaultButton(false);
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Changements non enregistrés");
+					alert.setHeaderText("Voulez-vous enregistrer vos modifications avant de charger une nouvelle carte ?");
+					ButtonType buttonOk = new ButtonType("Oui");
+					ButtonType buttonNo = new ButtonType("Non");
+					ButtonType buttonCancel = new ButtonType("Annuler");
+					alert.getButtonTypes().setAll(buttonOk, buttonNo, buttonCancel);
 					Optional<ButtonType> result = alert.showAndWait();
-					if (result.get() == ButtonType.YES) {
-						// TODO : SAVE TOURS
+					if (result.get() == buttonOk) {
+						loadNewMap = true;
 						saveCouriers();
+					}else if(result.get() == buttonNo) {
+						loadNewMap = true;
 					}
 				}
-				map.resetMap();
-				try {
-					XMLdeserializer.load(map, stage);
-				} catch (ParserConfigurationException | SAXException | IOException | ExceptionXML e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				clearScreen();
-				/*
-				 * vBoxMap.getChildren().clear(); vBoxiIntentedTours.getChildren().clear();
-				 * vBoxAddCourier.getChildren().clear(); vBoxHome.getChildren().clear();
-				 * hBox.getChildren().clear();
-				 */
-
-				if (map.getIsLoaded()) {
-					// map.setMapLoaded();
-					for (Courier c : map.getCouriers()) {
-						c.getTour().clearTourSteps();
-						c.getTour().clearDeliveries();
-						c.getTour().getDeliveries().clear();
+				if(startPage || loadNewMap) {
+					map.resetMap();
+					try {
+						XMLdeserializer.load(map, stage);
+					} catch (ParserConfigurationException | SAXException | IOException | ExceptionXML e1) {
+						Alert alert = new Alert(Alert.AlertType.INFORMATION);
+						alert.setContentText("Veuillez charger un fichier XML correspondant à une carte.");
+						alert.showAndWait();
+						e1.printStackTrace();
 					}
-
-					mapView = new MapView();
-					double latAverage = (map.getLatitudeMin() + map.getLatitudeMax()) / 2;
-					double longAverage = (map.getLongitudeMin() + map.getLongitudeMax()) / 2;
-					MapPoint mapPoint = new MapPoint(latAverage, longAverage);
-					mapView.setZoom(14);
-					mapView.setCenter(mapPoint);
-				}
-				try {
-					loadCouriers();
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				try {
-					createMap(map);
-				} catch (MalformedURLException | FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					clearScreen();
+					/*
+					 * vBoxMap.getChildren().clear(); vBoxiIntentedTours.getChildren().clear();
+					 * vBoxAddCourier.getChildren().clear(); vBoxHome.getChildren().clear();
+					 * hBox.getChildren().clear();
+					 */
+	
+					if (map.getIsLoaded()) {
+						// map.setMapLoaded();
+						for (Courier c : map.getCouriers()) {
+							c.getTour().clearTourSteps();
+							c.getTour().clearDeliveries();
+							c.getTour().getDeliveries().clear();
+						}
+	
+						mapView = new MapView();
+						double latAverage = (map.getLatitudeMin() + map.getLatitudeMax()) / 2;
+						double longAverage = (map.getLongitudeMin() + map.getLongitudeMax()) / 2;
+						MapPoint mapPoint = new MapPoint(latAverage, longAverage);
+						mapView.setZoom(14);
+						mapView.setCenter(mapPoint);
+					}
+					try {
+						loadCouriers();
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					try {
+						createMap(map);
+					} catch (MalformedURLException | FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		});

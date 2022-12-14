@@ -16,7 +16,6 @@ import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 
 import controller.Controller;
-import controller.ControllerAddDelivery;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -77,6 +76,7 @@ public class NewRequestView extends Application implements Observer {
 	private Label selectLocation;
 	private Label labelSelectCourier;
 	private Label labelSelectTimeWindow;
+	private Label labelCourierSuggestion;
 	private Button buttonValidate;
 	private Button buttonChangePoint;
 	private Button buttonChangePage;
@@ -126,6 +126,8 @@ public class NewRequestView extends Application implements Observer {
 		this.requestedCourier = couriers.getSelectionModel().getSelectedItem(); //valeur par défaut pour le livreur de la livraison
 		
 		/*Creation of the labels*/
+		this.labelCourierSuggestion = new Label("La liste des livreurs n'est pas triée");
+		this.labelCourierSuggestion.setVisible(false);
 		this.labelSelectCourier = new Label("2.b Sélectionner un livreur");
 		this.labelSelectCourier.setPadding(new Insets(2));
 		this.labelSelectCourier.setStyle("-fx-font-size: 15;" + "-fx-background-color:rgba(255, 255, 86, 1.00);");
@@ -215,6 +217,8 @@ public class NewRequestView extends Application implements Observer {
 					couriers.setMouseTransparent(false);
 					requestedCourier = map.getBestCourierAvalaibility(closestIntersection, requestedStartingTimeWindow);
 					couriers.getSelectionModel().select(requestedCourier);
+					labelCourierSuggestion.setText("Le livreur qui a la meilleure disponibilité\n est sélectionné par défaut");
+					labelCourierSuggestion.setVisible(true);
 					display();
 				}
 				clicked = true;
@@ -242,6 +246,7 @@ public class NewRequestView extends Application implements Observer {
 				labelSelectTimeWindow.setVisible(false);
 				labelSelectCourier.setVisible(false);
 				selectLocation.setVisible(true);
+				labelCourierSuggestion.setVisible(false);
 				buttonValidate.setMouseTransparent(true);
 			}
 		});
@@ -347,10 +352,12 @@ public class NewRequestView extends Application implements Observer {
 				{
 					newCouriers.getItems().add(bestCourierProx);
 					newCouriers.getItems().add(bestCourierAvailable);
+					labelCourierSuggestion.setText("Le 1er livreur dans la liste a la meilleure disponibilité\nLe 2ème livreur dans la liste a la meilleure proximité");
 				}
 				else
 				{
 					newCouriers.getItems().add(bestCourierProx);
+					labelCourierSuggestion.setText("Le 1er livreur dans la liste a la meilleure\n disponibilité et la meilleure proximité");
 				}
 				for (Courier c : couriersTmp.getItems())
 				{
@@ -461,6 +468,7 @@ public class NewRequestView extends Application implements Observer {
 		vBoxCouriers.getChildren().add(labelSelectTimeWindow);
 		vBoxCouriers.getChildren().add(timeWindow);		
 		vBoxCouriers.getChildren().add(labelSelectCourier);
+		vBoxCouriers.getChildren().add(labelCourierSuggestion);
 		vBoxCouriers.getChildren().add(couriers);
 		vBoxCouriers.getChildren().add(buttonChangePage);
 		vBoxCouriers.getChildren().add(buttonValidate);
@@ -502,7 +510,7 @@ public class NewRequestView extends Application implements Observer {
 					getMapView().removeLayer(customCircleMarkerLayer);
 				}
 				if (requestedX != 0.0f && requestedY != 0.0f && map.getCouriers().size() != 0) {
-					Delivery delivery = controller.addDelivery(closestIntersection, requestedDate, requestedStartingTimeWindow,
+					Delivery delivery = controller.addDelivery(closestIntersection, map.getMapDate(), requestedStartingTimeWindow,
 							requestedCourier);
 					try {
 						ourMapView.setController(controller);
