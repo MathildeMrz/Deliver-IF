@@ -28,7 +28,10 @@ public class Map extends Observable {
 	}
 
 	private String mapName;
-
+	
+	/**
+	 * Create a Map
+	 * */
 	public Map() {
 		this.nodes  = new HashMap<Long,Intersection>();
 		this.couriers = new ArrayList<Courier>();//During load function

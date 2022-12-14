@@ -14,6 +14,12 @@ public class Delivery extends Observable {
 	private LocalTime arrival;
 	private LocalTime deliveryTime; //Real time of the delivery
 	
+	/**
+	 * Create a Delivery with its destination and time of the beginning of its time window
+	 * @param startTime : start time of delivery
+	 * @param destination : destination of delivery
+	 * @param arrival : arrival of delivery
+	 * */
 	public Delivery(int startTime, Intersection destination, LocalTime arrival)
 	{
 		this.id = ID_FACTORY.getAndIncrement();
@@ -23,6 +29,13 @@ public class Delivery extends Observable {
 		this.deliveryTime = arrival;
 	}
 	
+	/**
+	 * Create a Delivery with its destination and time of the beginning of its time window
+	 * @param startTime : start time of delivery
+	 * @param destination : destination of delivery
+	 * @param arrival : arrival of delivery
+	 * @param deliveryTime : time of delivery 
+	 * */
 	public Delivery(int startTime, Intersection destination, LocalTime arrival, LocalTime deliveryTime)
 	{
 		this.id = ID_FACTORY.getAndIncrement();

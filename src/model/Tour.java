@@ -19,6 +19,9 @@ public class Tour extends Observable {
 	private ArrayList<Intersection> tourSteps;
 	private LocalTime [] tourTimes;
 	
+	/**
+	 * Create a Tour, initialize its starting and end dates
+	 * */
 	public Tour()
 	{
 		this.id = ID_FACTORY.getAndIncrement();
