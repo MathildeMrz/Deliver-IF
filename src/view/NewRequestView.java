@@ -275,11 +275,17 @@ public class NewRequestView extends Application implements Observer {
 			}
 		});
 
+		// Change the place of the requested delivery
 		this.buttonChangePoint.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
+				// Allow to select a new delivery
 				clickedOnMap = false;
+				
+				// Remove the blue circle in the previous delivery place
 				mapView.removeLayer(newDelivery);
+				
+				// Display the steps to follow in order to add a delivery
 				timeWindow.setMouseTransparent(true);
 				timeWindow.setStyle(null);
 				couriers.setMouseTransparent(true);
