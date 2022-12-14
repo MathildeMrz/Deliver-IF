@@ -350,13 +350,13 @@ public class NewRequestView extends Application implements Observer {
 				//couriers = new ListView<Courier>();
 				if(bestCourierProx != bestCourierAvailable)
 				{
-					newCouriers.getItems().add(bestCourierProx);
 					newCouriers.getItems().add(bestCourierAvailable);
+					newCouriers.getItems().add(bestCourierProx);	
 					labelCourierSuggestion.setText("Le 1er livreur dans la liste a la meilleure disponibilité\nLe 2ème livreur dans la liste a la meilleure proximité");
 				}
 				else
 				{
-					newCouriers.getItems().add(bestCourierProx);
+					newCouriers.getItems().add(bestCourierAvailable);
 					labelCourierSuggestion.setText("Le 1er livreur dans la liste a la meilleure\n disponibilité et la meilleure proximité");
 				}
 				for (Courier c : couriersTmp.getItems())

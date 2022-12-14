@@ -161,6 +161,7 @@ public class HomeView extends Application implements Observer {
 		this.courierName.setPromptText("Nom du livreur");
 
 		this.datePicker = new DatePicker();
+		datePicker.setEditable(false);
 		this.datePicker.setStyle("-fx-background-color: #8c4817; ");
 		this.datePicker.setValue(map.getMapDate());
 		this.treeItemToDelivery = new HashMap<TreeItem, Delivery>();
