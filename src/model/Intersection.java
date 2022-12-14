@@ -13,6 +13,12 @@ public class Intersection extends Observable {
 	{	
 	}
 	
+	/**
+	 * Create an Intersection, with an id, a latitude and a longitude
+	 * @param id : id of the intersection
+	 * @param latitude : latitude of the intersection
+	 * @param longitude : longitude of the intersection
+	 * */
 	public Intersection(long id, float latitude, float longitude) {
 		this.id = id;
 		this.latitude = latitude;
