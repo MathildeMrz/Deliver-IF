@@ -53,6 +53,10 @@ public class Controller {
 		 return map.getClosestIntersection(latitude, longitude, idIntersection);
 	}
 	
+	/**
+	 * calculates the shortest tour composed of one or multiple delivery points
+	 * @param tour : the tour that will be used for the calculations 
+	 * */
 	public void TSP(Tour tour) {
 		List<Intersection> sommets = new ArrayList<Intersection>();
 		sommets.add(map.getWarehouse());
