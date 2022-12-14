@@ -157,7 +157,7 @@ public class HomeView extends Application implements Observer {
 				+ " -fx-border-radius: 8px;" + " -fx-border-color: #000000;" + "-fx-background-radius: 8px;");
 		this.buttonSaveMap.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;"
 				+ " -fx-border-radius: 8px;" + " -fx-border-color: #000000;" + "-fx-background-radius: 8px;");
-		this.dateValidateButton = new Button("Valider");
+		this.dateValidateButton = new Button("Changer date");
 		this.dateValidateButton.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;"
 				+ " -fx-border-radius: 8px;" + " -fx-border-color: #000000;" + "-fx-background-radius: 8px;");
 
@@ -589,10 +589,24 @@ public class HomeView extends Application implements Observer {
 
 				if (!(courierName.getText() == null) && !(courierName.getText().trim().isEmpty())) {
 					controller.addCourierWithName(courierName.getText(), listViewCouriers);
-
+					File file = new File("saveCouriers.txt");
+					FileWriter fr;
+					try {
+						fr = new FileWriter(file, true);
+						fr.write("\n"+courierName.getText());
+						fr.close();
+					}
+						catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} // parameter 'true' is for append mode
+					
+	
+			
 					buttonValidateAddCourier.setVisible(false);
 					courierName.setVisible(false);
 					courierName.setText("");
+					
 				}
 				try {
 					clearScreen();

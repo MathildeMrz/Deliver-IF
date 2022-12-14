@@ -138,7 +138,7 @@ public class NewRequestView extends Application implements Observer {
 		this.buttonValidate.setMouseTransparent(true);
 		this.buttonChangePoint = new Button("Changer le point de livraison");
 		this.buttonChangePoint.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
-		this.buttonChangePage = new Button("Map view");
+		this.buttonChangePage = new Button("Annuler requête livraison");
 		this.buttonChangePage.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 		this.buttonSeeIntersections = new Button("Voir les intersections");
 		this.buttonSeeIntersections.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
