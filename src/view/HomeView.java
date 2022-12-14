@@ -962,8 +962,9 @@ public class HomeView extends Application implements Observer {
 	}
 
 	/**
-	 * Saves couriers and its attributes in a json file
+	 * saves couriers for the current map and date in a file with the format mapName-date.json inside the folder loadedDeliveries
 	 */
+	
 	protected void saveCouriers() {
 		LocalDate date = this.map.getMapDate();
 		
@@ -1039,17 +1040,23 @@ public class HomeView extends Application implements Observer {
 	}
 	
 	/**
-	 * Loads couriers and its attributes from a json file
+	 * loads a courier ArrayList for the map and date, from a json file if it exists, meaning the user has chosen to save them prior to this
+	 * or if the file doesn't exist it gets a list of couriers from saveCouriers.txt
+	 * @return
+	 * @throws org.json.simple.parser.ParseException
+	 * @throws FileNotFoundException
+	 * @throws IOException
 	 */
-	public ListView<Courier> loadCouriers() 
+
+	public ArrayList<Courier> loadCouriers()
 			throws org.json.simple.parser.ParseException, FileNotFoundException, IOException {
 		ListView<Courier> couriersAL = new ListView<Courier>();
 		ListView<Courier> listViewItemsToIterateOver = new ListView<>();
+		//copy all elements of ListViewCouriers to listViewItemsToIterateOver
 		for (int i = 0; i < this.listViewCouriers.getItems().size(); i++) {
 			listViewItemsToIterateOver.getItems().add(i, this.listViewCouriers.getItems().get(i));
 		}
 		ArrayList<Courier> couriers = new ArrayList<>();
-		//File name
 		String fileName = "loadedDeliveries/" + this.map.getMapName() + "-" + this.map.getMapDate() + ".json";
 
 		File f = new File(fileName);
@@ -1063,6 +1070,8 @@ public class HomeView extends Application implements Observer {
 
 			// For each courier
 			for (int i = 0; i < JsonCouriers.length(); i++) {
+				System.out.println("New courier to load");
+
 				JSONObject JsonCourier = JsonCouriers.getJSONObject(i);
 				String courierName = JsonCourier.getString("name");
 				int speed = JsonCourier.getInt("speed");
@@ -1096,6 +1105,7 @@ public class HomeView extends Application implements Observer {
 				LocalDateTime localDateStart = LocalDateTime.parse(localDateStringStart);
 
 				JSONArray JsonDeliveries = JsonTour.getJSONArray("deliveries");
+
 				ArrayList<Delivery> deliveries = new ArrayList<Delivery>();
 
 				// For each delivery in the Tour
@@ -1119,6 +1129,7 @@ public class HomeView extends Application implements Observer {
 						deliveries.add(delivery);
 						Intersection destination = new Intersection();
 						destination.setId(deliveryIntersectionId);
+						this.map.addDestination(destination);
 					}
 				}
 				Tour tour = new Tour();
@@ -1128,11 +1139,15 @@ public class HomeView extends Application implements Observer {
 				tour.setStartDate(localDateStart);
 				courier.setTour(tour);
 				couriers.add(courier);
-
+				
+				//if the courier exists in the previous list, update it, or else add it to the list
+				//here we used listViewItemsToIterateOver which is a copy of listViewItems in order to iterate over its elements and be able to change them
+				//at the same time
 				for (Courier item : listViewItemsToIterateOver.getItems()) {
-
+					//if courier already exists
 					if (item.getId() == courier.getId()) {
-
+						//get the id of the courier in the list (usually the same as the id inside courier, but this
+						//was done to avoid errors
 						int id = listViewItemsToIterateOver.getItems().stream()
 								.filter(courierItem -> item.getId() == courierItem.getId()).findFirst().orElse(null)
 								.getId();
@@ -1141,23 +1156,24 @@ public class HomeView extends Application implements Observer {
 						this.listViewCouriers.getItems().add(item);
 					}
 				}
-				//Add the courier to the ArrayList<Courier>
 				couriersAL.getItems().add(courier);
 			}
 			this.map.setCouriers(couriers);
 			setListViewCouriers(couriersAL);
 			reader.close();
+			return couriers;
 		} else {
+			System.out.println("Aucun fichier existant : " + fileName);
 			ArrayList<Courier> couriersInit = new ArrayList<>();
 			couriersAL = initCouriers();
 			for (Courier item : couriersAL.getItems()) {
+				//initialize couriers to the ones in saveCouriers.txt
 				couriersInit.add(item);
 			}
 			this.map.setCouriers(couriersInit);
+			return couriersInit;
 		}
-		couriersAL = listViewItemsToIterateOver;
 
-		return couriersAL;
 	}
 
 	/**
