@@ -22,6 +22,9 @@ import model.Map;
 import view.HomeView;
 import view.NewRequestView;
 
+/**
+ * creates the application DELIVER'IF
+ * */
 public class DeliverIf extends Application {
 	private Map map;
 	private Controller controller;
@@ -89,30 +92,27 @@ public class DeliverIf extends Application {
 		this.controller = new Controller(this.map);
 		this.listViewCouriers = initCouriers();
 
-		/* Définit la plate-forme pour éviter "javafx.platform is not defined" */
+		//Defines the platform to avoid "javafx.platform is not defined
 		System.setProperty("javafx.platform", "desktop");
 
-		/*
-		 * Définit l'user agent pour éviter l'exception
-		 * "Server returned HTTP response code: 403"
-		 */
+		//Set the user agent to avoid the "Server returned HTTP response code: 403" exception
 		System.setProperty("http.agent", "Gluon Mobile/1.0.3");
 
-		/* Création de la carte Gluon JavaFX */
+		/* Creates the Gluon JavaFX map */
 		MapView mapView = new MapView();
 
 		double latAverage = 45;
 		double longAverage = 2;
-		/* Create a point with a latitude and longitude */
+		/* Creates a point with a latitude and longitude */
 		MapPoint mapPoint = new MapPoint(latAverage, longAverage);
 
-		/* Set a zoom to see the map well */
+		/* Sets a zoom to see the map well */
 		mapView.setZoom(14);
 
-		/* Center the map on the point */
+		/* Centers the map on the point */
 		mapView.setCenter(mapPoint);
 
-		//Initiate the homeView
+		//Initiates the homeView
 		this.homeView = new HomeView();
 		this.homeView.initMapPolygoneMarkerLayers();
 		this.homeView.initLastToCurrentSelectedStepLayer();
@@ -131,7 +131,7 @@ public class DeliverIf extends Application {
 
 	
 	/**
-	 * Initiate a list of courier by reading a txt file.
+	 * Initiates a list of couriers by reading a txt file.
 	 * */
 	public ListView<Courier> initCouriers() {
 
