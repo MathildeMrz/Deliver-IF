@@ -123,7 +123,13 @@ public class Tour extends Observable {
 				+ ", intersections=" + tourSteps + "]";
 	}
 	
-	public Delivery addDelivery(Intersection closerIntersection, LocalDate date, int timeWindow)
+	/**
+	 * add a delivery to the list of deliveries of a courier.
+	 * @param intersection : intersection where the delivery takes place
+	 * @param date : date of the delivery
+	 * @param timeWindow : hour of the day when the courier should deliver (he must deliver between timeWindow and timeWindow +1)
+	 * */
+	public Delivery addDelivery(Intersection intersection, LocalDate date, int timeWindow)
 	{
 		//StartDate = timeWindow la plus tôt d'une Delivery
 		if(this.startDate.getHour() > timeWindow)
@@ -131,14 +137,17 @@ public class Tour extends Observable {
 			this.startDate = LocalDateTime.of(date, LocalTime.of(timeWindow,0));
 		}
 	    LocalTime startDelivery = startDate.toLocalTime();
-		Delivery delivery = new Delivery(timeWindow, closerIntersection, startDelivery);
+		Delivery delivery = new Delivery(timeWindow, intersection, startDelivery);
 	    deliveries.add(delivery);
 		notifyObservers(delivery);
 		deliveries.sort(Comparator.comparing(Delivery::getStartTime));
 		return delivery;
 	}	
 
-	
+	/**
+	 * add an intersections to the list of intersections that the courier should follow to make his deliveries
+	 * @param tourSteps : next intersection where the courier should go
+	 * */
 	public void addDeliveryToOrderedDeliveries(Intersection tourSteps)
 	{
 		this.tourSteps.add(tourSteps);
