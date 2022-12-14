@@ -88,7 +88,6 @@ public class HomeView extends Application implements Observer {
 	private ListView<Courier> listViewCouriers;
 	private Stage stage;
 	private MapView mapView;
-
 	private HashMap<TreeItem, Delivery> treeItemToDelivery;
 	private HashMap<Integer, MapLayer> pinLayers;
 	private ArrayList<MapLayer> mapPolygoneMarkerLayers;
@@ -96,7 +95,6 @@ public class HomeView extends Application implements Observer {
 //	private MapLayer lastSelectedDeliveryLayer;
 	private Delivery lastSelectedDelivery;
 	private Delivery lastAddedDelivery;
-
 	private NewRequestView newRequestView;
 	private BackgroundFill background_fill;
 	private Background background;
@@ -120,6 +118,7 @@ public class HomeView extends Application implements Observer {
 	private VBox vBoxHome;
 	private Scene scene;
 	private HBox hboxAddCourier;
+	private Label deleteDeliveryInstructions;
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -142,7 +141,7 @@ public class HomeView extends Application implements Observer {
 		this.buttonLoadMap = new Button("Ouvrir une carte");
 		this.buttonAddCourier = new Button("Ajouter un livreur");
 		this.buttonChangePage = new Button("Nouvelle livraison");
-		this.buttonSaveMap = new Button("Enregistrer un itinéraire");
+		this.buttonSaveMap = new Button("Enregistrer les tournées actives");
 		this.buttonValidateAddCourier = new Button("Ajouter");
 		this.buttonLoadMap.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;"
 				+ " -fx-border-radius: 8px;" + " -fx-border-color: #000000;" + "-fx-background-radius: 8px;");
@@ -184,6 +183,7 @@ public class HomeView extends Application implements Observer {
 		this.hboxAddCourier.getChildren().add(this.buttonAddCourier);
 		this.hboxAddCourier.getChildren().add(this.courierName);
 		this.hboxAddCourier.getChildren().add(this.buttonValidateAddCourier);
+		this.deleteDeliveryInstructions = new Label("Cliquer sur une livraison dans la vue textuelle avant de cliquer sur le bouton supprimer");
 
 		this.buttonValidateAddCourier.setVisible(false);
 		this.courierName.setVisible(false);
@@ -500,6 +500,7 @@ public class HomeView extends Application implements Observer {
 			this.vBoxiIntentedTours.getChildren().add(treeView);
 			this.vBoxiIntentedTours.getChildren().add(this.buttonChangePage);
 			this.vBoxiIntentedTours.getChildren().add(hboxAddCourier);
+			this.vBoxiIntentedTours.getChildren().add(deleteDeliveryInstructions);
 			this.vBoxiIntentedTours.getChildren().add(buttonDeleteDelivery);
 			this.vBoxiIntentedTours.getChildren().add(buttonLoadMap);
 			this.vBoxiIntentedTours.getChildren().add(buttonSaveMap);
