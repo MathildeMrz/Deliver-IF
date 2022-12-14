@@ -102,7 +102,6 @@ public class NewRequestView extends Application implements Observer {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		System.out.println("En haut du start");
 		this.stage = stage;
 		this.stage.setWidth(width);
 		this.stage.setHeight(height);
@@ -157,7 +156,6 @@ public class NewRequestView extends Application implements Observer {
 		this.date = new DatePicker();
 		this.date.setStyle("-fx-text-fill: #000000;\r\n" + "    -fx-border-radius: 3px;\r\n"
 				+ "	   -fx-background-color: rgb(49, 89, 47);");
-		//this.date.setValue(LocalDate.now());
 		
 		display();	
 		this.stage.show();
@@ -179,7 +177,6 @@ public class NewRequestView extends Application implements Observer {
 					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
 						getMapView().removeLayer(customCircleMarkerLayer);
 					}
-					System.out.println("Come back to the page");
 					buttonSeeIntersections.setText("Voir les intersections");
 					seeIntersection = false;
 				}
@@ -187,6 +184,32 @@ public class NewRequestView extends Application implements Observer {
 				display();
 			}
 			
+		});
+		
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			@Override
+			public void handle(WindowEvent e) {
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Changements non enregistrés");
+				alert.setHeaderText("Voulez-vous sauvegarder vos changements?");
+				ButtonType buttonOk = new ButtonType("Oui");
+				ButtonType buttonNo = new ButtonType("Non");
+				ButtonType buttonCancel = new ButtonType("Annuler");
+				alert.getButtonTypes().setAll(buttonOk, buttonNo, buttonCancel);
+				Optional<ButtonType> result = alert.showAndWait();
+				if (result.get() != null) {
+					if (result.get() == buttonOk) {
+						saveCouriers();
+						Platform.exit();
+						System.exit(0);
+					}else if (result.get() == buttonNo) {
+						Platform.exit();
+						System.exit(0);
+					} else if (result.get() == buttonCancel) {
+						e.consume();
+					}
+				}
+			}
 		});
 		
 		this.mapView.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -228,7 +251,6 @@ public class NewRequestView extends Application implements Observer {
 		// Listener for updating the checkout date w.r.t check in date
 		this.date.valueProperty().addListener((ov, oldValue, newValue) -> {
 			requestedDate = newValue.plusDays(noOfDaysToAdd);
-			System.out.println("You clicked: " + requestedDate);
 		});
 
 		this.buttonChangePoint.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -236,12 +258,8 @@ public class NewRequestView extends Application implements Observer {
 			public void handle(MouseEvent event) {
 				clicked = false;
 				mapView.removeLayer(newDelivery);
-				//timeWindow.getSelectionModel().select(0); //valeur par défaut affichée
 				timeWindow.setMouseTransparent(true);
 				timeWindow.setStyle(null);
-				//requestedStartingTimeWindow = timeWindow.getItems().get(0);	//valeur par défaut pour la timeWindow de la livraison
-				//couriers.getSelectionModel().select(0); //valeur par défaut affichée 
-				//requestedCourier = couriers.getSelectionModel().getSelectedItem(); //valeur par défaut pour le livreur de la livraison
 				couriers.setMouseTransparent(true);
 				labelSelectTimeWindow.setVisible(false);
 				labelSelectCourier.setVisible(false);
@@ -276,7 +294,6 @@ public class NewRequestView extends Application implements Observer {
 								ourMapView.setMap(map);
 								ourMapView.setMapView(mapView);
 								ourMapView.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
-								System.out.println("Pin Ajouté");
 								ourMapView.start(stage);
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
@@ -287,53 +304,8 @@ public class NewRequestView extends Application implements Observer {
 				}
 			}
 		});
-
-		/*If the user wants to leave the applicatoin*/
-		this.stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			@Override
-			public void handle(WindowEvent e) {
-				Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-				alert.setTitle("Changements non enregistrés");
-				alert.setContentText("Voulez-vous sauvegarder vos changements?");
-				alert.getButtonTypes().clear();
-				alert.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
-				Button noButton = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
-				Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
-				noButton.setDefaultButton(true);
-				yesButton.setDefaultButton(false);
-				Optional<ButtonType> result = alert.showAndWait();
-				if (result.isPresent() && result.get() == ButtonType.YES)
-				{
-					System.out.println("YES!!!!!");
-					saveCouriers();
-					Platform.exit();
-					System.exit(0);
-				} 
-				else if (result.isPresent() && result.get() == ButtonType.NO)
-				{
-					System.out.println("NO!!!!!");
-					Platform.exit();
-					System.exit(0);
-				} 
-				else if (result.isPresent() && result.get() == ButtonType.CANCEL)
-				{
-					System.out.println("Come back to the page");
-				}
-			}
-		});
-		
-		/*this.couriers.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent event) {
-				System.out.println("requestedCourier :" + couriers.getSelectionModel().getSelectedItem());
-				requestedCourier = couriers.getSelectionModel().getSelectedItem();
-			}
-		});*/
 		
 		this.timeWindow.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-			System.out.println("old value :" + oldValue);
-			System.out.println("requestedStartingTimeWindow :" + newValue);
 			if(newValue!=null)
 			{
 				requestedStartingTimeWindow = newValue;
@@ -347,7 +319,6 @@ public class NewRequestView extends Application implements Observer {
 				vBoxCouriers.getChildren().remove(buttonChangePoint);
 				ListView<Courier> couriersTmp = couriers;
 				ListView<Courier> newCouriers = new ListView<Courier>();
-				//couriers = new ListView<Courier>();
 				if(bestCourierProx != bestCourierAvailable)
 				{
 					newCouriers.getItems().add(bestCourierAvailable);
@@ -375,10 +346,6 @@ public class NewRequestView extends Application implements Observer {
 				vBoxCouriers.getChildren().add(buttonChangePoint);
 			}
 			couriers.setMouseTransparent(false);
-			for(Courier c : this.couriers.getItems())
-			{
-				System.out.println("time window modifications : "+c.toString());
-			}
 			labelSelectTimeWindow.setVisible(false);
 			labelSelectCourier.setVisible(true);
 			try {
@@ -388,27 +355,6 @@ public class NewRequestView extends Application implements Observer {
 				e1.printStackTrace();
 			}
 		});
-		
-		this.timeWindow.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				//TODO
-				System.out.println("Mettre à jour les couriers disponibles");
-			}
-		});
-		
-		/*this.couriers.itemsProperty().addListener((obs, old, current) -> {
-			System.out.println("requestedCourier : " + current.toString());
-			System.out.println("old value : "+old.toString());
-			//requestedCourier = couriers.getSelectionModel().getSelectedItem();
-			System.out.println("Bouton valider appuyable");
-			buttonSeeIntersections.setText("Voir les intersections");
-			for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
-					getMapView().removeLayer(customCircleMarkerLayer);
-			}
-			seeIntersection = false; 
-			
-		});*/
 		buttonCourier();
 	}
 	
@@ -418,11 +364,9 @@ public class NewRequestView extends Application implements Observer {
 
 		@Override
 		public void handle(MouseEvent event) {
-			System.out.println("requestedCourier :" + couriers.getSelectionModel().getSelectedItem());
 			requestedCourier = couriers.getSelectionModel().getSelectedItem();
 			//Expand du treeView 
 			treeview.getRoot().getChildren().forEach(t ->{
-				System.out.println("((TreeItem)t).getValue() = "+((TreeItem)t).getValue().toString());
 				if(((TreeItem)t).getValue().toString().contains(requestedCourier.getName()))
 				{
 					((TreeItem)t).setExpanded(true);
@@ -436,7 +380,6 @@ public class NewRequestView extends Application implements Observer {
 				}
 			});
 			
-			System.out.println("Bouton valider appuyable");
 			buttonSeeIntersections.setText("Voir les intersections");
 			for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
 					getMapView().removeLayer(customCircleMarkerLayer);
@@ -453,7 +396,6 @@ public class NewRequestView extends Application implements Observer {
 		
 		/* vBox Treeview */
         VBox vBoxTreeView = new VBox();
-        //vBoxTreeView.prefWidthProperty().bind(hbox.widthProperty().multiply(0.25));
         treeview.getRoot().getChildren().forEach(t ->{
         	((TreeItem)t).setExpanded(false);
         });
@@ -463,7 +405,6 @@ public class NewRequestView extends Application implements Observer {
 
 		/* vBoxCouriers */
 		vBoxCouriers = new VBox();
-		//this.buttonValidate.setMouseTransparent(true);
 		vBoxCouriers.setPadding(new Insets(5, 0, 0, 0));
 		vBoxCouriers.getChildren().add(labelSelectTimeWindow);
 		vBoxCouriers.getChildren().add(timeWindow);		
@@ -485,10 +426,6 @@ public class NewRequestView extends Application implements Observer {
 		vBoxMap.getChildren().add(selectLocation);
 		vBoxMap.getChildren().add(new Label(""));
 		vBoxMap.getChildren().add(this.mapView);
-
-		/*if (couriers.getItems().size() != 0) {
-			requestedCourier = couriers.getItems().get(0);
-		}*/
 		
 		requestedDate = date.getValue();
 
@@ -504,7 +441,6 @@ public class NewRequestView extends Application implements Observer {
 		this.buttonValidate.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("Validate");
 				mapView.removeLayer(newDelivery);
 				for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
 					getMapView().removeLayer(customCircleMarkerLayer);
@@ -521,7 +457,6 @@ public class NewRequestView extends Application implements Observer {
 						ourMapView.setMapView(mapView);
 						ourMapView.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
 						ourMapView.setLastAddedDelivery(delivery);
-						//ourMapView.setLastAddedDeliveryCourier(requestedCourier);
 						ourMapView.start(stage);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -693,7 +628,6 @@ public class NewRequestView extends Application implements Observer {
 			}
 			File pathAsFile = new File("loadedDeliveries");
 			if (!Files.isDirectory(Paths.get("loadedDeliveries"))) {
-				System.out.println("HERE!!!!!!");
 				pathAsFile.mkdir();
 			}
 			try (PrintWriter out = new PrintWriter(new FileWriter(path))) {

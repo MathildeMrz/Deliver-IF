@@ -2,7 +2,6 @@ package model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -30,16 +29,13 @@ public class Tour extends Observable {
 		this.tourTimes = new LocalTime[this.deliveries.size()];
 	}
 	
-	//NEW : ADD TIME OF ARRIVALS TO DELIVERY POINTS
 	public void initArrivals()
 	{
-		//this.tourTimes=new LocalDateTime [this.tourSteps.size()];
 		this.tourTimes= new LocalTime [this.deliveries.size()+2];
 		tourTimes[0]=this.startDate.toLocalTime();
 	}
 	
 	
-	//public void setArrival(Intersection deliveryPt, double minutes)
 	public void setArrival(Intersection deliveryPt, int orderOfArrival, double minutes)
 	{
 		//Computing of the arrival time 
@@ -53,10 +49,8 @@ public class Tour extends Observable {
 			//Time to perform the delivery : 5 minutes 
 			this.tourTimes[orderOfArrival]=this.tourTimes[orderOfArrival-1].plusMinutes((long)(minutes+1.0+5.0));
 		}
-		//display
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm");  
 		String formatDateTime = this.tourTimes[orderOfArrival].format(format);   
-		System.out.println("After Formatting: " + formatDateTime );
 		if(orderOfArrival == (this.tourTimes.length-1))
 		{
 			this.endDate = LocalDateTime.of(this.endDate.toLocalDate(),tourTimes[orderOfArrival]);
@@ -64,10 +58,8 @@ public class Tour extends Observable {
 		}
 		//Association of the arrival time and the delivery corresponding 
 		int sizeSteps = this.deliveries.size();
-		System.out.println("deliveryPt.getId() : "+deliveryPt.getId());
 		for (int i=0; i<sizeSteps; i++)
 		{
-			System.out.println("this.steps.get(i).getDestination().getId() : "+this.deliveries.get(i).getDestination().getId());
 			if((this.deliveries.get(i).getDestination().getId()) == deliveryPt.getId())
 			{
 				this.deliveries.get(i).setArrival(this.tourTimes[orderOfArrival]);
@@ -81,11 +73,9 @@ public class Tour extends Observable {
 					this.deliveries.get(i).setDeliveryTime(this.tourTimes[orderOfArrival]);
 				}
 				this.tourTimes[orderOfArrival] = this.deliveries.get(i).getDeliveryTime();
-				System.out.println("New status of delivery : "+this.deliveries.get(i).toString());
 			}
 		}
 	}
-	//END NEW
 	
 	public int getId() {
 		return id;

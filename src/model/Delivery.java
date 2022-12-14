@@ -42,8 +42,6 @@ public class Delivery extends Observable {
 
 	@Override
 	public String toString() {
-		//return this.courier+" : arrival : "+arrival+" time-window : " + startTime + " � " + (startTime+1) + ", destination=" + destination;
-		//return " Arrivée au point de livraison : "+arrival+" time-window : " + startTime + " � " + (startTime+1) + ", Heure de livraison "+deliveryTime+" destination=" + destination;
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm");  
 		String deliveryWaiting = "";
 		String formatTimeDeliveryTime = deliveryTime.format(format); 
@@ -51,11 +49,9 @@ public class Delivery extends Observable {
 		{
 			String formatTimeArrival = arrival.format(format); 
 			deliveryWaiting = "Waiting time at the destination from "+formatTimeArrival+" to "+formatTimeDeliveryTime+"\n";
-			System.out.println(deliveryWaiting);
 		}
 		String deliveryTime = "Delivery's time : "+formatTimeDeliveryTime;
 		String deliveryInformations = deliveryWaiting+""+deliveryTime;
-		System.out.println(deliveryInformations);
 		return deliveryInformations;
 	}
 

@@ -63,7 +63,6 @@ public class Dijkstra {
 		List<Long> aAjouter = new ArrayList<Long>();
 		aAjouter.add(pointDepart.getId());
 		intersectionsGrisesInversees.put(0.0, aAjouter);
-
 	}
 
 	/**
@@ -168,11 +167,7 @@ public class Dijkstra {
 		}
 		
 		Double valeurATester = cout.get(si.getId()) + leSegment.getLength();
-		
-		if((si.getId() == 1) ) {
-			System.out.print("");
-		}
-		
+			
 		if(cout.get(sj.getId()) == Double.MAX_VALUE) {
 			cout.put(sj.getId(), valeurATester);
 			pi.put(sj.getId(), si);
@@ -296,7 +291,5 @@ public class Dijkstra {
 	public void setPtDepart(Intersection ptDepart) {
 		this.ptDepart = ptDepart;
 	}
-	
-
 }
 

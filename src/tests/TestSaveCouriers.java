@@ -8,13 +8,11 @@ public class TestSaveCouriers {
 	protected Map plan;
 
 	@Before
-	public void setUp() throws Exception {
-		
+	public void setUp() throws Exception {	
 	}
 	
 	@Test
-	public void testAddAndGetNode() {
-		
+	public void testAddAndGetNode() {	
 	}
 
 	@Test

@@ -43,6 +43,26 @@ public class Map extends Observable {
 		this.mapDate = LocalDate.now();
 	}
 	
+	/**
+	 * Permet de remettre à 0 tous les attributs d'une carte, pour en charger une autre
+	 */
+	public void resetMap() {
+		this.nodes.clear();
+		this.destinations.clear();
+		this.latitudeMin = Float.MAX_VALUE;
+		this.latitudeMax = 0;
+		this.longitudeMin = Float.MAX_VALUE;
+		this.longitudeMax = 0;
+		this.isLoaded = false;
+	}
+
+	public void resetNodes() {
+		this.nodes.clear();
+	}
+	public void resetDestinations() {
+		this.destinations.clear();
+	}
+	
 	public void addWarehouse(Long intersectionID) {
 		this.warehouse = this.nodes.get(intersectionID);
 	}
@@ -92,25 +112,6 @@ public class Map extends Observable {
 		return "Plan [nodes=" + nodes + ", warehouse=" + warehouse + "]";
 	}
 	
-	/**
-	 * Permet de remettre à 0 tous les attributs d'une carte, pour en charger une autre
-	 */
-	public void resetMap() {
-		this.nodes.clear();
-		this.destinations.clear();
-		this.latitudeMin = Float.MAX_VALUE;
-		this.latitudeMax = 0;
-		this.longitudeMin = Float.MAX_VALUE;
-		this.longitudeMax = 0;
-		this.isLoaded = false;
-	}
-
-	public void resetNodes() {
-		this.nodes.clear();
-	}
-	public void resetDestinations() {
-		this.destinations.clear();
-	}
 	public float getLatitudeMin() {
 		return latitudeMin;
 	}
@@ -204,7 +205,6 @@ public class Map extends Observable {
 	   			 }
 	   		 }
 	   	 }
-	   	 System.out.println("Best courier available : "+bestCourier.toString());
 	   	 return bestCourier;
 	    }
 	    

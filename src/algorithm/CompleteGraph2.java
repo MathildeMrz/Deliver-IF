@@ -31,7 +31,6 @@ public class CompleteGraph2 implements Graph {
 		this.nbVertices = nbVertices;
 		this.Intersection= new ArrayList<Intersection>();
 		this.deliveries=new ArrayList<Delivery>();
-		//this.Intersection=tour.getDeliveries().;
 		Intersection.add(warehouse);
 		for (Delivery d: tour.getDeliveries()) {
 			deliveries.add(d);
@@ -52,10 +51,7 @@ public class CompleteGraph2 implements Graph {
 		        	Dijkstra djikstra= new Dijkstra(lePlan,this.Intersection.get(i)) ;
 		        	djikstra.run();
 		        	
-		        	//NEW
 		        	cost[i][j] = djikstra.getCoutIntersection(this.Intersection.get(j).getId())*3.6/15;//pour avoir les secondes
-		        	//END NEW
-		        	//System.out.println("cost[i][j] : "+cost[i][j]);
 		        	
 		        	/*enregistrer l'itineraire*/
 		        	path[i][j]=djikstra.getItinerary(this.Intersection.get(j).getId());
@@ -68,10 +64,8 @@ public class CompleteGraph2 implements Graph {
 					}
 					else {
 						//get(i-1) car l'entrepot a decale toutes les livraisons dans la matrice intersections
-						//duree[i] = livraisons.get(i-1).getDureeDechargement();
 						int debut = tour.getStartDate().getHour();
 						if(debut== 8 || debut== 9 || debut== 10 || debut== 11  ) {
-							//LocalTime time3 = LocalTime.parse("12:32:22", DateTimeFormatter.ISO_TIME);
 							int deliveryStartLaps=deliveries.get(i-1).getStartTime();
 							String deliveryStartLapsString=Integer.toString(deliveryStartLaps);
 							String finalHourDeliveryStart="0";
@@ -155,6 +149,5 @@ public class CompleteGraph2 implements Graph {
 	public int [] getTimeLapsEnd() {
 		return timeLapsEnd;
 	}
-
 }
 

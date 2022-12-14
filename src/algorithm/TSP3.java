@@ -7,15 +7,11 @@ public class TSP3 extends TSP1 {
 	
 	protected double bound(Integer currentVertex, Collection<Integer> unvisited, double cost[][],double currentCost,int [] timeLapsStart,int [] timeLapsEnd) {
 		
-		//NEW : TIME LAPS
 		for(Integer i : unvisited) {
 			if(currentCost + cost[currentVertex][i]> timeLapsEnd[i]) {
-				//return Integer.MAX_VALUE;
 				return -1;
 			}
 		}
-		//END NEW
-		
 		
 		//Récupérer le cout minimal parmis les couts du sommet courant vers les sommets non visités
 		

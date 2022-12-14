@@ -1,6 +1,5 @@
 package view;
 
-import java.awt.Event;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -218,13 +217,6 @@ public class HomeView extends Application implements Observer {
 			}
 		});
 
-		datePicker.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				System.out.println("date about to be changed");
-			}
-
-		});
 		dateValidateButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -242,11 +234,9 @@ public class HomeView extends Application implements Observer {
 						datePicker.setValue(map.getMapDate());
 					}else {
 						if (result.isPresent() && result.get() == buttonOk) {
-							System.out.println("YES!!!!!");
 							saveCouriers();
 						}
 					
-						// maybe clear listView
 						for (MapLayer layer : lastToCurrentSelectedStepLayer) {
 							mapView.removeLayer(layer);
 						}
@@ -257,7 +247,6 @@ public class HomeView extends Application implements Observer {
 						map.getCouriers().clear();
 						clearScreen();
 	
-						// re-init?
 						try {
 							loadCouriers();
 						} catch (ParseException e) {
@@ -377,9 +366,6 @@ public class HomeView extends Application implements Observer {
 		this.vBoxMap.prefWidthProperty().bind(hBox.widthProperty().multiply(0.55));
 
 		/* vBoxiIntentedTours */
-		// this.vBoxiIntentedTours.setStyle("-fx-border-style: solid inside;" +
-		// "-fx-border-width: 2;" + "-fx-border-insets: 5;" + "-fx-border-radius: 5;" +
-		// "-fx-border-color: #f3f6f4;" + "-fx-margin: 120 150 150 120;");
 		this.vBoxiIntentedTours.setBackground(this.background);
 		this.vBoxMap.setBackground(this.background);
 		this.vBoxiIntentedTours.setMaxHeight(this.height - 40);
@@ -392,7 +378,6 @@ public class HomeView extends Application implements Observer {
 			deliveriesOfTheDayLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
 
 			this.vBoxiIntentedTours.getChildren().add(deliveriesOfTheDayLabel);
-			// this.vBoxiIntentedTours.getChildren().add(hboxAddCourier);
 			this.vBoxMap.getChildren().add(this.mapView);
 			Label chosenDayLabel = new Label("Date courante : " + this.map.getMapDate().toString());
 			this.vBoxMap.getChildren().add(chosenDayLabel);
@@ -440,8 +425,6 @@ public class HomeView extends Application implements Observer {
 						labelDetailLivraison.setStyle("-fx-text-fill:rgba(255, 0, 0, 1.00);");
 					}
 					TreeItem deliveryItem = new TreeItem(labelDetailLivraison);
-					// TreeItem deliveryItem = new TreeItem(d.toString());
-					// deliveryItems.add(deliveryItem);
 					treeItemToDelivery.put(deliveryItem, d);
 					if (d == this.lastAddedDelivery) {
 						courierItem.setExpanded(true);
@@ -671,11 +654,6 @@ public class HomeView extends Application implements Observer {
 						e1.printStackTrace();
 					}
 					clearScreen();
-					/*
-					 * vBoxMap.getChildren().clear(); vBoxiIntentedTours.getChildren().clear();
-					 * vBoxAddCourier.getChildren().clear(); vBoxHome.getChildren().clear();
-					 * hBox.getChildren().clear();
-					 */
 	
 					if (map.getIsLoaded()) {
 						// map.setMapLoaded();
@@ -722,9 +700,7 @@ public class HomeView extends Application implements Observer {
 				}
 				mapView.setZoom(mapView.getZoom() - 0.001);
 				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
-				System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS : " + selectedDelivery);
 				if (lastSelectedDelivery != null) {
-					System.out.println("LastSelected delivery loop");
 					MapLayer lastSelectedDeliveryLayer = pinLayers.get(lastSelectedDelivery.getId());
 					MapPoint position = ((CustomPinLayer) lastSelectedDeliveryLayer).getMapPoint();
 					mapView.removeLayer(lastSelectedDeliveryLayer);
@@ -739,7 +715,6 @@ public class HomeView extends Application implements Observer {
 					}
 				}
 				if (selectedDelivery != null) {
-					System.out.println("Selected delivery loop non null");
 					lastToCurrentSelectedStepLayer.clear();
 					boolean deliveryFound = false;
 					ArrayList<MapPoint> points = new ArrayList<MapPoint>();
@@ -1011,8 +986,6 @@ public class HomeView extends Application implements Observer {
 
 			// For each courier
 			for (int i = 0; i < JsonCouriers.length(); i++) {
-				System.out.println("New courier to load");
-
 				JSONObject JsonCourier = JsonCouriers.getJSONObject(i);
 				String courierName = JsonCourier.getString("name");
 				int speed = JsonCourier.getInt("speed");
@@ -1099,7 +1072,6 @@ public class HomeView extends Application implements Observer {
 			setListViewCouriers(couriersAL);
 			reader.close();
 		} else {
-			System.out.println("Aucun fichier existant : " + fileName);
 			ArrayList<Courier> couriersInit = new ArrayList<>();
 			couriersAL = initCouriers();
 			for (Courier item : couriersAL.getItems()) {
@@ -1108,12 +1080,6 @@ public class HomeView extends Application implements Observer {
 			this.map.setCouriers(couriersInit);
 		}
 		couriersAL = listViewItemsToIterateOver;
-		for(Courier courier : this.map.getCouriers()) {
-			System.out.println("COURIER DANS MAP "+ courier.getName());
-		}
-		for(Courier courier : couriersAL.getItems()) {
-			System.out.println("COURIER DANS listView "+ courier.getName());
-		}
 
 		return couriersAL;
 	}
@@ -1134,9 +1100,6 @@ public class HomeView extends Application implements Observer {
 				try {
 
 					while ((st = br.readLine()) != null) {
-						// String[] arrSplit_2 = st.split(";");
-						// couriers.getItems().add(new Courier(arrSplit_2[0],
-						// Double.parseDouble(arrSplit_2[1])));
 						Courier courier = new Courier(st);
 						listViewCouriers.getItems().add(courier);
 						this.map.addCourier(courier);

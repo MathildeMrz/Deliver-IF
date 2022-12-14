@@ -32,9 +32,8 @@ public class Courier extends Observable {
 			float b = rand.nextFloat();
 			this.travelColor = new Color(r, g, b, 1.0);
 		}
-		System.out.println("Id courier : "+this.id);
-		System.out.println("name courier : "+this.name);
 	}
+	
 	public Courier(String name, int id)
 	{
 		this.id = id;
@@ -50,13 +49,10 @@ public class Courier extends Observable {
 			float b = rand.nextFloat();
 			this.travelColor = new Color(r, g, b, 1.0);
 		}
-		System.out.println("Id courier : "+this.id);
-		System.out.println("name courier : "+this.name);
 	}
 	
 	@Override
     public String toString() {
-        //return id + " " + name + " " +speed;
 		return name;
     }
 
@@ -115,7 +111,4 @@ public class Courier extends Observable {
 	public void setSpeed(double speed) {
 		this.speed = speed;
 	}
-	
-	
-	
 }
