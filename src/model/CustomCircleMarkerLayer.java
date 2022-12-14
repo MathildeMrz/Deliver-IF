@@ -6,34 +6,39 @@ import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-/** Affiche un point sur la carte */
+/**
+ * Displays a circle on the map
+ */
 public class CustomCircleMarkerLayer extends MapLayer {
 	 private final MapPoint mapPoint;
 	 private final Circle circle;
 
 	 /**
-	  * @param mapPoint le point (latitude et longitude) où afficher le cercle
+	  * @param mapPoint the point (latitude, longitude) where the circle must be displayed
 	  * @see com.gluonhq.maps.MapPoint
-	  * @param circleSize la taille du cercle
-	  * @param color la couleur
+	  * @param circleSize the size of the circle
+	  * @param color the color
 	  */
 	 public CustomCircleMarkerLayer(MapPoint mapPoint, int circleSize, Color color) {
 	  this.mapPoint = mapPoint;
 
-	  /* Cercle rouge de taille 5 */
+	  /* Initialisation of the circle (color and size) */
 	  this.circle = new Circle(circleSize, color);
 
-	  /* Ajoute le cercle au MapLayer */
+	  /* Adds the circle to the MapLayer */
 	  this.getChildren().add(circle);
 	 }
-
-	 /* La fonction est appelée à chaque rafraichissement de la carte */
+	 
+	 /**
+	  *   The function is called everytime a refresh of the map is done
+	 */
 	 @Override
 	 protected void layoutLayer() {
-	  /* Conversion du MapPoint vers Point2D */
+		 
+	  /* Conversion from MapPoint to Point2D (latitude and longitude to screen pixels) */
 	  Point2D point2d = this.getMapPoint(mapPoint.getLatitude(), mapPoint.getLongitude());
 
-	  /* Déplace le cercle selon les coordonnées du point */
+	  /* Moves the circle according to the coordinates of the point */
 	  circle.setTranslateX(point2d.getX());
 	  circle.setTranslateY(point2d.getY());
 	 }

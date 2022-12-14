@@ -10,19 +10,19 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polyline;
 
 /**
- * Affiche un chemin sur la carte
+ * Displays a round on the map
  */
 public class CustomPolygoneMarkerLayer extends MapLayer{
 	private final Polyline line;
 	private ArrayList<MapPoint> mapPoints;
     private double[] points;
     private MapView mapView;
-   
+      
     /**
-     * @param mapPoints ensemble des points par lesquels passe le trajet
+     * @param mapPoints all points concerning by the round
      * @param mapView
-     * @param lineColor couleur du tracé
-     * @param lineWidth taille du tracé
+     * @param lineColor color
+     * @param lineWidth width
      */
 	 public CustomPolygoneMarkerLayer(ArrayList<MapPoint> mapPoints, MapView mapView, Color lineColor, int lineWidth) {	
 		 this.mapView = mapView;
@@ -36,12 +36,17 @@ public class CustomPolygoneMarkerLayer extends MapLayer{
 		 this.getChildren().add(line);
 	 }
 
-	 /* La fonction est appelée à chaque rafraichissement de la carte */
+	 /**
+	  *   The function is called everytime a refresh of the map is done
+	 */
 	 @Override
 	 protected void layoutLayer() 
 	 {
 		 int cpt = 0;
-		 for(MapPoint p : this.mapPoints) {
+		 
+		 /* Manual conversion from latitude and longitude to screen pixels*/
+		 for(MapPoint p : this.mapPoints) 
+		 {
 			 double mapWidth = this.mapView.getWidth();
 	 		 double mapHeight = this.mapView.getHeight();
 	 		

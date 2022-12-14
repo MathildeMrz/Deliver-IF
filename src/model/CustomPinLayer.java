@@ -8,26 +8,31 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-/** Affiche une épingle sur la carte */
+/**
+ * Displays a pin on the map
+ */
 public class CustomPinLayer extends MapLayer{
 	private final MapPoint mapPoint;
 	private final ImageView mapPinImageView;
 	private static final int PIN_WIDTH = 18, PIN_HEIGHT = 25;
 
 	 /**
-	  * @param mapPoint le point (latitude et longitude) où afficher l'épingle
+	  * @param mapPoint the point (latitude, longitude) where the pin must be displayed
 	  * @see com.gluonhq.maps.MapPoint
-	  * @param isRed affichage du pin rouge ou noir
+	  * @param isRed true if the point was clicked, otherwhise false
 	  */
 	 public CustomPinLayer(MapPoint mapPoint, boolean isRed) throws MalformedURLException {
-		  this.mapPoint = mapPoint;
+		 
+		 this.mapPoint = mapPoint;
 		
-		  /* Ajoute l'épingle au MapLayer */
+		  /* Adds the pin to the MapLayer */
 		  InputStream input = this.getClass().getResourceAsStream("/Resources/map-pin-black.png");
 		  if(isRed) {
 			  input = this.getClass().getResourceAsStream("/Resources/map-pin-red.png");
 		  }
 		  Image image = new Image(input, PIN_WIDTH, PIN_HEIGHT, false, false);
+		  
+		/* Initialisation of the pin (image) */
 		  this.mapPinImageView = new ImageView(image);
 		  this.getChildren().add(this.mapPinImageView);
 	 }
@@ -37,14 +42,15 @@ public class CustomPinLayer extends MapLayer{
 	 }
 
 	 /**
-	  *  La fonction est appelée à chaque rafraichissement de la carte
+	  *   The function is called everytime a refresh of the map is done
 	 */
 	 @Override
 	 protected void layoutLayer() {
-	  /* Conversion du MapPoint vers Point2D */
+		 
+		  /* Conversion from MapPoint to Point2D (latitude and longitude to screen pixels) */
 	  Point2D point2d = this.getMapPoint(mapPoint.getLatitude(), mapPoint.getLongitude());
 
-	  /* Déplace l'épingle selon les coordonnées du point */
+	  /* Moves the pin according to the coordinates of the point */
 	  mapPinImageView.setTranslateX(point2d.getX() - (PIN_WIDTH / 2));
 	  mapPinImageView.setTranslateY(point2d.getY() - PIN_HEIGHT);
 	 }
