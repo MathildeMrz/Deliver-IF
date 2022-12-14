@@ -80,8 +80,8 @@ public class HomeView extends Application implements Observer {
 
 	private Map map;
 	private Controller controller;
-	private int width; 
-	private int height; 
+	private int screenWidth; 
+	private int screenHeight; 
 	private ListView<Courier> listViewCouriers; //View of the courier to select when new request
 	private Stage stage;
 	private MapView mapView;
@@ -122,10 +122,13 @@ public class HomeView extends Application implements Observer {
 	 */
 	@Override
 	public void start(Stage stage) throws Exception {
+		
+		// Init couriers
 		if (listViewCouriers == null) {
 			this.listViewCouriers = initCouriers();
 		}
-		/* Init attributes */
+		
+		// Init attributes 
 		this.stage = stage;
 		
 		//Add observers to be notify when a courier has a new delivery and his tour is updated
@@ -134,8 +137,8 @@ public class HomeView extends Application implements Observer {
 		}
 
 		// Resize the window 
-		stage.setWidth(width);
-		stage.setHeight(height);
+		stage.setWidth(screenWidth);
+		stage.setHeight(screenHeight);
 
 		// Set buttons and style and textFields
 		this.background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
@@ -379,15 +382,15 @@ public class HomeView extends Application implements Observer {
 
 		/* VBoxMap */
 		this.vBoxMap.setPadding(new Insets(20, 20, 20, 20));
-		this.vBoxMap.setMaxHeight(this.height - 40);
-		this.vBoxMap.setMaxWidth(this.width / 1.6);
+		this.vBoxMap.setMaxHeight(this.screenHeight - 40);
+		this.vBoxMap.setMaxWidth(this.screenWidth / 1.6);
 		this.vBoxMap.prefWidthProperty().bind(hBox.widthProperty().multiply(0.55));
 
 		/* vBoxiIntentedTours */
 		this.vBoxiIntentedTours.setBackground(this.background);
 		this.vBoxMap.setBackground(this.background);
-		this.vBoxiIntentedTours.setMaxHeight(this.height - 40);
-		this.vBoxiIntentedTours.setMaxWidth(this.width / 1.6);
+		this.vBoxiIntentedTours.setMaxHeight(this.screenHeight - 40);
+		this.vBoxiIntentedTours.setMaxWidth(this.screenWidth / 1.6);
 		this.vBoxiIntentedTours.prefWidthProperty().bind(hBox.widthProperty().multiply(0.45));
 
 		// if a map is loaded
@@ -645,8 +648,8 @@ public class HomeView extends Application implements Observer {
 						try {
 							newRequestView.setController(controller);
 							newRequestView.setListViewCouriers(listViewCouriers);
-							newRequestView.setHeight(height);
-							newRequestView.setWidth(width);
+							newRequestView.setHeight(screenHeight);
+							newRequestView.setWidth(screenWidth);
 							newRequestView.setMap(map);
 							newRequestView.setMapView(mapView);
 							newRequestView.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
@@ -890,19 +893,19 @@ public class HomeView extends Application implements Observer {
 	}
 
 	public int getWidth() {
-		return width;
+		return screenWidth;
 	}
 
 	public void setWidth(int width) {
-		this.width = width;
+		this.screenWidth = width;
 	}
 
 	public int getHeight() {
-		return height;
+		return screenHeight;
 	}
 
 	public void setHeight(int height) {
-		this.height = height;
+		this.screenHeight = height;
 	}
 
 	public ListView<Courier> getListViewCouriers() {
