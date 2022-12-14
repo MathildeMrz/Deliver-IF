@@ -8,21 +8,23 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-/** Affiche une épingle sur la carte */
+/** add a pin on the map */
 public class CustomPinLayer extends MapLayer{
 	private final MapPoint mapPoint;
 	private final ImageView mapPinImageView;
 	private static final int PIN_WIDTH = 18, PIN_HEIGHT = 25;
 
 	 /**
-	  * @param mapPoint le point (latitude et longitude) où afficher l'épingle
+	  * @param mapPoint : point(latitude and longitude) where the pin must be displayed
 	  * @see com.gluonhq.maps.MapPoint
-	  * @param isRed affichage du pin rouge ou noir
+	  * @param isRed : display a red pin if true, display a black pin if false
+	  * 
 	  */
+	
 	 public CustomPinLayer(MapPoint mapPoint, boolean isRed) throws MalformedURLException {
 		  this.mapPoint = mapPoint;
 		
-		  /* Ajoute l'épingle au MapLayer */
+		  /* add a pin to the MapLayer */
 		  InputStream input = this.getClass().getResourceAsStream("/Resources/map-pin-black.png");
 		  if(isRed) {
 			  input = this.getClass().getResourceAsStream("/Resources/map-pin-red.png");
@@ -36,15 +38,13 @@ public class CustomPinLayer extends MapLayer{
 		 return this.mapPoint;
 	 }
 
-	 /**
-	  *  La fonction est appelée à chaque rafraichissement de la carte
-	 */
+	 /* function is called whenever the map is refreshed */
 	 @Override
 	 protected void layoutLayer() {
-	  /* Conversion du MapPoint vers Point2D */
+	 /* convert point on point 2D */
 	  Point2D point2d = this.getMapPoint(mapPoint.getLatitude(), mapPoint.getLongitude());
 
-	  /* Déplace l'épingle selon les coordonnées du point */
+	  /* move the pin with the 2d coordinates */
 	  mapPinImageView.setTranslateX(point2d.getX() - (PIN_WIDTH / 2));
 	  mapPinImageView.setTranslateY(point2d.getY() - PIN_HEIGHT);
 	 }

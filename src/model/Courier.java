@@ -40,9 +40,11 @@ public class Courier extends Observable {
 		this.name = name;
 		this.speed = SPEED_COURIER;
 		this.tour = new Tour();
+		//add a color to the courier from our list of colors 
 		if(this.id<this.ColorsList.size()) {
 			this.travelColor = ColorsList.get(this.id);
 		} else {
+			//if all or colors have already been added to a courier, we give a random color to the courier
 			Random rand = new Random();
 			float r = rand.nextFloat();
 			float g = rand.nextFloat();

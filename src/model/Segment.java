@@ -25,7 +25,6 @@ public class Segment extends Observable {
 		return name;
 	}
 
-	
 	@Override
 	public String toString() {
 		return "Segment [destination=" + destination + ", length=" + length + ", name=" + name + "]";

@@ -42,7 +42,7 @@ public class Map extends Observable {
 	}
 	
 	/**
-	 * Permet de remettre à 0 tous les attributs d'une carte, pour en charger une autre
+	 * Reset all map attribute in order to load a new map
 	 */
 	public void resetMap() {
 		this.nodes.clear();
@@ -143,10 +143,10 @@ public class Map extends Observable {
 	}
 	
 	/**
-	 * Retourne l'intersection existante la plus proche de la carte par rapport aux coordonnees passees en parametre
-	 * @param latitude la latitude du point
-	 * @param longitude	la longitude du point
-	 * @return l'intersection la plus proche
+	 * return the closest intersection of the map from coordinates in parameters
+	 * @param latitude : latitude of the point
+	 * @param longitude	: longitude of the point
+	 * @return the closest intersection
 	 */
 	public Intersection getClosestIntersection(float latitude, float longitude, long idIntersection)
 	{
