@@ -78,7 +78,7 @@ public class NewRequestView extends Application implements Observer {
 	private Label labelCourierSuggestion;
 	private Button buttonValidate;
 	private Button buttonChangePoint;
-	private Button buttonChangePage;
+	private Button cancelRequest;
 	private BackgroundFill background_fill;
 	private Background background;
 	private Button buttonSeeIntersections;
@@ -153,8 +153,8 @@ public class NewRequestView extends Application implements Observer {
 		this.buttonValidate.setMouseTransparent(true);
 		this.buttonChangePoint = new Button("Changer le point de livraison");
 		this.buttonChangePoint.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
-		this.buttonChangePage = new Button("Annuler requête livraison");
-		this.buttonChangePage.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
+		this.cancelRequest = new Button("Annuler requête livraison");
+		this.cancelRequest.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 		this.buttonSeeIntersections = new Button("Voir les intersections");
 		this.buttonSeeIntersections.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 			
@@ -275,11 +275,17 @@ public class NewRequestView extends Application implements Observer {
 			}
 		});
 
+		// Change the place of the requested delivery
 		this.buttonChangePoint.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
+				// Allow to select a new delivery
 				clickedOnMap = false;
+				
+				// Remove the blue circle in the previous delivery place
 				mapView.removeLayer(newDelivery);
+				
+				// Display the steps to follow in order to add a delivery
 				timeWindow.setMouseTransparent(true);
 				timeWindow.setStyle(null);
 				couriers.setMouseTransparent(true);
@@ -291,9 +297,11 @@ public class NewRequestView extends Application implements Observer {
 			}
 		});
 
-		this.buttonChangePage.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		// Cancel the delivery requested
+		this.cancelRequest.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
+				// Alert ask the user confirmation
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Warning");
 				alert.setHeaderText("Vos changements ne seront pas enregistrés");
@@ -302,6 +310,7 @@ public class NewRequestView extends Application implements Observer {
 				alert.getButtonTypes().setAll(buttonOk, buttonCancel);
 				Optional<ButtonType> result = alert.showAndWait();
 				if (result.get() == buttonOk) {
+					// The blue circle of the requested delivery is removed and we go back to homePage
 					mapView.removeLayer(newDelivery);
 					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
 						getMapView().removeLayer(customCircleMarkerLayer);
@@ -335,7 +344,7 @@ public class NewRequestView extends Application implements Observer {
 				bestCourierProx = map.getBestCourierProximity(closestIntersection, requestedStartingTimeWindow);
 				requestedCourier = bestCourierAvailable;
 				vBoxCouriers.getChildren().remove(couriers);
-				vBoxCouriers.getChildren().remove(buttonChangePage);
+				vBoxCouriers.getChildren().remove(cancelRequest);
 				vBoxCouriers.getChildren().remove(buttonValidate);
 				vBoxCouriers.getChildren().remove(buttonSeeIntersections);
 				vBoxCouriers.getChildren().remove(buttonChangePoint);
@@ -362,7 +371,7 @@ public class NewRequestView extends Application implements Observer {
 				couriers = newCouriers;
 				couriers.getSelectionModel().select(0);
 				vBoxCouriers.getChildren().add(couriers);
-				vBoxCouriers.getChildren().add(buttonChangePage);
+				vBoxCouriers.getChildren().add(cancelRequest);
 				vBoxCouriers.getChildren().add(buttonValidate);
 				vBoxCouriers.getChildren().add(buttonSeeIntersections);
 				vBoxCouriers.getChildren().add(buttonChangePoint);
@@ -383,7 +392,6 @@ public class NewRequestView extends Application implements Observer {
 	public void buttonCourier() throws Exception {
 	
 	this.couriers.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
 		@Override
 		public void handle(MouseEvent event) {
 			requestedCourier = couriers.getSelectionModel().getSelectedItem();
@@ -411,12 +419,16 @@ public class NewRequestView extends Application implements Observer {
 		});
 	}
 
+	/**
+	 * Displays home page
+	 */
 	public void display() {
 
+		// Hbox
 		HBox hbox = new HBox();
 		hbox.setBackground(background);
 		
-		/* vBox Treeview */
+		// vBox treeView
         VBox vBoxTreeView = new VBox();
         treeview.getRoot().getChildren().forEach(t ->{
         	((TreeItem)t).setExpanded(false);
@@ -433,7 +445,7 @@ public class NewRequestView extends Application implements Observer {
 		vBoxCouriers.getChildren().add(labelSelectCourier);
 		vBoxCouriers.getChildren().add(labelCourierSuggestion);
 		vBoxCouriers.getChildren().add(couriers);
-		vBoxCouriers.getChildren().add(buttonChangePage);
+		vBoxCouriers.getChildren().add(cancelRequest);
 		vBoxCouriers.getChildren().add(buttonValidate);
 		vBoxCouriers.getChildren().add(buttonSeeIntersections);
 		vBoxCouriers.getChildren().add(buttonChangePoint);
@@ -449,25 +461,33 @@ public class NewRequestView extends Application implements Observer {
 		vBoxMap.getChildren().add(new Label(""));
 		vBoxMap.getChildren().add(this.mapView);
 		
-		// hbox contains two elements
+		// Hbox contains previous vBox
 		hbox.getChildren().add(vBoxMap);
 		hbox.getChildren().add(vBoxCouriers);
 		hbox.getChildren().add(vBoxTreeView);
 
 		Scene scene = new Scene(hbox, 200, 500);
-
 		stage.setScene(scene);
 		
+		// Validate the requested delivery and add the delivery to the requested courier tour
 		this.buttonValidate.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
+				
+				// Remove all added layers (requested delivery circle and all intersections circles)
 				mapView.removeLayer(newDelivery);
 				for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
 					getMapView().removeLayer(customCircleMarkerLayer);
 				}
+				
+				// If the user as chosen an intersection on the map
 				if (requestedX != 0.0f && requestedY != 0.0f && map.getCouriers().size() != 0) {
+					
+					// The requested delivery is added to the requested courier tour
 					Delivery delivery = controller.addDelivery(closestIntersection, map.getMapDate(), requestedStartingTimeWindow,
 							requestedCourier);
+					
+					// We go back on homePage
 					try {
 						ourMapView.setController(controller);
 						ourMapView.setListViewCouriers(couriers);
