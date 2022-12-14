@@ -37,7 +37,8 @@ public class CustomPolygoneMarkerLayer extends MapLayer{
 	 }
 
 	 /**
-	  *   The function is called everytime a refresh of the map is done
+	  *   The function is called everytime a refresh of the map is done. It moves the polygone to the good position when
+	  *   the user zooms
 	 */
 	 @Override
 	 protected void layoutLayer() 

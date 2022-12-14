@@ -44,7 +44,8 @@ public class CustomPinLayer extends MapLayer{
 	 }
 
 	 /**
-	  *   The function is called everytime a refresh of the map is done
+	  *   The function is called everytime a refresh of the map is done. It moves the pin to the good position when
+	  *   the user zooms for example
 	 */
 	 @Override
 	 protected void layoutLayer() {

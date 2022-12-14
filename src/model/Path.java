@@ -9,7 +9,7 @@ public class Path {
 	private Intersection destination;
 	
 	/**
-	 * Create a Path, with contains the list of segments corresponding to the shortest path between the origin and the destination
+	 * Creates a Path, with contains the list of segments corresponding to the shortest path between the origin and the destination
 	 * @param path : the shortest path
 	 * @param origin : the origin of the path
 	 * @param destination : the destination of the path
