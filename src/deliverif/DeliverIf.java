@@ -32,7 +32,6 @@ public class DeliverIf extends Application {
 	private NewRequestView newRequestView;
 
 	public static void main(String[] args) throws Exception {
-
 		// Settings for the map
 		StorageService storageService = new StorageService() {
 			@Override
@@ -59,6 +58,7 @@ public class DeliverIf extends Application {
 				return getPrivateStorage().get().canRead();
 			}
 		};
+		
 		ServiceFactory<StorageService> storageServiceFactory = new ServiceFactory<StorageService>() {
 
 			@Override
@@ -100,15 +100,16 @@ public class DeliverIf extends Application {
 
 		double latAverage = 45;
 		double longAverage = 2;
-		/* Création du point avec latitude et longitude */
+		/* Create a point with a latitude and longitude */
 		MapPoint mapPoint = new MapPoint(latAverage, longAverage);
 
-		/* Zoom de 14 */
+		/* Set a zoom to see the map well */
 		mapView.setZoom(14);
 
-		/* Centre la carte sur le point */
+		/* Center the map on the point */
 		mapView.setCenter(mapPoint);
 
+		//Initiate the homeView
 		this.homeView = new HomeView();
 		this.homeView.initMapPolygoneMarkerLayers();
 		this.homeView.initLastToCurrentSelectedStepLayer();
@@ -125,6 +126,10 @@ public class DeliverIf extends Application {
 		this.homeView.start(new Stage());
 	}
 
+	
+	/**
+	 * Initiate a list of courier by reading a txt file.
+	 * */
 	public ListView<Courier> initCouriers() {
 
 		File file = new File("./saveCouriers.txt");

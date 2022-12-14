@@ -140,6 +140,7 @@ public class Tour extends Observable {
 		Delivery delivery = new Delivery(timeWindow, intersection, startDelivery);
 	    deliveries.add(delivery);
 		notifyObservers(delivery);
+		//sort deliveries by startTime (timeWindow)
 		deliveries.sort(Comparator.comparing(Delivery::getStartTime));
 		return delivery;
 	}	
