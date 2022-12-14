@@ -1043,7 +1043,6 @@ public class HomeView extends Application implements Observer {
 						deliveries.add(delivery);
 						Intersection destination = new Intersection();
 						destination.setId(deliveryIntersectionId);
-						this.map.addDestination(destination);
 					}
 				}
 				Tour tour = new Tour();

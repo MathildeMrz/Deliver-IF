@@ -10,7 +10,6 @@ import java.lang.Math;
 
 public class Map extends Observable {
 	private HashMap<Long, Intersection> nodes;
-	private ArrayList<Intersection> destinations;
 	private Intersection warehouse;
 	private ArrayList<Courier> couriers;
 	private boolean isLoaded;
@@ -32,7 +31,6 @@ public class Map extends Observable {
 
 	public Map() {
 		this.nodes  = new HashMap<Long,Intersection>();
-		this.destinations  = new ArrayList<Intersection>();//During load function
 		this.couriers = new ArrayList<Courier>();//During load function
 		this.warehouse = null;
 		this.isLoaded = false;
@@ -48,7 +46,6 @@ public class Map extends Observable {
 	 */
 	public void resetMap() {
 		this.nodes.clear();
-		this.destinations.clear();
 		this.latitudeMin = Float.MAX_VALUE;
 		this.latitudeMax = 0;
 		this.longitudeMin = Float.MAX_VALUE;
@@ -58,9 +55,6 @@ public class Map extends Observable {
 
 	public void resetNodes() {
 		this.nodes.clear();
-	}
-	public void resetDestinations() {
-		this.destinations.clear();
 	}
 	
 	public void addWarehouse(Long intersectionID) {
@@ -73,10 +67,6 @@ public class Map extends Observable {
 
 	public HashMap<Long, Intersection> getNodes() {
 		return nodes;
-	}
-	
-	public ArrayList<Intersection> getDestinations() {
-		return destinations;
 	}
 	
 	public ArrayList<Courier> getCouriers() {
@@ -97,10 +87,6 @@ public class Map extends Observable {
 	
 	public void addCourier(Courier courier) {
 		this.couriers.add(courier);
-	}
-	
-	public void addDestination(Intersection intersection) {
-		this.destinations.add(intersection);
 	}
 
 	public Intersection getWarehouse() {
@@ -222,6 +208,4 @@ public class Map extends Observable {
 	   	 }
 	   	 return bestCourier;
 	    }
-
-	
 }
