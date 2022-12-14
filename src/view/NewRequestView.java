@@ -546,10 +546,14 @@ public class NewRequestView extends Application implements Observer {
 		this.mapView = mapView;
 	}
 
+	/**
+	 * Saves couriers and its attributes in a json file
+	 */
 	protected void saveCouriers() {
 		LocalDate date = this.map.getMapDate();
+		
+		//File name
 		String path = "loadedDeliveries/" + date + ".json";
-
 		JSONArray listeCouriersJson = new JSONArray();
 
 		// For each courier
