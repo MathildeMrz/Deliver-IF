@@ -69,6 +69,10 @@ public class Controller {
 		testTSP.start();
 	}
 	
+	/**
+	 * add a delivery from the list of deliveries of a courier.
+	 * @param selectedDelivery : delivery to remove
+	 * */
 	public void deleteDelivery(Delivery selectedDelivery)
 	{
 		for(Courier c : map.getCouriers()) 
@@ -79,5 +83,4 @@ public class Controller {
 			}
 		}
 	}
-
 }
