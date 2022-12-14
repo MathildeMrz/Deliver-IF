@@ -47,7 +47,7 @@ public class Controller {
 	 * get the closest intersection from the request coordinates
 	 * @param latitude : latitude of the requested point on the map
 	 * @param longitude : longitude of the requested point on the map
-	 * @param listView : listView of the map where we need to display the added courier
+	 * @param idIntersection : id of Intersection
 	 * */
 	public Intersection getClosestIntersection(float latitude, float longitude, long idIntersection) {
 		 return map.getClosestIntersection(latitude, longitude, idIntersection);
