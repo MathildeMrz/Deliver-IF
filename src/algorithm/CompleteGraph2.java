@@ -40,7 +40,7 @@ public class CompleteGraph2 implements Graph {
 		cost = new double[nbVertices][nbVertices];
 		path= new Path[nbVertices][nbVertices];
 		
-		//NEW : GERER PLAGES HORAIRES
+		//NEW :TIME LAPS
 		int[] timeLapsStart = new int[Intersection.size()];
 		int[] timeLapsEnd= new int[Intersection.size()];
 		//FIN NEW
@@ -53,7 +53,7 @@ public class CompleteGraph2 implements Graph {
 		        	
 		        	cost[i][j] = djikstra.getCoutIntersection(this.Intersection.get(j).getId())*3.6/15;//pour avoir les secondes
 		        	
-		        	/*enregistrer l'itineraire*/
+		        	/*save the itineraries*/
 		        	path[i][j]=djikstra.getItinerary(this.Intersection.get(j).getId());
 		        	
 		        	//NEW : TIME LAPS
@@ -63,7 +63,7 @@ public class CompleteGraph2 implements Graph {
 						timeLapsEnd[0] = Integer.MAX_VALUE;
 					}
 					else {
-						//get(i-1) car l'entrepot a decale toutes les livraisons dans la matrice intersections
+						
 						int debut = tour.getStartDate().getHour();
 						if(debut== 8 || debut== 9 || debut== 10 || debut== 11  ) {
 							int deliveryStartLaps=deliveries.get(i-1).getStartTime();

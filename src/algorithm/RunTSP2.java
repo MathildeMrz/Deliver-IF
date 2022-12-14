@@ -48,7 +48,7 @@ public class RunTSP2 extends Observable {
 			
 			if(this.solutionTrouvee==true) {
 			
-				/*imprimer l'itinéraire*/
+				/*save the itinerary*/
 				tour.addDeliveryToOrderedDeliveries(Intersection.get(tsp.getSolution(0)));
 				for(int i=1; i<nbVertices; i++)
 				{
@@ -58,7 +58,7 @@ public class RunTSP2 extends Observable {
 						tour.addDeliveryToOrderedDeliveries(s.getDestination());		
 					}
 				}
-				//dernière destination vers le warehouse
+				//back to the warehouse
 				List <Segment> steps= g.getPath(tsp.getSolution(nbVertices-1),0).getPath();
 				for(Segment s: steps)
 				{
@@ -69,7 +69,7 @@ public class RunTSP2 extends Observable {
 				tour.initArrivals();
 				for(int i=1; i<nbVertices; i++)
 				{
-					/*calcul de la durée*/
+					/*calculate the arrival times*/
 					tour.setArrival(this.Intersection.get(tsp.getSolution(i)),i,g.getCost(tsp.getSolution(i-1),tsp.getSolution(i))/60);
 				}
 				tour.setArrival(this.Intersection.get(tsp.getSolution(0)),nbVertices,g.getCost(tsp.getSolution(nbVertices-1),tsp.getSolution(0))/60);

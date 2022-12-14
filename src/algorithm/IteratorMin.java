@@ -33,7 +33,7 @@ public class IteratorMin implements Iterator<Integer> {
 	
 	@Override
     public Integer next() {
-		//Initialiser la valeur du candidat minimal
+		//Initialize the value of min
         Integer min = candidates.get(0);
         int index = 0;
 

@@ -7,13 +7,14 @@ public class TSP3 extends TSP1 {
 	
 	protected double bound(Integer currentVertex, Collection<Integer> unvisited, double cost[][],double currentCost,int [] timeLapsStart,int [] timeLapsEnd) {
 		
+		//We don't exceed the time of the time laps of a delivery
 		for(Integer i : unvisited) {
 			if(currentCost + cost[currentVertex][i]> timeLapsEnd[i]) {
 				return -1;
 			}
 		}
 		
-		//Récupérer le cout minimal parmis les couts du sommet courant vers les sommets non visités
+		//Take the minimal costs between the unvisited nodes
 		
 		double minCurrentPoint = Double.MAX_VALUE;
 		for(Integer i : unvisited) {

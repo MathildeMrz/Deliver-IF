@@ -12,25 +12,25 @@ import java.util.Collections;
 
 public class Dijkstra {
 
-	// Contient les intersection associees a leur antecedent
+	// Contains the intersections associated to their antecedent 
 	private HashMap<Long, Intersection> pi;
-	// Contient les id des intersections associees a leur cout
+	// Contains the id of intersections associated to their costs
 	private HashMap<Long, Double> cout;
 
-	// Contient les intersections blanches, associees a leur cout
+	// Contains the blanc intersections, associated with their costs
 	private HashMap<Long, Double> intersectionsBlanches;
-	// Contient les intersections grises, associees a leur cout
+	// Contains the grey intersections, associated with their costs
 	private HashMap<Long, Double> intersectionsGrises;
-	// Inverse la map intersectionsGrises
+	// Reverse the map intersectionsGrises
 	private HashMap<Double, List<Long>> intersectionsGrisesInversees;
 
-	// L'objet Plan de notre cas d'etude
+	// Object Map
 	private Map lePlan;
-	// Intersection d'ou l'on part
+	// Starting point
 	private Intersection ptDepart;
 
 	/**
-	 * Initialise le plan et le graph à parcourir avant de lancer l'algorithme de plus courts chemins()
+	 * Initialize the map and the graph (starting from the attribute ptDepart) before running the algorithm 
 	 * 
 	 * @param lePlan
 	 * @param pointDepart
@@ -45,18 +45,17 @@ public class Dijkstra {
 		intersectionsGrises = new HashMap<Long, Double>();
 		intersectionsGrisesInversees = new HashMap<Double, List<Long>>();
 		
-        //récupérer toutes les intersections du plan pour en faire 'un graphe'
+		//create a graph with all the intersections of the plan
 		Collection<Intersection> c = lePlan.getNodes() .values();
-		// On ajoute les intersections dans les differentes Hashmap
-        // On initialise le cout à max comme on veut minimiser le cout
+
+		//initialising the costs to MAX
 		for (Intersection intersection : c) {
 			pi.put(intersection.getId(), null);
 			cout.put(intersection.getId(), Double.MAX_VALUE);
 			intersectionsBlanches.put(intersection.getId(), Double.MAX_VALUE);
 		}
 
-		// On met le point de départ dans les maps grises et on l'enleve de la map
-		// intersectionsBlanches
+		//We put the starting point in the gray map and we remove it from the blanc map
 		cout.put(pointDepart.getId(), 0.0);
 		intersectionsBlanches.remove(pointDepart.getId());
 		intersectionsGrises.put(pointDepart.getId(), 0.0);
@@ -66,32 +65,31 @@ public class Dijkstra {
 	}
 
 	/**
-	 * Execute l'algorithme de Dijkstra
+	 * Execute Djikstra's algorithm
 	 */
 	public void run() {
-		// On continue tant que l'on a des intersections grises
+		// As long as we still have grey intersections, we go on
 		while (intersectionsGrises.values().size() != 0) {
 			double min = Collections.min(intersectionsGrises.values());
-            /*on prend le noeud de cout minimal */
+            /*we take the node of minimal cost */
 			Long idMin = intersectionsGrisesInversees.get(min).get(0); //on prend son id
 			
 			Intersection lIntersection = lePlan.getNodes().get(idMin);
 
-			// On visite tous les successeurs du point courant
+			// we visit the successors of the current node
 			for (Segment t : lIntersection.getOutSections()) {
 
-				// On n'agit que sur les intersections blanches ou grises
+				// We only modify grey and blanc nodes
 				if (intersectionsBlanches.containsKey(t.getDestination().getId()) || intersectionsGrises.containsKey(t.getDestination().getId())) {
 
-					// On relache l'arc en le point courant et le successeur que l'on est en train
-					// de visiter
+					
 					relacher(lIntersection, t.getDestination());
-					// On colorie le nouveau sommet visite en gris
+			
 					if (intersectionsBlanches.containsKey(t.getDestination().getId())) {
-						// On l'ajoute dans la map "a l'endroit"
+						
 						intersectionsGrises.put(t.getDestination().getId(),cout.get(t.getDestination().getId()));
 
-						// On l'ajoute à la map inverse, en verifiant si la valeur de cout existe
+						
 						if (intersectionsGrisesInversees.containsKey(cout.get(t.getDestination().getId()))) {
 							intersectionsGrisesInversees.get(cout.get(t.getDestination().getId())).add(t.getDestination().getId());
 						} else {
@@ -100,8 +98,7 @@ public class Dijkstra {
 							intersectionsGrisesInversees.put(cout.get(t.getDestination().getId()), aAjouter);
 						}
 
-						// On enleve l'intersection des intersections blanches, vu qu'elle vient d'etre
-						// coloriee en grise
+						
 						intersectionsBlanches.remove(t.getDestination().getId());
 
 					}
@@ -133,8 +130,7 @@ public class Dijkstra {
 
 			}
 
-			// Il faut maintenant ajouter le sommet aux intersections noires (ici, il suffit
-			// qu'il ne soit dans aucune map contenant les intersections grises ou blanches
+	
 			intersectionsGrises.remove(idMin);
 
 			if (intersectionsGrisesInversees.get(min).size() != 1) {
@@ -147,7 +143,7 @@ public class Dijkstra {
 	}
 
 	/**
-	 * Execute le relachement d'un arc : vérifier si son cout est bien minimal ou pas
+	 * Verify if the cost assigned to an arc is actually minimized, otherwise change it
 	 */
 	public void relacher(Intersection si, Intersection sj) {
 
@@ -179,9 +175,9 @@ public class Dijkstra {
 	}
 
 	/**
-	 * Obtenir le chemin depuis le point de départ (attribut de la classe) jusqu'à l'intersection d'id idDestination
-	 *  @param idDestination : id de l'Intersection de destination
-	 *  @return l'itinéraire entre l'Intersection de départ l'Intersection de destination
+	 * Get the shortest path from the start point to the destination of which we precise the id 
+	 *  @param idDestination : id of the Intersection corresponding to the destination
+	 *  @return the path between the start point and the destination
 	 */
 	public Path getItinerary(Long idDestination) {
 
@@ -205,8 +201,7 @@ public class Dijkstra {
 						}
 					}
 				}
-				// On verifie qu'il n'y a pas eu de probleme et que l'on a bien un nouveau
-				// segment
+				
 				if (tailleChemin == cheminInverse.size()) {
 					return null;
 				}
