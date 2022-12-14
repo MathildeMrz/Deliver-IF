@@ -632,7 +632,7 @@ public class HomeView extends Application implements Observer {
 			}
 		});
 
-		
+		// Go to the new request page
 		this.buttonNewRequest.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -661,10 +661,13 @@ public class HomeView extends Application implements Observer {
 			}
 		});
 
+		// Load a new map
 		buttonLoadMap.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				boolean loadNewMap = false;
+				
+				// If a map is loaded, an alert ask if we want to save our changes
 				if (startPage == false) {
 					Alert alert = new Alert(AlertType.WARNING);
 					alert.setTitle("Changements non enregistrés");
@@ -681,8 +684,10 @@ public class HomeView extends Application implements Observer {
 						loadNewMap = true;
 					}
 				}
+				
 				if(startPage || loadNewMap) {
 					map.resetMap();
+					// Check if the loaded file is an XML file and show an alert otherwise
 					try {
 						XMLdeserializer.load(map, stage);
 					} catch (ParserConfigurationException | SAXException | IOException | ExceptionXML e1) {
@@ -694,13 +699,15 @@ public class HomeView extends Application implements Observer {
 					clearScreen();
 	
 					if (map.getIsLoaded()) {
-						// map.setMapLoaded();
+						
+						// Clear the previous lists
 						for (Courier c : map.getCouriers()) {
 							c.getTour().clearTourSteps();
 							c.getTour().clearDeliveries();
 							c.getTour().getDeliveries().clear();
 						}
 	
+						// Set the new map parameters
 						mapView = new MapView();
 						double latAverage = (map.getLatitudeMin() + map.getLatitudeMax()) / 2;
 						double longAverage = (map.getLongitudeMin() + map.getLongitudeMax()) / 2;
@@ -721,6 +728,7 @@ public class HomeView extends Application implements Observer {
 						e1.printStackTrace();
 					}
 					try {
+						// Create the new map
 						createMap(map);
 					} catch (MalformedURLException | FileNotFoundException e) {
 						// TODO Auto-generated catch block
@@ -730,9 +738,12 @@ public class HomeView extends Application implements Observer {
 			}
 		});
 		
+		// Show the selected delivery on the map
 		treeView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
+				
+				// remove the previous red path layer lala
 				for (MapLayer layer : lastToCurrentSelectedStepLayer) {
 					mapView.removeLayer(layer);
 				}
