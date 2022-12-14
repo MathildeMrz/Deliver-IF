@@ -17,12 +17,12 @@ public class CustomPolygoneMarkerLayer extends MapLayer{
 	private ArrayList<MapPoint> mapPoints;
     private double[] points;
     private MapView mapView;
-   
+      
     /**
      * @param mapPoints : list of points of the tour
      * @param mapView
      * @param lineColor: color of the tour to diplay
-     * @param lineWidth: size of the tour
+     * @param lineWidth: width
      */
 	 public CustomPolygoneMarkerLayer(ArrayList<MapPoint> mapPoints, MapView mapView, Color lineColor, int lineWidth) {	
 		 this.mapView = mapView;
@@ -36,12 +36,17 @@ public class CustomPolygoneMarkerLayer extends MapLayer{
 		 this.getChildren().add(line);
 	 }
 
-	 /* function is called whenever the map is refreshed */
+	 /**
+	  *   The function is called everytime a refresh of the map is done
+	 */
 	 @Override
 	 protected void layoutLayer() 
 	 {
 		 int cpt = 0;
-		 for(MapPoint p : this.mapPoints) {
+		 
+		 /* Manual conversion from latitude and longitude to screen pixels*/
+		 for(MapPoint p : this.mapPoints) 
+		 {
 			 double mapWidth = this.mapView.getWidth();
 	 		 double mapHeight = this.mapView.getHeight();
 	 		
