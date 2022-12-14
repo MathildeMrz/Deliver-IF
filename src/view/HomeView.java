@@ -699,6 +699,18 @@ public class HomeView extends Application implements Observer {
 					mapView.setCenter(mapPoint);
 				}
 				try {
+					loadCouriers();
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				try {
 					createMap(map);
 				} catch (MalformedURLException | FileNotFoundException e) {
 					// TODO Auto-generated catch block
@@ -1076,10 +1088,10 @@ public class HomeView extends Application implements Observer {
 
 				for (Courier item : listViewItemsToIterateOver.getItems()) {
 
-					if (item.getName() == courier.getName()) {
+					if (item.getId() == courier.getId()) {
 
 						int id = listViewItemsToIterateOver.getItems().stream()
-								.filter(courierItem -> item.getName() == courierItem.getName()).findFirst().orElse(null)
+								.filter(courierItem -> item.getId() == courierItem.getId()).findFirst().orElse(null)
 								.getId();
 						this.listViewCouriers.getItems().set(id, courier);
 					} else {
