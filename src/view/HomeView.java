@@ -965,7 +965,7 @@ public class HomeView extends Application implements Observer {
 	 * saves couriers for the current map and date in a file with the format mapName-date.json inside the folder loadedDeliveries
 	 */
 	
-	protected void saveCouriers() {
+	public void saveCouriers() {
 		LocalDate date = this.map.getMapDate();
 		
 		//File name
@@ -1127,9 +1127,6 @@ public class HomeView extends Application implements Observer {
 						Delivery delivery = new Delivery(deliveryStartTime,
 								this.map.getNodes().get(deliveryIntersectionId), localTimeArrival, localTimeDelivery);
 						deliveries.add(delivery);
-						Intersection destination = new Intersection();
-						destination.setId(deliveryIntersectionId);
-						this.map.addDestination(destination);
 					}
 				}
 				Tour tour = new Tour();
