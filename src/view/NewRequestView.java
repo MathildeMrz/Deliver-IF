@@ -54,23 +54,22 @@ public class NewRequestView extends Application implements Observer {
 
 	private Map map;
 	private Controller  controller;
-	private int width;
-	private int height;
+	private int screenWidth;
+	private int screenHeight;
 	private ListView<Courier> couriers;
 	private Stage stage;
-	private boolean clicked;
-	private boolean seeIntersection;
-	private float requestedX;
-	private float requestedY;
-	private LocalDate requestedDate;
-	private int requestedStartingTimeWindow;
+	private boolean clickedOnMap; // true when user chose a point on map
+	private boolean seeIntersection; // true when all intersections are displayed
+	private float requestedX; // coordinates X of the chosen point for new delivery
+	private float requestedY; // coordinates Y of the chosen point for new delivery
+	private int requestedStartingTimeWindow; // time window of the requested delivery
 	private Intersection closestIntersection;
-	private Courier requestedCourier;
+	private Courier requestedCourier; // for the requested delivery
 	private final int noOfDaysToAdd = 2;
 	private MapView mapView;
 	private MapLayer newDelivery;
-	private ArrayList<CustomCircleMarkerLayer> mapLayerDelivery;
-	private ArrayList<MapLayer> mapPolygoneMarkerLayers;
+	private ArrayList<CustomCircleMarkerLayer> mapLayerDelivery; // lists of circle layers for each intersection
+	private ArrayList<MapLayer> mapPolygoneMarkerLayers; // lists of each tour layer
 	private HomeView ourMapView;
 	private ComboBox<Integer> timeWindow;
 	private Label selectLocation;
@@ -100,15 +99,24 @@ public class NewRequestView extends Application implements Observer {
 	public NewRequestView() {
 	}
 
+	/**
+	 * Initialize Map attributes
+	 * @param stage : stage of our screen
+	 */
 	@Override
 	public void start(Stage stage) throws Exception {
+		
+		// Resize the window 
 		this.stage = stage;
-		this.stage.setWidth(width);
-		this.stage.setHeight(height);
-		/*Creation of the background*/
+		this.stage.setWidth(screenWidth);
+		this.stage.setHeight(screenHeight);
+		
+		// Creation of the background
 		this.background_fill = new BackgroundFill(Color.rgb(216, 191, 170), CornerRadii.EMPTY, Insets.EMPTY);
 		this.background = new Background(background_fill);
-		this.clicked = false;
+		
+		// Init attributes
+		this.clickedOnMap = false;
 		this.seeIntersection = false;
 		this.closestIntersection = new Intersection();
 		this.mapLayerDelivery = this.getMapLayerDelivery();
@@ -124,7 +132,7 @@ public class NewRequestView extends Application implements Observer {
 		this.couriers.getSelectionModel().select(0); //valeur par défaut affichée 
 		this.requestedCourier = couriers.getSelectionModel().getSelectedItem(); //valeur par défaut pour le livreur de la livraison
 		
-		/*Creation of the labels*/
+		// Creation of the labels
 		this.labelCourierSuggestion = new Label("La liste des livreurs n'est pas triée");
 		this.labelCourierSuggestion.setVisible(false);
 		this.labelSelectCourier = new Label("2.b Sélectionner un livreur");
@@ -139,7 +147,7 @@ public class NewRequestView extends Application implements Observer {
 		this.labelSelectTimeWindow.setStyle("-fx-font-size: 15;" + "-fx-background-color:rgba(255, 255, 86, 1.00);");
 		this.labelSelectTimeWindow.setVisible(false);		
 		
-		/*Creation of the buttons*/
+		// Creation of the buttons
 		this.buttonValidate = new Button("Valider la livraison");
 		this.buttonValidate.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 		this.buttonValidate.setMouseTransparent(true);
@@ -150,20 +158,23 @@ public class NewRequestView extends Application implements Observer {
 		this.buttonSeeIntersections = new Button("Voir les intersections");
 		this.buttonSeeIntersections.setStyle("-fx-focus-color: transparent;" + " -fx-border-width: 1px;" +" -fx-border-radius: 8px;" +  " -fx-border-color: #000000;"  + "-fx-background-radius: 8px;");
 			
-		
-		
-		/* Creation of the datePicker */
+		// Creation of the datePicker 
 		this.date = new DatePicker();
 		this.date.setStyle("-fx-text-fill: #000000;\r\n" + "    -fx-border-radius: 3px;\r\n"
 				+ "	   -fx-background-color: rgb(49, 89, 47);");
 		
+		
+		// Display the map
 		display();	
 		this.stage.show();
 		
 		/* mouse listeners */
+		
+		// Display or hide the circle in each intersection of the map
 		this.buttonSeeIntersections.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
-			public void handle(MouseEvent event) {	
+			public void handle(MouseEvent event) {
+				// Display the intersection and change label to hide intersections
 				if (seeIntersection == false) 
 				{
 					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
@@ -174,6 +185,7 @@ public class NewRequestView extends Application implements Observer {
 				} 
 				else 
 				{
+					// Hide the intersection and change label to display intersections
 					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
 						getMapView().removeLayer(customCircleMarkerLayer);
 					}
@@ -183,9 +195,9 @@ public class NewRequestView extends Application implements Observer {
 				getMapView().setZoom(getMapView().getZoom()-0.001);
 				display();
 			}
-			
 		});
 		
+		//Alert with a pop-up when we close the window to save new changes
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent e) {
@@ -199,37 +211,51 @@ public class NewRequestView extends Application implements Observer {
 				Optional<ButtonType> result = alert.showAndWait();
 				if (result.get() != null) {
 					if (result.get() == buttonOk) {
+						// We save new changes
 						saveCouriers();
 						Platform.exit();
 						System.exit(0);
 					}else if (result.get() == buttonNo) {
+						// We exit without saving new changes
 						Platform.exit();
 						System.exit(0);
 					} else if (result.get() == buttonCancel) {
+						// We go back to the page 
 						e.consume();
 					}
 				}
 			}
 		});
 		
+		// Get the coordinates of the new delivery and display blue circle
 		this.mapView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if (clicked == false) 
+				// The user can only choose one point (click one time only) 
+				if (clickedOnMap == false) 
 				{
+					// Get the requested coordinates for a new delivery
 					requestedX = (float) event.getX();
 					requestedY = (float) event.getY();
 					MapPoint mp = mapView.getMapPosition(requestedX, requestedY);
+					
+					// Get real coordinates latitude and longitude of the requested point
 					float latitude = (float) mp.getLatitude();
 					float longitude = (float) mp.getLongitude();
+					
+					// Get the closestIntersection from the requested point
 					closestIntersection = map.getClosestIntersection(latitude, longitude, -1);
 					if(closestIntersection.getOutSections().size() == 0)
 					{
 						closestIntersection = map.getClosestIntersection(closestIntersection.getLatitude(), closestIntersection.getLongitude(),closestIntersection.getId());
 					}
+					
+					// Display a blue circle in the closestIntersection
 					MapPoint mapPointPin = new MapPoint(closestIntersection.getLatitude(), closestIntersection.getLongitude());
 					newDelivery = new CustomCircleMarkerLayer(mapPointPin, 6, javafx.scene.paint.Color.BLUE);
 					mapView.addLayer(newDelivery);
+					
+					// Display the following steps to add the requested delivery
 					timeWindow.setStyle("-fx-text-fill: #000000;\r\n" + "    -fx-border-radius: 3px;\r\n");
 					timeWindow.setMouseTransparent(false);
 					selectLocation.setVisible(false);
@@ -244,19 +270,15 @@ public class NewRequestView extends Application implements Observer {
 					labelCourierSuggestion.setVisible(true);
 					display();
 				}
-				clicked = true;
+				// Prevent from selecting a new delivery
+				clickedOnMap = true;
 			}
-		});
-
-		// Listener for updating the checkout date w.r.t check in date
-		this.date.valueProperty().addListener((ov, oldValue, newValue) -> {
-			requestedDate = newValue.plusDays(noOfDaysToAdd);
 		});
 
 		this.buttonChangePoint.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				clicked = false;
+				clickedOnMap = false;
 				mapView.removeLayer(newDelivery);
 				timeWindow.setMouseTransparent(true);
 				timeWindow.setStyle(null);
@@ -289,8 +311,8 @@ public class NewRequestView extends Application implements Observer {
 							try {
 								ourMapView.setController(controller);
 								ourMapView.setListViewCouriers(couriers);
-								ourMapView.setHeight(height);
-								ourMapView.setWidth(width);
+								ourMapView.setHeight(screenHeight);
+								ourMapView.setWidth(screenWidth);
 								ourMapView.setMap(map);
 								ourMapView.setMapView(mapView);
 								ourMapView.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
@@ -420,15 +442,13 @@ public class NewRequestView extends Application implements Observer {
 		/* vBoxMap */
 		VBox vBoxMap = new VBox();
 		vBoxMap.setPadding(new Insets(20, 20, 20, 20));
-		vBoxMap.setMaxHeight(this.height - 40);
-		vBoxMap.setMaxWidth(this.width / 1.6);
+		vBoxMap.setMaxHeight(this.screenHeight - 40);
+		vBoxMap.setMaxWidth(this.screenWidth / 1.6);
 		vBoxMap.prefWidthProperty().bind(hbox.widthProperty().multiply(0.60));		
 		vBoxMap.getChildren().add(selectLocation);
 		vBoxMap.getChildren().add(new Label(""));
 		vBoxMap.getChildren().add(this.mapView);
 		
-		requestedDate = date.getValue();
-
 		// hbox contains two elements
 		hbox.getChildren().add(vBoxMap);
 		hbox.getChildren().add(vBoxCouriers);
@@ -451,8 +471,8 @@ public class NewRequestView extends Application implements Observer {
 					try {
 						ourMapView.setController(controller);
 						ourMapView.setListViewCouriers(couriers);
-						ourMapView.setHeight(height);
-						ourMapView.setWidth(width);
+						ourMapView.setHeight(screenHeight);
+						ourMapView.setWidth(screenWidth);
 						ourMapView.setMap(map);
 						ourMapView.setMapView(mapView);
 						ourMapView.setMapPolygoneMarkerLayers(mapPolygoneMarkerLayers);
@@ -503,19 +523,19 @@ public class NewRequestView extends Application implements Observer {
 	}
 
 	public int getWidth() {
-		return width;
+		return screenWidth;
 	}
 
 	public void setWidth(int width) {
-		this.width = width;
+		this.screenWidth = width;
 	}
 
 	public int getHeight() {
-		return height;
+		return screenHeight;
 	}
 
 	public void setHeight(int height) {
-		this.height = height;
+		this.screenHeight = height;
 	}
 
 	public ListView<Courier> getListViewCouriers() {
