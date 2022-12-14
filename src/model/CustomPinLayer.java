@@ -34,7 +34,7 @@ public class CustomPinLayer extends MapLayer{
 		  }
 		  Image image = new Image(input, PIN_WIDTH, PIN_HEIGHT, false, false);
 		  
-		/* Initialisation of the pin (image) */
+		  /* Initialisation of the pin (image) */
 		  this.mapPinImageView = new ImageView(image);
 		  this.getChildren().add(this.mapPinImageView);
 	 }
@@ -49,7 +49,7 @@ public class CustomPinLayer extends MapLayer{
 	 @Override
 	 protected void layoutLayer() {
 		 
-		  /* Conversion from MapPoint to Point2D (latitude and longitude to screen pixels) */
+	  /* Conversion from MapPoint to Point2D (latitude and longitude to screen pixels) */
 	  Point2D point2d = this.getMapPoint(mapPoint.getLatitude(), mapPoint.getLongitude());
 
 	  /* Moves the pin according to the coordinates of the point */

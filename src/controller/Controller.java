@@ -19,11 +19,23 @@ public class Controller {
 	{
 		this.map= map;
 	}
-
-	public Delivery addDelivery(Intersection closerIntersection, LocalDate date, int timeWindow, Courier courier) {
-		return courier.getTour().addDelivery(closerIntersection, date, timeWindow);
+	
+	/**
+	 * add a delivery to the list of deliveries of a courier.
+	 * @param intersection : intersection where the delivery takes place 
+	 * @param date : date of the delivery
+	 * @param timeWindow : hour of the day when the courier should deliver (he must deliver between timeWindow and timeWindow +1)
+	 * @param courier : courier to whom we want to add a delivery
+	 * */
+	public Delivery addDelivery(Intersection intersection, LocalDate date, int timeWindow, Courier courier) {
+		return courier.getTour().addDelivery(intersection, date, timeWindow);
 	}
 	
+	/**
+	 * add a courier with a name
+	 * @param name : name of the courier
+	 * @param listView : listView of the map where we need to display the added courier
+	 * */
 	public void addCourierWithName(String name, ListView<Courier> listView) {
 		Courier courier = new Courier(name);
 		this.map.addCourier(courier);
@@ -31,6 +43,12 @@ public class Controller {
 
 	}
 	
+	/**
+	 * get the closest intersection from the request coordinates
+	 * @param latitude : latitude of the requested point on the map
+	 * @param longitude : longitude of the requested point on the map
+	 * @param listView : listView of the map where we need to display the added courier
+	 * */
 	public Intersection getClosestIntersection(float latitude, float longitude, long idIntersection) {
 		 return map.getClosestIntersection(latitude, longitude, idIntersection);
 	}
