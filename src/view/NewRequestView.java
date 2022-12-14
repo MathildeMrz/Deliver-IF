@@ -336,88 +336,95 @@ public class NewRequestView extends Application implements Observer {
 			}
 		});
 		
-		this.timeWindow.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-			if(newValue!=null)
-			{
-				requestedStartingTimeWindow = newValue;
-				bestCourierAvailable = map.getBestCourierAvalaibility(closestIntersection, requestedStartingTimeWindow);
-				bestCourierProx = map.getBestCourierProximity(closestIntersection, requestedStartingTimeWindow);
-				requestedCourier = bestCourierAvailable;
-				vBoxCouriers.getChildren().remove(couriers);
-				vBoxCouriers.getChildren().remove(cancelRequest);
-				vBoxCouriers.getChildren().remove(buttonValidate);
-				vBoxCouriers.getChildren().remove(buttonSeeIntersections);
-				vBoxCouriers.getChildren().remove(buttonChangePoint);
-				ListView<Courier> couriersTmp = couriers;
-				ListView<Courier> newCouriers = new ListView<Courier>();
-				if(bestCourierProx != bestCourierAvailable)
+			//Change the courier suggested for the delivery depending on the value of the time window selected
+			this.timeWindow.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+				if(newValue!=null)
 				{
-					newCouriers.getItems().add(bestCourierAvailable);
-					newCouriers.getItems().add(bestCourierProx);	
-					labelCourierSuggestion.setText("Le 1er livreur dans la liste a la meilleure disponibilité\nLe 2ème livreur dans la liste a la meilleure proximité");
-				}
-				else
-				{
-					newCouriers.getItems().add(bestCourierAvailable);
-					labelCourierSuggestion.setText("Le 1er livreur dans la liste a la meilleure\n disponibilité et la meilleure proximité");
-				}
-				for (Courier c : couriersTmp.getItems())
-				{
-					if(c!=bestCourierProx && c!=bestCourierAvailable)
+					requestedStartingTimeWindow = newValue; //timeWindow of the delivery
+					//Get the best courier available and the best courier near the destination for the time window selected
+					bestCourierAvailable = map.getBestCourierAvalaibility(closestIntersection, requestedStartingTimeWindow);
+					bestCourierProx = map.getBestCourierProximity(closestIntersection, requestedStartingTimeWindow);
+					requestedCourier = bestCourierAvailable;
+					//Update of the listView of Couriers : sorted so that the couriers suggested are at the top of the listView
+					vBoxCouriers.getChildren().remove(couriers);
+					vBoxCouriers.getChildren().remove(cancelRequest);
+					vBoxCouriers.getChildren().remove(buttonValidate);
+					vBoxCouriers.getChildren().remove(buttonSeeIntersections);
+					vBoxCouriers.getChildren().remove(buttonChangePoint);
+					ListView<Courier> couriersTmp = couriers;
+					ListView<Courier> newCouriers = new ListView<Courier>();
+					if(bestCourierProx != bestCourierAvailable)
 					{
-						newCouriers.getItems().add(c);
+						newCouriers.getItems().add(bestCourierAvailable);
+						newCouriers.getItems().add(bestCourierProx);	
+						labelCourierSuggestion.setText("Le 1er livreur dans la liste a la meilleure disponibilité\nLe 2ème livreur dans la liste a la meilleure proximité");
 					}
+					else
+					{
+						newCouriers.getItems().add(bestCourierAvailable);
+						labelCourierSuggestion.setText("Le 1er livreur dans la liste a la meilleure\n disponibilité et la meilleure proximité");
+					}
+					for (Courier c : couriersTmp.getItems())
+					{
+						if(c!=bestCourierProx && c!=bestCourierAvailable)
+						{
+							newCouriers.getItems().add(c);
+						}
+					}
+					couriers = newCouriers;
+					couriers.getSelectionModel().select(0);
+					vBoxCouriers.getChildren().add(couriers);
+					vBoxCouriers.getChildren().add(cancelRequest);
+					vBoxCouriers.getChildren().add(buttonValidate);
+					vBoxCouriers.getChildren().add(buttonSeeIntersections);
+					vBoxCouriers.getChildren().add(buttonChangePoint);
 				}
-				couriers = newCouriers;
-				couriers.getSelectionModel().select(0);
-				vBoxCouriers.getChildren().add(couriers);
-				vBoxCouriers.getChildren().add(cancelRequest);
-				vBoxCouriers.getChildren().add(buttonValidate);
-				vBoxCouriers.getChildren().add(buttonSeeIntersections);
-				vBoxCouriers.getChildren().add(buttonChangePoint);
-			}
-			couriers.setMouseTransparent(false);
-			labelSelectTimeWindow.setVisible(false);
-			labelSelectCourier.setVisible(true);
-			try {
-				buttonCourier();
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		});
-		buttonCourier();
-	}
-	
-	public void buttonCourier() throws Exception {
-	
-	this.couriers.setOnMouseClicked(new EventHandler<MouseEvent>() {
-		@Override
-		public void handle(MouseEvent event) {
-			requestedCourier = couriers.getSelectionModel().getSelectedItem();
-			//Expand du treeView 
-			treeview.getRoot().getChildren().forEach(t ->{
-				if(((TreeItem)t).getValue().toString().contains(requestedCourier.getName()))
-				{
-					((TreeItem)t).setExpanded(true);
-					((TreeItem)t).getChildren().forEach(ti ->{
-						((TreeItem)ti).setExpanded(true);
-					});
-				}
-				else
-				{
-					((TreeItem)t).setExpanded(false);
+				//Changes for the order of selection of the delivery's parameters
+				couriers.setMouseTransparent(false);
+				labelSelectTimeWindow.setVisible(false);
+				labelSelectCourier.setVisible(true);
+				try {
+					buttonCourier();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			});
-			
-			buttonSeeIntersections.setText("Voir les intersections");
-			for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerIntersections) {
-					getMapView().removeLayer(customCircleMarkerLayer);
-				}
-				seeIntersection = false;
-			}				
-		});
-	}
+			buttonCourier();
+		}
+	
+	/**
+	 * Expand treeView only for the courier selected 
+	 */
+	public void buttonCourier() throws Exception {
+		this.couriers.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				//The courier for the delivery is the courier selected in the listView by the user
+				requestedCourier = couriers.getSelectionModel().getSelectedItem();
+				//Expand treeView only for the courier selected, the other TreeItem are not expanded
+				treeview.getRoot().getChildren().forEach(t ->{
+					if(((TreeItem)t).getValue().toString().contains(requestedCourier.getName()))
+					{
+						((TreeItem)t).setExpanded(true);
+						((TreeItem)t).getChildren().forEach(ti ->{
+							((TreeItem)ti).setExpanded(true);
+						});
+					}
+					else
+					{
+						((TreeItem)t).setExpanded(false);
+					}
+				});
+				//Changes in the display of the page 
+				buttonSeeIntersections.setText("Voir les intersections");
+				for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerIntersections) {
+						getMapView().removeLayer(customCircleMarkerLayer);
+					}
+					seeIntersection = false;
+				}				
+			});
+		}
 
 	/**
 	 * Displays home page
