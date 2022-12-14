@@ -19,6 +19,9 @@ public class Tour extends Observable {
 	private ArrayList<Intersection> tourSteps;
 	private LocalTime [] tourTimes;
 	
+	/**
+	 * Create a Tour, initialize its starting and end dates
+	 * */
 	public Tour()
 	{
 		this.id = ID_FACTORY.getAndIncrement();
@@ -35,7 +38,12 @@ public class Tour extends Observable {
 		tourTimes[0]=this.startDate.toLocalTime();
 	}
 	
-	
+	/**
+	 * Sets the arrival times of delivery points composing a tour after calculating the shortest path
+	 * @param deliveryPt : Intersection corresponding to the delivery point
+	 * @param orderOfArrival : number corresponding to the order of arrival in the shortest path
+	 * @param minutes : minutes spent by the courier to go from the previous delivery point in the tour to the current delivery point
+	 * */
 	public void setArrival(Intersection deliveryPt, int orderOfArrival, double minutes)
 	{
 		//Computing of the arrival time 

@@ -17,6 +17,10 @@ public class Courier extends Observable {
 	private static final ArrayList<Color> ColorsList = new ArrayList<Color>(Arrays.asList(Color.HOTPINK, Color.PURPLE,  Color.SKYBLUE, Color.SALMON, Color.CADETBLUE, Color.AQUAMARINE, Color.CHOCOLATE, Color.GREENYELLOW, Color.LIGHTSEAGREEN,Color.MEDIUMSPRINGGREEN));
 	private Color travelColor;
 	
+	/**
+	 * Create a Courier, with a speed of 15 km/h, a specific color and a tour
+	 * @param name : name of the Courier
+	 * */
 	public Courier(String name)
 	{
 		this.id = ID_FACTORY.getAndIncrement();
@@ -34,6 +38,11 @@ public class Courier extends Observable {
 		}
 	}
 	
+	/**
+	 * Create a Courier, with a speed of 15 km/h, a specific color and a tour
+	 * @param name : name of the Courier
+	 * @param id : id of the Courier
+	 * */
 	public Courier(String name, int id)
 	{
 		this.id = id;

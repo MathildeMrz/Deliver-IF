@@ -28,7 +28,10 @@ public class Map extends Observable {
 	}
 
 	private String mapName;
-
+	
+	/**
+	 * Create a Map
+	 * */
 	public Map() {
 		this.nodes  = new HashMap<Long,Intersection>();
 		this.couriers = new ArrayList<Courier>();//During load function
@@ -173,6 +176,8 @@ public class Map extends Observable {
  * @param timeWindow : the hour of the start of the timeWindow for the delivery
  * @return the best courier for the delivery based on availability 
  */
+	
+	//TODO documentation
 	public Courier getBestCourierAvalaibility(Intersection inter, int timeWindow) {
 	   	 Courier bestCourier = this.couriers.get(0); //the best courier for the delivery found so far
 	   	 int freeTime = 0; // the "free time" (= waiting time) the best courier has during the time window
