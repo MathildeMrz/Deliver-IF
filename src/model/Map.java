@@ -170,26 +170,36 @@ public class Map extends Observable {
 	     }
 		return closerIntersection;
 	}
+/**
+ * Determine the best courier for a delivery based on the waiting time and number of deliveries the courriers have
+ * @param inter : the intersection where the delivery would be
+ * @param timeWindow : the hour of the start of the timeWindow for the delivery
+ * @return the best courier for the delivery based on availability 
+ */
 	
 	//TODO documentation
 	public Courier getBestCourierAvalaibility(Intersection inter, int timeWindow) {
-	   	 Courier bestCourier = this.couriers.get(0);
-	   	 int tempsLibre = 0;
-	   	 for(Courier c : this.couriers) {
-	   		 for(Delivery del : c.getTour().getDeliveries()) {
-	   			 if((del.getStartTime() == timeWindow + 1) && (del.getArrival().until(del.getDeliveryTime(), ChronoUnit.MINUTES) > tempsLibre)) {
+	   	 Courier bestCourier = this.couriers.get(0); //the best courier for the delivery found so far
+	   	 int freeTime = 0; // the "free time" (= waiting time) the best courier has during the time window
+	   	 for(Courier c : this.couriers) { // loop over the couriers
+	   		 for(Delivery del : c.getTour().getDeliveries()) { // loop over their deliveries
+	   			 if((del.getStartTime() == timeWindow + 1) && (del.getArrival().until(del.getDeliveryTime(), ChronoUnit.MINUTES) > freeTime)) {
+	   				 //check if the courier has more free time during the timeWindow than the maximum determined so far
+	   				 //update the bestCourier and their freetime 
 	   				 bestCourier = c;
-	   				 tempsLibre = (int) del.getArrival().until(del.getDeliveryTime(), ChronoUnit.MINUTES);
+	   				 freeTime = (int) del.getArrival().until(del.getDeliveryTime(), ChronoUnit.MINUTES);
 	   			 }
 	   		 }
 	   	 }
-	   	 if(tempsLibre != 0)
+	   	 if(freeTime != 0) 
 	   	 {return bestCourier;}
-	   	 else {
-	   		 int nbMinDelivery = 1;
-	   		 for(Courier c: this.couriers) {
+	   	 else {// if no courrier has any free time, we pick the one that has the lowest number of deliveries during their tour while having at least one
+	   		 int nbMinDelivery = 100; // Number much bigger than the number of deliveries a courier can have during a tour
+	   		 for(Courier c: this.couriers) { //loop over the couriers
 	   			 int nbDelivery = c.getTour().getDeliveries().size();
 	   			 if(nbDelivery > 0 && nbDelivery < nbMinDelivery) {
+	   				 // check if the courier has less delivery than the best one so far
+	   				 // if yes, update the best courier and the min number of deliveries
 	   				 nbMinDelivery = nbDelivery;
 	   				 bestCourier = c;
 	   			 }
@@ -198,13 +208,19 @@ public class Map extends Observable {
 	   	 return bestCourier;
 	    }
 	    
+	/**
+	 * Determine the best courier for a delivery based on proximity, i.e the courier whose tour goes closest to the delivery point
+	 * @param inter : the intersection where the delivery would be
+	 * @param timeWindow : the hour of the start of the timeWindow for the delivery
+	 * @return the best courier for the delivery based on proximity
+	 */	
 	    public Courier getBestCourierProximity(Intersection inter, int timeWindow) {
-	   	 Courier bestCourier = couriers.get(0);
-	   	 Float distMin = Float.MAX_VALUE;
-	   	 for(Courier c: this.couriers) {
-	   		 for(Intersection i: c.getTour().getTourSteps()) {
-	   			 float dist = (float) Math.hypot(Math.abs(inter.getLongitude() - i.getLongitude()), Math.abs(inter.getLatitude() - i.getLatitude()));
-	   			 if(dist<distMin) {
+	   	 Courier bestCourier = couriers.get(0); // courier that goes closest to the intersection
+	   	 Float distMin = Float.MAX_VALUE; // distance to the intersection
+	   	 for(Courier c: this.couriers) { // loop over the couriers
+	   		 for(Intersection i: c.getTour().getTourSteps()) { //loop over the steps of the courier's tour
+	   			 float dist = (float) Math.hypot(Math.abs(inter.getLongitude() - i.getLongitude()), Math.abs(inter.getLatitude() - i.getLatitude())); // calculate the euclidian distance of the intersection with the delivery point
+	   			 if(dist<distMin) { // if the tour pass by an intersection that is closer to the delivery point than the current best, we update the minimal distance and the best courier
 	   				 distMin = dist;
 	   				 bestCourier = c;
 	   			 }

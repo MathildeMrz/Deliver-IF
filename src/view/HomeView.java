@@ -743,18 +743,23 @@ public class HomeView extends Application implements Observer {
 			@Override
 			public void handle(MouseEvent event) {
 				
-				// remove the previous red path layer lala
+				// Remove the previous red path layer
 				for (MapLayer layer : lastToCurrentSelectedStepLayer) {
 					mapView.removeLayer(layer);
 				}
 				mapView.setZoom(mapView.getZoom() - 0.001);
+				
+				// Get the selected delivery with the treeItem
 				Delivery selectedDelivery = treeItemToDelivery.get(treeView.getSelectionModel().getSelectedItem());
+				
 				if (lastSelectedDelivery != null) {
+					// Remove the red pin in the previous selected delivery and the red path
 					MapLayer lastSelectedDeliveryLayer = pinLayers.get(lastSelectedDelivery.getId());
 					MapPoint position = ((CustomPinLayer) lastSelectedDeliveryLayer).getMapPoint();
 					mapView.removeLayer(lastSelectedDeliveryLayer);
 					pinLayers.remove(lastSelectedDelivery.getId());
 					try {
+						// Put a black pin instead of the red pin 
 						MapLayer blackPin = new CustomPinLayer(position, false);
 						pinLayers.put(lastSelectedDelivery.getId(), blackPin);
 						mapView.addLayer(blackPin);
@@ -763,23 +768,32 @@ public class HomeView extends Application implements Observer {
 						e.printStackTrace();
 					}
 				}
+				
 				if (selectedDelivery != null) {
 					lastToCurrentSelectedStepLayer.clear();
 					boolean deliveryFound = false;
 					ArrayList<MapPoint> points = new ArrayList<MapPoint>();
+					
+					// For each courier
 					for (Courier c : map.getCouriers()) {
 						Tour tour = c.getTour();
+						// For each courier's delivery
 						for (int i = 0; i < tour.getDeliveries().size(); i++) {
+							// We check the courier's delivery is equal to the selected delivery
 							if (tour.getDeliveries().get(i) == selectedDelivery) {
+								// We search the delivery just before the selected delivery 
 								Intersection beginIntersection;
+								// If there is no delivery before, the beginDelivery is the warehouse
 								if (i - 1 < 0) {
 									beginIntersection = map.getWarehouse();
 									points.add(new MapPoint(beginIntersection.getLatitude(),
-											beginIntersection.getLongitude()));
+									beginIntersection.getLongitude()));
+								// Else we save the delivery just before the selected delivery in beginIntersection
 								} else {
 									beginIntersection = tour.getDeliveries().get(i - 1).getDestination();
 								}
 
+								// For each Intersection between the previous delivery and the selected delivery, we draw a red line
 								for (int j = 0; j < tour.getTourSteps().size(); j++) {
 									if (deliveryFound == true
 											&& tour.getTourSteps().get(j) != selectedDelivery.getDestination()) {
@@ -808,7 +822,8 @@ public class HomeView extends Application implements Observer {
 							}
 						}
 					}
-					// Pin
+					
+					// Get the pin layer of the selected delivery to put it in red
 					lastSelectedDelivery = selectedDelivery;
 					MapLayer layer = pinLayers.get(selectedDelivery.getId());
 					MapPoint position = ((CustomPinLayer) layer).getMapPoint();
@@ -827,6 +842,7 @@ public class HomeView extends Application implements Observer {
 			}
 		});
 
+		// Save the new changes
 		buttonSaveMap.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -839,6 +855,7 @@ public class HomeView extends Application implements Observer {
 		});
 	}
 
+	// Clear the screen
 	public void clearScreen()
 	{
 		vBoxMap.getChildren().clear();
@@ -848,6 +865,10 @@ public class HomeView extends Application implements Observer {
 		hBox.getChildren().clear();
 	}
 
+	/**
+	 * Call the TSP method
+	 * @param tour : tour to give to the TSP
+	 * */
 	public void TSP(Tour tour) {
 		this.controller.TSP(tour);
 	}
