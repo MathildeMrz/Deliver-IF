@@ -370,7 +370,7 @@ public class HomeView extends Application implements Observer {
 	}
 
 	/**
-	 * Display home page
+	 * Displays home page
 	 */
 	public void displayHomePage() throws FileNotFoundException {
 
@@ -941,10 +941,14 @@ public class HomeView extends Application implements Observer {
 		this.pinLayers = new HashMap<Integer, MapLayer>();
 	}
 
+	/**
+	 * Saves couriers and its attributes in a json file
+	 */
 	protected void saveCouriers() {
 		LocalDate date = this.map.getMapDate();
+		
+		//File name
 		String path = "loadedDeliveries/" + this.map.getMapName() + "-" + date + ".json";
-
 		JSONArray listeCouriersJson = new JSONArray();
 
 		// For each courier
@@ -955,8 +959,9 @@ public class HomeView extends Application implements Observer {
 			courierJson.put("name", courier.getName());
 			courierJson.put("speed", courier.getSpeed());
 			JSONObject tourJson = new JSONObject();
+			
+			//Get its tour
 			Tour tour = courier.getTour();
-
 			tourJson.put("id", tour.getId());
 			tourJson.put("startDate", tour.getStartDate());
 			tourJson.put("endDate", tour.getEndDate());
@@ -971,7 +976,6 @@ public class HomeView extends Application implements Observer {
 			}
 
 			tourJson.put("tourSteps", tourStepsJson);
-
 			JSONArray tourTimesJson = new JSONArray();
 
 			// For each tour time
@@ -1013,8 +1017,11 @@ public class HomeView extends Application implements Observer {
 		}
 
 	}
-
-	public ListView<Courier> loadCouriers()
+	
+	/**
+	 * Loads couriers and its attributes from a json file
+	 */
+	public ListView<Courier> loadCouriers() 
 			throws org.json.simple.parser.ParseException, FileNotFoundException, IOException {
 		ListView<Courier> couriersAL = new ListView<Courier>();
 		ListView<Courier> listViewItemsToIterateOver = new ListView<>();
@@ -1022,6 +1029,7 @@ public class HomeView extends Application implements Observer {
 			listViewItemsToIterateOver.getItems().add(i, this.listViewCouriers.getItems().get(i));
 		}
 		ArrayList<Courier> couriers = new ArrayList<>();
+		//File name
 		String fileName = "loadedDeliveries/" + this.map.getMapName() + "-" + this.map.getMapDate() + ".json";
 
 		File f = new File(fileName);
@@ -1068,7 +1076,6 @@ public class HomeView extends Application implements Observer {
 				LocalDateTime localDateStart = LocalDateTime.parse(localDateStringStart);
 
 				JSONArray JsonDeliveries = JsonTour.getJSONArray("deliveries");
-
 				ArrayList<Delivery> deliveries = new ArrayList<Delivery>();
 
 				// For each delivery in the Tour
@@ -1114,6 +1121,7 @@ public class HomeView extends Application implements Observer {
 						this.listViewCouriers.getItems().add(item);
 					}
 				}
+				//Add the courier to the ArrayList<Courier>
 				couriersAL.getItems().add(courier);
 			}
 			this.map.setCouriers(couriers);
@@ -1132,8 +1140,12 @@ public class HomeView extends Application implements Observer {
 		return couriersAL;
 	}
 
+	/**
+	 * Loads the names of the couriers from a text file
+	 */
 	public ListView<Courier> initCouriers() {
 
+		//File name
 		File file = new File("./saveCouriers.txt");
 		this.listViewCouriers = new ListView<Courier>();
 
