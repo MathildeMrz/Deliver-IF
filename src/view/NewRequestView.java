@@ -68,7 +68,7 @@ public class NewRequestView extends Application implements Observer {
 	private final int noOfDaysToAdd = 2;
 	private MapView mapView;
 	private MapLayer newDelivery;
-	private ArrayList<CustomCircleMarkerLayer> mapLayerDelivery; // lists of circle layers for each intersection
+	private ArrayList<CustomCircleMarkerLayer> mapLayerIntersections; // lists of circle layers for each intersection
 	private ArrayList<MapLayer> mapPolygoneMarkerLayers; // lists of each tour layer
 	private HomeView ourMapView;
 	private ComboBox<Integer> timeWindow;
@@ -119,7 +119,7 @@ public class NewRequestView extends Application implements Observer {
 		this.clickedOnMap = false;
 		this.seeIntersection = false;
 		this.closestIntersection = new Intersection();
-		this.mapLayerDelivery = this.getMapLayerDelivery();
+		this.mapLayerIntersections = this.getMapLayerIntersections();
 		this.timeWindow = new ComboBox<Integer>();
 		this.timeWindow.getItems().add(8);
 		this.timeWindow.getItems().add(9);
@@ -177,7 +177,7 @@ public class NewRequestView extends Application implements Observer {
 				// Display the intersection and change label to hide intersections
 				if (seeIntersection == false) 
 				{
-					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
+					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerIntersections) {
 						getMapView().addLayer(customCircleMarkerLayer);
 					}
 					seeIntersection = true;
@@ -186,7 +186,7 @@ public class NewRequestView extends Application implements Observer {
 				else 
 				{
 					// Hide the intersection and change label to display intersections
-					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
+					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerIntersections) {
 						getMapView().removeLayer(customCircleMarkerLayer);
 					}
 					buttonSeeIntersections.setText("Voir les intersections");
@@ -312,7 +312,7 @@ public class NewRequestView extends Application implements Observer {
 				if (result.get() == buttonOk) {
 					// The blue circle of the requested delivery is removed and we go back to homePage
 					mapView.removeLayer(newDelivery);
-					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
+					for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerIntersections) {
 						getMapView().removeLayer(customCircleMarkerLayer);
 					}
 					Platform.runLater(new Runnable() {
@@ -411,7 +411,7 @@ public class NewRequestView extends Application implements Observer {
 			});
 			
 			buttonSeeIntersections.setText("Voir les intersections");
-			for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
+			for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerIntersections) {
 					getMapView().removeLayer(customCircleMarkerLayer);
 				}
 				seeIntersection = false;
@@ -476,7 +476,7 @@ public class NewRequestView extends Application implements Observer {
 				
 				// Remove all added layers (requested delivery circle and all intersections circles)
 				mapView.removeLayer(newDelivery);
-				for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerDelivery) {
+				for (CustomCircleMarkerLayer customCircleMarkerLayer : mapLayerIntersections) {
 					getMapView().removeLayer(customCircleMarkerLayer);
 				}
 				
@@ -506,8 +506,6 @@ public class NewRequestView extends Application implements Observer {
 			}
 		});
 	}
-	
-	
 
 	@Override
 	public void update(Observable observed, Object arg) {
@@ -517,7 +515,10 @@ public class NewRequestView extends Application implements Observer {
 		return map;
 	}
 
-	public ArrayList<CustomCircleMarkerLayer> getMapLayerDelivery() {
+	/**
+	 * Get a list of layers with all intersections
+	 */
+	public ArrayList<CustomCircleMarkerLayer> getMapLayerIntersections() {
 		ArrayList<CustomCircleMarkerLayer> mapLayerDelivery = new ArrayList<CustomCircleMarkerLayer>();
 		for (Intersection i : map.getNodes().values()) {
 			MapPoint mapDelivery = new MapPoint(i.getLatitude(), i.getLongitude());
@@ -679,8 +680,6 @@ public class NewRequestView extends Application implements Observer {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
 		}
 	}
-
 }
